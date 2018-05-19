@@ -1271,6 +1271,9 @@ make_up(const Line &line, Area::size_type w, int halign)
 		Line::size_type to = from + 1;
 		int to_from;
 
+		Line::size_type last_to = from;
+		int last_utf_len = 0;
+
 		Line::size_type lbp = (Line::size_type) -1; // "Last break position".
 
 		/*
@@ -1299,11 +1302,20 @@ make_up(const Line &line, Area::size_type w, int halign)
 				to++;
 			}
 
-			if (line.utf_length(from, to) > w && lbp != (Area::size_type) -1)
+			/*
+			 * Since utf_length(a,b) gets length of [a,b)
+			 * utf_length(a,b) = utf_length(a,c) + urf_length(c,b)
+			 * Cache last_utf_len to avoid quadratic runtime
+			 */
+			int utf_len = last_utf_len + line.utf_length(last_to, to);
+			if (utf_len > w && lbp != (Area::size_type) -1)
 			{
 				to = lbp;
 				break;
 			}
+
+			last_to = to;
+			last_utf_len = utf_len;
 		}
 
 		to_from = line.utf_length(from, to);
