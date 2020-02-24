@@ -135,6 +135,7 @@ public:
   const Cell *operator[](size_type y) const { return cells_[y]; }
   Cell       *operator[](size_type y)       { return cells_[y]; }
   const Area &operator>>=(size_type rs);
+  const Area &operator>>=(const char *prefix);
 
   unsigned int utf_width();
 

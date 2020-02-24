@@ -84,13 +84,15 @@ struct BlockFormat {
   Area::size_type vspace_after;
   Area::size_type indent_left;
   Area::size_type indent_right;
+  const char      *quote_char;
 
   BlockFormat(
     const char      *item_name,
     Area::size_type default_vspace_before = 0,
     Area::size_type default_vspace_after  = 0,
     Area::size_type default_indent_left   = 0,
-    Area::size_type default_indent_right  = 0
+    Area::size_type default_indent_right  = 0,
+    const char      *default_quote_char   = NULL
   );
   Area::size_type effective_width(Area::size_type) const;
 };
@@ -824,6 +826,7 @@ BlockQuote::format(Area::size_type w, int halign) const
   if (!res.get()) return 0;
 
   *res >>= bf.indent_left;
+  if (bf.quote_char != NULL) *res >>= bf.quote_char;
   res->prepend(bf.vspace_before);
   res->append(bf.vspace_after);
 
@@ -1528,7 +1531,8 @@ BlockFormat::BlockFormat(
   Area::size_type default_vspace_before /* = 0 */ ,
   Area::size_type default_vspace_after  /* = 0 */ ,
   Area::size_type default_indent_left   /* = 0 */ ,
-  Area::size_type default_indent_right  /* = 0 */
+  Area::size_type default_indent_right  /* = 0 */ ,
+  const char      *default_quote_char   /* = "" */
 )
 {
   char lb[80];
@@ -1541,6 +1545,8 @@ BlockFormat::BlockFormat(
   indent_left = Formatting::getInt(lb, default_indent_left);
   sprintf(lb, "%s.indent.right", item_name);
   indent_right = Formatting::getInt(lb, default_indent_right);
+  sprintf(lb, "%s.prefix", item_name);
+  quote_char = Formatting::getString(lb, default_quote_char);
 }
 
 Area::size_type

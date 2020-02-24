@@ -260,6 +260,26 @@ Area::operator>>=(size_type rs)
   return *this;
 }
 
+const Area &
+Area::operator>>=(const char *prefix)
+{
+  size_type plen = 0;
+  if (prefix != NULL) plen = strlen(prefix);
+
+  if (plen > 0) {
+    resize(width_ + plen, height_);
+    for (size_type y = 0; y < height_; y++) {
+      Cell *c = cells_[y];
+      memmove(c + plen, c, (width_ - plen) * sizeof(Cell));
+	  for (size_type x = 0; x < plen; x++) {
+        c[x].character = prefix[x];
+        c[x].attribute = Cell::NONE;
+      }
+    }
+  }
+  return *this;
+}
+
 unsigned int
 Area::utf_width()
 {
