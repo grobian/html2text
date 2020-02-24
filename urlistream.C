@@ -362,7 +362,7 @@ urlistream::open_error() const
 int
 urlistream::get()
 {
-  char ch;
+  unsigned char ch;
   int ret = ::read(fd_, &ch, 1);
   return (ret > 0 ? ch : -1);
 }
