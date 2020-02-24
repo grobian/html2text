@@ -122,14 +122,14 @@ create_lcs(
       "LEFT",   Area::LEFT,
       "CENTER", Area::CENTER,
       "RIGHT",  Area::RIGHT,
-      0
+      NULL
     );
     int row_valign = get_attribute(
       row.attributes.get(), "VALIGN", Area::MIDDLE,
       "TOP",    Area::LEFT,
       "MIDDLE", Area::MIDDLE,
       "BOTTOM", Area::BOTTOM,
-      0
+      NULL
     );
 
     const list<auto_ptr<TableCell> >           &cl(*row.cells);
@@ -158,14 +158,14 @@ create_lcs(
         "LEFT",   Area::LEFT,
         "CENTER", Area::CENTER,
         "RIGHT",  Area::RIGHT,
-        0
+        NULL
       );
       p->valign    = get_attribute(
         cell.attributes.get(), "VALIGN", row_valign,
         "TOP",    Area::TOP,
         "MIDDLE", Area::MIDDLE,
         "BOTTOM", Area::BOTTOM,
-        0
+        NULL
       );
       {
 	auto_ptr<Area> tmp(cell.format(
@@ -386,7 +386,7 @@ Table::format(Area::size_type w, int halign) const
     "LEFT",   Area::LEFT,
     "CENTER", Area::CENTER,
     "RIGHT",  Area::RIGHT,
-    0
+    NULL
   );
 
   // <TABLE>          => default => no border
