@@ -175,7 +175,7 @@ create_lcs(
           - (*number_of_columns_return - 1) * (column_spacing + 0),
           Area::LEFT // Yields better results than "p->halign"!
         ));
-	p->width = tmp.get() ? tmp->width() : 0;
+	p->width = tmp.get() ? tmp->utf_width() : 0;
       }
       p->minimized = false;
 
@@ -308,7 +308,7 @@ narrow_table(
 	left_of_column + old_column_width - 1,
 	Area::LEFT // Yields better results than "lc.halign"!
       ));
-      w = tmp->width();
+      w = tmp->utf_width();
       if (w >= left_of_column + old_column_width) lc.minimized = true;
     }
     if (w > left_of_column + new_column_width) {

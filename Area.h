@@ -81,6 +81,8 @@ public:
   Cell       &operator[](size_type x)       { return cells_[x]; }
   const Cell *cells() const { return cells_; }
 
+  unsigned int utf_length(size_type f, size_type t) const;
+
   void resize(size_type l);
   void enlarge(size_type l) { if (l > length_) resize(l); }
 
@@ -133,6 +135,8 @@ public:
   const Cell *operator[](size_type y) const { return cells_[y]; }
   Cell       *operator[](size_type y)       { return cells_[y]; }
   const Area &operator>>=(size_type rs);
+
+  unsigned int utf_width();
 
   void resize(size_type w, size_type h);
   void enlarge(size_type w, size_type h);

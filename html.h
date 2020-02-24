@@ -61,6 +61,11 @@
 
 /* ------------------------------------------------------------------------- */
 
+enum {ASCII, ISO8859, UTF8};
+#define USE_ISO8859 (use_encoding == ISO8859)
+#define USE_ASCII (use_encoding == ASCII)
+#define USE_UTF8 (use_encoding == UTF8)
+
 #define LATIN1_nbsp   160
 #define LATIN1_iexcl  161
 #define LATIN1_cent   162

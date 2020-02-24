@@ -36,9 +36,12 @@
 #include <iostream>
 
 #include "Area.h"
+#include "html.h"
 #include "string.h"
 
 #define LATIN1_nbsp 160
+
+extern int use_encoding;
 
 /* ------------------------------------------------------------------------- */
 
@@ -80,6 +83,27 @@ Line::~Line()
 }
 
 /* ------------------------------------------------------------------------- */
+
+/*           utf_length() and utf_width()       
+ *
+ *     Very simplified algorithm of calculating length of UTF-8
+ *   string. No check for errors. Counting only ASCII bytes and
+ *   leading bytes of UTF-8 multibyte sequences. All bytes like
+ *   10xxxxxx are dropped. If USE_UTF8 is false then returns
+ *   usual length.               --YS
+ */
+
+unsigned int
+Line::utf_length(size_type f, size_type t) const
+{
+  size_type m = (t < length_ ? t : length_);
+  size_type r = m - f;
+  if(USE_UTF8) {
+      for (int i = f; i < m; i++)
+        if((cells_[i].character & 0xc0) == 0x80) r--;
+  }
+  return r;
+}
 
 void
 Line::resize(size_type l)
@@ -234,6 +258,23 @@ Area::operator>>=(size_type rs)
     }
   }
   return *this;
+}
+
+unsigned int
+Area::utf_width()
+{
+  size_type r = width_;
+  if(USE_UTF8) { r = 0;
+    for (size_type yy = 0; yy < height_; yy++) {
+      size_type r1 = 0;
+      for (int i = width_ - 1; i >= 0; i--) {
+        if(!r1 && isspace(cells_[yy][i].character)) continue;
+        if((cells_[yy][i].character & 0xc0) != 0x80) r1++;
+      }
+      if(r < r1) r = r1;
+    }
+  }
+  return r;
 }
 
 void
@@ -439,7 +480,7 @@ operator<<(ostream &os, const Area &a)
       char c = p->character;
       char a = p->attribute;
 
-      if (c == (char) LATIN1_nbsp) c = ' ';
+      if (c == (char) LATIN1_nbsp && !USE_UTF8) c = ' ';
 
       if (a == Cell::NONE) {
         os << c;

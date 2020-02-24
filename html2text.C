@@ -148,9 +148,10 @@ text.\n\
   -o <file>      Redirect output into <file>\n\
   -nobs          Do not use backspaces for boldface and underlining\n\
   -ascii         Use plain ASCII for output instead of ISO-8859-1\n\
+  -utf8          Assume both terminal and input stream are in UTF-8 mode\n\
 ";
 
-int use_iso8859 = 1;
+int use_encoding = ISO8859;
 
 int
 main(int argc, char **argv)
@@ -199,7 +200,8 @@ main(int argc, char **argv)
     if (!strcmp(arg, "-width"        )) { width = atoi(argv[++i]);       } else
     if (!strcmp(arg, "-o"            )) { output_file_name = argv[++i];  } else
     if (!strcmp(arg, "-nobs"         )) { use_backspaces = false;        } else
-    if (!strcmp(arg, "-ascii"        )) { use_iso8859 = false;           } else
+    if (!strcmp(arg, "-ascii"        )) { use_encoding = ASCII;          } else
+    if (!strcmp(arg, "-utf8"         )) { use_encoding = UTF8;           } else
     {
       std::cerr
 	<< "Unrecognized command line option \""

@@ -1210,6 +1210,7 @@ make_up(const Line &line, Area::size_type w, int halign)
     }
 
     Line::size_type to = from + 1;
+    int to_from;
 
     Line::size_type lbp = (Line::size_type) -1; // "Last break position".
 
@@ -1238,18 +1239,20 @@ make_up(const Line &line, Area::size_type w, int halign)
         to++;
       }
 
-      if (to - from > w && lbp != (Area::size_type) -1) { to = lbp; break; }
+      if (line.utf_length(from,to) > w && lbp != (Area::size_type) -1) 
+                    { to = lbp; break; }
     }
 
+    to_from = line.utf_length(from,to);
     /*
      * Copy the "from...to" range from the "line" to the bottom of the "res"
      * Area.
      */
     Area::size_type x = 0;
     Area::size_type len = to - from;
-    if (halign == Area::LEFT || len >= w) { ;                   } else
-    if (halign == Area::CENTER)           { x += (w - len) / 2; } else
-    if (halign == Area::RIGHT)            { x += w - len;       }
+    if (halign == Area::LEFT || to_from >= w) { ;                   } else
+    if (halign == Area::CENTER)           { x += (w - to_from) / 2; } else
+    if (halign == Area::RIGHT)            { x += w - to_from;       }
     res->insert(line.cells() + from, len, x, res->height());
 
     /*
