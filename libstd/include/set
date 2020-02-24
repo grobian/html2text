@@ -1,0 +1,530 @@
+
+/* ------------------------------------------------------------------------- */
+
+/*
+ * Copyright (c) 1999
+ *      GMRS Software GmbH, Innsbrucker Ring 159, 81669 Munich, Germany.
+ *      http://www.gmrs.de
+ *      All rights reserved.
+ *      Author: Arno Unkrig (arno.unkrig@gmrs.de)
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *      This product includes software developed by GMRS Software GmbH.
+ * 4. The name of GMRS Software GmbH may not be used to endorse or promote
+ *    products derived from this software without specific prior written
+ *    permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY GMRS SOFTWARE GMBH ``AS IS'' AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL GMRS SOFTWARE GMBH BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+ * THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/* ------------------------------------------------------------------------- */
+
+#ifndef __set_INCLUDED__ /* { */
+#define __set_INCLUDED__
+
+/* ------------------------------------------------------------------------- */
+
+#ident "$Id: set,v 1.1 1999/10/26 10:57:37 arno Exp $"
+
+#include "../rb_tree.h"
+
+/* ------------------------------------------------------------------------- */
+
+template <class value_type> class set__node;
+template <class value_type> class set__iterator;
+template <class value_type> class set__const_iterator;
+template <class value_type> class set;
+template <class value_type> class multiset;
+
+template <class value_type>
+struct set__node : public rb_tree::node_type {
+  set__node(const value_type &v) : value(v) {
+  }
+//~set__node() {
+//}
+  value_type value;
+};
+
+template <class value_type>
+class set__iterator {
+public:
+  set__iterator() {
+  }
+  set__iterator(const set__iterator<value_type> &x) : node(x.node) {
+  }
+  value_type &operator*() const {
+    return ((set__node<value_type> *) node)->value;
+  }
+  value_type *operator->() const {
+    return &((set__node<value_type> *) node)->value;
+  }
+  bool operator==(const set__iterator<value_type> &x) const {
+    return node == x.node;
+  }
+  bool operator!=(const set__iterator<value_type> &x) const {
+    return node != x.node;
+  }
+  const set__iterator<value_type> &operator++() {          // pre-increment
+    node = rb_tree::successor(node); return *this;
+  }
+private:
+  set__iterator(rb_tree::node_type *n) : node(n) {
+  }
+  rb_tree::node_type *node;
+  friend set<value_type>;
+  friend multiset<value_type>;
+  friend set__const_iterator<value_type>;
+};
+
+template <class value_type>
+class set__const_iterator {
+public:
+  set__const_iterator() {
+  }
+  set__const_iterator(const set__const_iterator<value_type> &x) : node(x.node) {
+  }
+  set__const_iterator(const set__iterator<value_type> &x) : node(x.node) {
+  }
+  const value_type &operator*() const {
+    return ((const set__node<value_type> *) node)->value;
+  }
+  const value_type *operator->() const {
+    return &((const set__node<value_type> *) node)->value;
+  }
+  bool operator==(const set__const_iterator<value_type> &x) const {
+    return node == x.node;
+  }
+  bool operator!=(const set__const_iterator<value_type> &x) const {
+    return node != x.node;
+  }
+  const set__const_iterator<value_type> &operator++() {      // pre-increment
+    node = rb_tree::successor(node); return *this;
+  }
+private:
+  set__const_iterator(const rb_tree::node_type *n) : node(n) {
+  }
+  const rb_tree::node_type *node;
+
+  friend set<value_type>;
+  friend multiset<value_type>;
+};
+
+/* ------------------------------------------------------------------------- */
+
+template <class value_type>
+class set : public rb_tree {
+
+  // Public types
+
+public:
+  typedef set__iterator<value_type>       iterator;
+  typedef set__const_iterator<value_type> const_iterator;
+
+  // Private types
+
+private:
+  typedef set__node<value_type> node_type;
+
+  // Construct/Copy/Destroy
+
+public:
+  explicit set() : rb_tree() {
+  }
+  set(const_iterator i1, const_iterator i2) :
+    rb_tree(i1.node, i2.node, copy_node2) {
+  }
+  set(const set<value_type> &x) : rb_tree(x) {
+  }
+  const set<value_type> &operator=(const set<value_type> &x) {
+    rb_tree::operator=(x); return *this;
+  }
+  ~set() {
+    clear(delete_node2);
+  }
+
+  // Iterators
+
+  iterator begin() {
+    return iterator(rb_tree::begin());
+  }
+  const_iterator begin() const {
+    return const_iterator(rb_tree::begin());
+  }
+  iterator end() {
+    return iterator(rb_tree::end());
+  }
+  const_iterator end() const {
+    return const_iterator(rb_tree::end());
+  }
+//reverse_iterator rbegin();
+//const_reverse_iterator rbegin() const;
+//reverse_iterator rend();
+//const_reverse_iterator rend() const;
+
+  // Capacity
+
+//bool      empty()    const;  // Inherited from "rb_tree".
+//size_type size()     const;  // Inherited from "rb_tree".
+//size_type max_size() const;  // Inherited from "rb_tree".
+
+  // Modifiers
+
+  // Must not use "iterator", else CFRONT fails.
+  pair<set__iterator<value_type>, bool> insert(const value_type &x) {
+    if (rb_tree::find_any((value_pointer) &x) != rb_tree::end()) {
+      return pair<iterator, bool>(end(), false);
+    }
+    return pair<iterator, bool>(
+      iterator(rb_tree::insert(new node_type(x))),
+      true
+    );
+  }
+  iterator insert(iterator, const value_type &);
+  void insert(const_iterator from, const_iterator to) {
+    rb_tree::insert(from.node, to.node);
+  }
+  size_type erase(const value_type &x) {
+    return rb_tree::erase_one((value_pointer) &x);
+  }
+  iterator erase(iterator i) {
+    return iterator(rb_tree::erase(i.node));
+  }
+  iterator erase(iterator i1, iterator i2) {
+    return iterator(rb_tree::erase(i1.node, i2.node));
+  }
+  void swap(set<value_type> &x) {
+    rb_tree::swap((rb_tree &) x);
+  }
+//void clear();                // Inherited from "rb_tree".
+
+  // Set operations
+
+  iterator find(const value_type &x) {
+    return iterator(rb_tree::find_any((value_pointer) &x));
+  }
+  const_iterator find(const value_type &x) const {
+    return const_iterator(rb_tree::find_any((value_pointer) &x));
+  }
+  size_type count(const value_type &x) const {
+    return find_any((value_pointer) &x) != rb_tree::end();
+  }
+  iterator lower_bound(const value_type &x) {
+    return iterator(rb_tree::lower_bound((value_pointer) &x));
+  }
+  const_iterator lower_bound(const value_type &x) const {
+    return const_iterator(rb_tree::lower_bound((value_pointer) &x));
+  }
+  iterator upper_bound(const value_type &x) {
+    return iterator(rb_tree::upper_bound((value_pointer) &x));
+  }
+  const_iterator upper_bound(const value_type &x) const {
+    return const_iterator(rb_tree::upper_bound((value_pointer) &x));
+  }
+  // Must not use "pair<iterator, iterator>", else CFRONT fails
+  pair<
+    set__iterator<value_type>,
+    set__iterator<value_type>
+  > equal_range(const value_type &x) {
+    return pair<iterator, iterator>(lower_bound(x), upper_bound(x));
+  }
+  // Must not use "pair<const_iterator, const_iterator>", else CFRONT fails
+  pair<
+    set__const_iterator<value_type>,
+    set__const_iterator<value_type>
+  > equal_range(const value_type &x) const {
+    return pair<const_iterator, const_iterator>(
+      lower_bound(x),
+      upper_bound(x)
+    );
+  }
+
+  bool operator==(const set<value_type> &x) const {
+    return rb_tree::operator==((const rb_tree &) x);
+  }
+  bool operator<(const set<value_type> &x) const {
+    return rb_tree::operator<((const rb_tree &) x);
+  }
+
+  // Implementation of "rb_tree"'s virtual methods.
+
+private:
+  /*virtual*/ bool node_less_than(
+    const rb_tree::node_type *x,
+    const rb_tree::node_type *y
+  ) const {
+    return ((const node_type *) x)->value < ((const node_type *) y)->value;
+  }
+  /*virtual*/ bool node_less_than(
+    value_pointer            x,
+    const rb_tree::node_type *y
+  ) const {
+    return *(const value_type *) x < ((const node_type *) y)->value;
+  }
+  /*virtual*/ bool node_less_than(
+    const rb_tree::node_type *x,
+    value_pointer            y
+  ) const {
+    return ((const node_type *) x)->value < *(const value_type *) y;
+  }
+
+  /*virtual*/ rb_tree::node_type *copy_node(const rb_tree::node_type *n) const {
+    return new node_type(((const node_type *) n)->value);
+  }
+  /*virtual*/ void delete_node(rb_tree::node_type *n) const {
+    delete (node_type *) n;
+  }
+
+  typedef void (*value_printer)(ostream &, const value_type &);
+  /*virtual*/ void print_node_value(
+    const rb_tree::node_type &n,
+    ostream                  &os,
+    void                     *closure
+  ) const {
+    (*(value_printer *) closure)(os, ((const node_type &) n).value);
+  }
+  void print(ostream &os, value_printer np) const {
+    rb_tree::print(os, (void *) &np);
+  }
+  friend ostream &operator<<(ostream &, const set<value_type> &);
+
+  // Needed by "set(iter, iter)".
+  static rb_tree::node_type *copy_node2(const rb_tree::node_type *n) {
+    return new node_type(((const node_type *) n)->value);
+  }
+  // Needed by "~set()".
+  static void delete_node2(rb_tree::node_type *n) {
+    delete (node_type *) n;
+  }
+
+  friend set__iterator<value_type>;
+  friend set__const_iterator<value_type>;
+};
+
+/* ------------------------------------------------------------------------- */
+
+template <class value_type>
+class multiset : public rb_tree {
+
+  // Public types
+
+public:
+  typedef set__iterator<value_type>       iterator;
+  typedef set__const_iterator<value_type> const_iterator;
+
+  // Private types
+
+private:
+  typedef set__node<value_type> node_type;
+
+  // Construct/Copy/Destroy
+
+public:
+  explicit multiset() : rb_tree() {
+  }
+  multiset(const_iterator i1, const_iterator i2) :
+    rb_tree(i1.node, i2.node, copy_node2) {
+  }
+  multiset(const multiset<value_type> &x) : rb_tree(x) {
+  }
+  const multiset<value_type> &operator=(const multiset<value_type> &x) {
+    rb_tree::operator=(x); return *this;
+  }
+  ~multiset() {
+    clear(delete_node2);
+  }
+
+  // Iterators
+
+  iterator begin() {
+    return iterator((node_type *) rb_tree::begin());
+  }
+  const_iterator begin() const {
+    return const_iterator((const node_type *) rb_tree::begin());
+  }
+  iterator end() {
+    return iterator((node_type *) rb_tree::end());
+  }
+  const_iterator end() const {
+    return const_iterator((const node_type *) rb_tree::end());
+  }
+//reverse_iterator rbegin();
+//const_reverse_iterator rbegin() const;
+//reverse_iterator rend();
+//const_reverse_iterator rend() const;
+
+  // Capacity
+
+//bool      empty()    const;  // Inherited from "rb_tree".
+//size_type size()     const;  // Inherited from "rb_tree".
+//size_type max_size() const;  // Inherited from "rb_tree".
+
+  // Modifiers
+
+  iterator insert(const value_type &x) {
+    return iterator((node_type *) rb_tree::insert(new node_type(x)));
+  }
+//iterator insert(iterator, const value_type &);
+  void insert(const_iterator from, const_iterator to) {
+    rb_tree::insert(from.node, to.node);
+  }
+  size_type erase(const value_type &x) {
+    return rb_tree::erase_all((value_pointer) &x);
+  }
+  iterator erase(iterator i) {
+    return iterator(rb_tree::erase(i.node));
+  }
+  iterator erase(iterator i1, iterator i2) {
+    return iterator(rb_tree::erase(i1.node, i2.node));
+  }
+  void swap(multiset<value_type> &x) {
+    rb_tree::swap((rb_tree &) x);
+  }
+//void clear();                // Inherited from "rb_tree".
+
+  // Multiset operations
+
+  iterator find(const value_type &x) {
+    return iterator(rb_tree::find_first((value_pointer) &x));
+  }
+  const_iterator find(const value_type &x) const {
+    return const_iterator(rb_tree::find_first((value_pointer) &x));
+  }
+  size_type count(const value_type &x) const {
+    return rb_tree::count((value_pointer) &x);
+  }
+  iterator lower_bound(const value_type &x) {
+    return iterator(rb_tree::lower_bound((value_pointer) &x));
+  }
+  const_iterator lower_bound(const value_type &x) const {
+    return const_iterator(rb_tree::lower_bound((value_pointer) &x));
+  }
+  iterator upper_bound(const value_type &x) {
+    return iterator(rb_tree::upper_bound((value_pointer) &x));
+  }
+  const_iterator upper_bound(const value_type &x) const {
+    return const_iterator(rb_tree::upper_bound((value_pointer) &x));
+  }
+  // Must not use "pair<iterator, iterator>", else CFRONT fails
+  pair<
+    set__iterator<value_type>,
+    set__iterator<value_type>
+  > equal_range(const value_type &x) {
+    return pair<iterator, iterator >(lower_bound(x), upper_bound(x));
+  }
+  // Must not use "pair<const_iterator, const_iterator>", else CFRONT fails
+  pair<
+    set__const_iterator<value_type>,
+    set__const_iterator<value_type>
+  > equal_range(const value_type &x) const {
+    return pair<const_iterator, const_iterator>(lower_bound(x), upper_bound(x));
+  }
+
+  bool operator==(const multiset<value_type> &x) const {
+    return rb_tree::operator==((const rb_tree &) x);
+  }
+  bool operator<(const multiset<value_type> &x) const {
+    return rb_tree::operator<((const rb_tree &) x);
+  }
+
+  // Implementation of "rb_tree"'s virtual methods.
+
+private:
+  /*virtual*/ bool node_less_than(
+    const rb_tree::node_type *x,
+    const rb_tree::node_type *y
+  ) const {
+    return ((const node_type *) x)->value < ((const node_type *) y)->value;
+  }
+  /*virtual*/ bool node_less_than(
+    value_pointer            x,
+    const rb_tree::node_type *y
+  ) const {
+    return *(const value_type *) x < ((const node_type *) y)->value;
+  }
+  /*virtual*/ bool node_less_than(
+    const rb_tree::node_type *x,
+    value_pointer            y
+  ) const {
+    return ((const node_type *) x)->value < *(const value_type *) y;
+  }
+
+  /*virtual*/ rb_tree::node_type *copy_node(const rb_tree::node_type *n) const {
+    return new node_type(((const node_type *) n)->value);
+  }
+  /*virtual*/ void delete_node(rb_tree::node_type *n) const {
+    delete (node_type *) n;
+  }
+
+  typedef void (*value_printer)(ostream &, const value_type &);
+  /*virtual*/ void print_node_value(
+    const rb_tree::node_type &n,
+    ostream                  &os,
+    void                     *closure
+  ) const {
+    (*(value_printer *) closure)(os, ((const node_type &) n).value);
+  }
+  friend ostream &operator<<(ostream &, const set<value_type> &);
+
+  // Needed by "multiset(iter, iter)".
+  static rb_tree::node_type *copy_node2(const rb_tree::node_type *n) {
+    return new node_type(((const node_type *) n)->value);
+  }
+  // Needed by "~multiset()".
+  static void delete_node2(rb_tree::node_type *n) {
+    delete (node_type *) n;
+  }
+
+  friend set__iterator<value_type>;
+  friend set__const_iterator<value_type>;
+};
+
+/* ------------------------------------------------------------------------- */
+
+template<class value_type>
+inline void
+set__print_value(ostream &os, const value_type &value)
+{
+  os << value;
+}
+
+template<class value_type>
+inline ostream &
+operator<<(ostream &os, const set<value_type> &x)
+{
+  x.print(os, set__print_value);
+  return os;
+}
+
+template<class value_type>
+inline ostream &
+operator<<(ostream &os, const multiset<value_type> &x)
+{
+  x.print(os, set__print_value);
+  return os;
+}
+
+/* ------------------------------------------------------------------------- */
+
+#endif /* } */
+
+/* ------------------------------------------------------------------------- */
+

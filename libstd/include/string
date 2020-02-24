@@ -1,0 +1,267 @@
+
+/* ------------------------------------------------------------------------- */
+
+/*
+ * Copyright (c) 1999
+ *      GMRS Software GmbH, Innsbrucker Ring 159, 81669 Munich, Germany.
+ *      http://www.gmrs.de
+ *      All rights reserved.
+ *      Author: Arno Unkrig (arno.unkrig@gmrs.de)
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *      This product includes software developed by GMRS Software GmbH.
+ * 4. The name of GMRS Software GmbH may not be used to endorse or promote
+ *    products derived from this software without specific prior written
+ *    permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY GMRS SOFTWARE GMBH ``AS IS'' AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL GMRS SOFTWARE GMBH BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+ * THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/* ------------------------------------------------------------------------- */
+
+#ifndef __string_INCLUDED__ /* { */
+#define __string_INCLUDED__
+
+/* ------------------------------------------------------------------------- */
+
+#ident "$Id: string,v 1.11 1999/10/27 12:15:24 arno Exp $"
+
+#include <sys/types.h>   // For "size_t".
+
+#ifdef BOOL_DEFINITION
+BOOL_DEFINITION
+#undef BOOL_DEFINITION
+#endif
+
+/* ------------------------------------------------------------------------- */
+
+class istream;
+class ostream;
+
+/* ------------------------------------------------------------------------- */
+
+/*
+ * This is a simplified, but otherwise correct implementation of the "string"
+ * class as specified by the ANSI C++ library.
+ *
+ * Missing features:
+ * (1) "string" is not derived from "basic_string<char>".
+ * (2) "string::traits" is missing.
+ * (3) "string::Allocator" is missing ("string" uses "malloc()" instead).
+ * (4) Several "unimportant" methods are not implemented (but they are
+ *     "declared" in comments).
+ */
+
+/* ------------------------------------------------------------------------- */
+
+struct char_traits {
+  typedef char char_type;
+
+  static char eos() { return '\0'; }
+};
+
+/* ------------------------------------------------------------------------- */
+
+class string {
+
+public:
+
+  // "traits" and "Allocator" should be template parameters, but we hard-code
+  // them.
+  typedef char_traits traits;
+//typedef             Allocator;
+
+  // Types
+
+  typedef traits            traits_type;
+  typedef traits::char_type value_type;
+//typedef                   allocator_type;
+  typedef size_t            size_type;
+//typedef                   difference_type;
+  typedef char              &reference;
+  typedef const char        &const_reference;
+//typedef                   pointer;
+//typedef                   const_pointer;
+  typedef char              *iterator;
+  typedef const char        *const_iterator;
+  typedef char              *reverse_iterator;
+  typedef const char        *const_reverse_iterator;
+
+  static const size_type npos;
+
+  // Constructors/Destructors
+
+  string() : p(&null) {}
+  string(const string &);
+//string(const string &, size_type pos, size_type n = npos);
+  string(const char *, size_type n);
+  string(const char *);
+  string(size_type, char);
+//string(const_iterator, const_iterator);
+  ~string();
+
+  // Assignment operators
+
+  const string &operator=(const string &);
+  const string &operator=(const char *);
+  const string &operator=(char);
+
+  // Iterators
+
+  iterator       begin()       { return p; }
+  const_iterator begin() const { return p; }
+  iterator       end();
+  const_iterator end() const;
+
+  reverse_iterator       rbegin();
+  const_reverse_iterator rbegin() const;
+  reverse_iterator       rend()          { return p; }
+  const_reverse_iterator rend() const    { return p; }
+
+  // Capacity
+
+  size_type size() const;
+  size_type length() const;
+//size_type max_size() const;
+  void      resize(size_type n, char c = '\0');
+//size_type capacity() const;
+//void      reserve(size_type);
+  bool      empty() const { return *p == '\0'; }
+
+  // Element access
+
+  char            operator[](size_type pos) const { return p[pos]; }
+  reference       operator[](size_type pos)       { return p[pos]; }
+  const_reference at(size_type pos) const         { return p[pos]; }
+  reference       at(size_type pos)               { return p[pos]; }
+
+  // Modifiers
+
+//const string &operator+=(const string &);
+  const string &operator+=(const char *);
+  const string &operator+=(char);
+
+//string       &append(const string &);
+//string       &append(const string &, size_type, size_type);
+//string       &append(const char *, size_type);
+//string       &append(const char *);
+  string       &append(size_type, char);
+//string       &append(const_iterator, const_iterator);
+
+//string       &assign(const string &s);
+  string       &assign(const string &s, size_type pos, size_type n);
+//string       &assign(const char *s, size_type n);
+//string       &assign(const char *s);
+//string       &assign(size_type n, char c);
+//string       &assign(string::const_iterator from, string::const_iterator to);
+
+//string       &insert(size_type, const string &);
+//string       &insert(size_type, const string &, size_type, size_type);
+//string       &insert(size_type, const char *, size_type);
+//string       &insert(size_type, const char *);
+  string       &insert(size_type pos, size_type n, char c);
+//iterator     insert(iterator, char = '\0');
+//void         insert(iterator, size_type, char);
+//void         insert(iterator, const_iterator, const_iterator);
+
+  string       &erase(size_type pos = 0, size_type n = npos);
+//iterator     erase(iterator);
+//iterator     erase(iterator, iterator);
+
+//string       &replace(size_type pos, size_type n1, const string &s);
+  string       &replace(
+    size_type pos, size_type n1,
+    const string &s, size_type pos2, size_type n2
+  );
+  string       &replace(
+    size_type pos, size_type n1,
+    const char *s, size_type n2
+  );
+  string       &replace(size_type pos, size_type n1, const char *);
+  string       &replace(size_type pos, size_type n1, size_type n2, char);
+//string       &replace(...);
+
+//size_type   copy(char *, size_type, size_type = 0);
+//void        swap(string &);
+
+  // String operations
+
+  const char           *c_str() const { return p; }
+  const char           *data() const { return p; }
+//const allocator_type &get_allocator() const;
+
+//size_type            find(...) const;
+//size_type            rfind(...) const;
+//size_type            find_first_of(...) const;
+//size_type            find_last_of(...) const;
+//size_type            find_first_not_of(...) const;
+//size_type            find_last_not_of(...) const;
+
+//string               substr(size_type pos = 0, size_type n = npos) const;
+//int                  compare(...) const;
+
+private:
+  friend string operator+(const string &, const string &);
+  friend string operator+(const char *,   const string &);
+  friend string operator+(char,           const string &);
+  friend string operator+(const string &, const char *  );
+  friend string operator+(const string &, char          );
+
+  friend bool operator==(const string &, const string &);
+  friend bool operator==(const char *,   const string &);
+  friend bool operator==(const string &, const char *  );
+
+  friend bool operator<(const string &, const string &);
+  friend bool operator<(const char *,   const string &);
+  friend bool operator<(const string &, const char *  );
+
+  friend bool operator!=(const string &, const string &);
+  friend bool operator!=(const char *,   const string &);
+  friend bool operator!=(const string &, const char *  );
+
+  friend bool operator>(const string &, const string &);
+  friend bool operator>(const char *,   const string &);
+  friend bool operator>(const string &, const char *  );
+
+  friend bool operator<=(const string &, const string &);
+  friend bool operator<=(const char *,   const string &);
+  friend bool operator<=(const string &, const char *  );
+
+  friend bool operator>=(const string &, const string &);
+  friend bool operator>=(const char *,   const string &);
+  friend bool operator>=(const string &, const char *  );
+
+//friend istream &operator>>(istream &, string &);
+  friend ostream &operator<<(ostream &, const string &);
+  friend istream &getline(istream &, string &, char delim = '\n');
+
+  string(size_type);  // Create an uninitialzed string / internal use only.
+  char        *p;     // Points to a null-terminated string.
+  static char null;   // For a fast default constructor.
+};
+
+/* ------------------------------------------------------------------------- */
+
+#endif /* } */
+
+/* ------------------------------------------------------------------------- */
+

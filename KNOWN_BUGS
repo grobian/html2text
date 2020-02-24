@@ -1,0 +1,38 @@
+## KNOWN_BUGS - Problems with html2text          Sat Jul  5 12:40:24 CEST 2003
+## ===========================================================================
+
+# ( 0 )=======================================================================
+# Feature requests
+
+# ( 0.1 )---------------------------------------------------------------------
+# Make HTTP implementation optional?
+
+A corresponding compile-time option would enhance portability (no socket()
+needed). Moreover, html2text's HTTP implementation is rather rudimentary, so
+it maybe could be eliminated completely. But I don't know how many users
+prefer to have html2text to fetch the files by itself instead of using it
+within a pipe...
+
+This however would lead to a complete re-write of the configure-script,
+because we don't have any compile-time options yet.
+
+
+# ( 1 )=======================================================================
+# Bugs of minor severity
+#
+# The package fails to perform correctly on some conditions, or in some
+# systems, or fails to comply current policy documents.
+
+# ( 1.1 )---------------------------------------------------------------------
+# When parsing much nested TABLEs, html2text will run out of control.
+
+This problem occurs on very complex tables with more than about 25 nested
+TABLE elements, because the runtime increases exponentially with each nested
+table.
+
+Sorry, no fix for this within sight.
+
+
+# ============================================================================
+
+Martin Bayer <mbayer@zedat.fu-berlin.de>

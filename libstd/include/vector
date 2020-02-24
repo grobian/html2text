@@ -1,0 +1,295 @@
+
+/* ------------------------------------------------------------------------- */
+
+/*
+ * Copyright (c) 1999
+ *      GMRS Software GmbH, Innsbrucker Ring 159, 81669 Munich, Germany.
+ *      http://www.gmrs.de
+ *      All rights reserved.
+ *      Author: Arno Unkrig (arno.unkrig@gmrs.de)
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *      This product includes software developed by GMRS Software GmbH.
+ * 4. The name of GMRS Software GmbH may not be used to endorse or promote
+ *    products derived from this software without specific prior written
+ *    permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY GMRS SOFTWARE GMBH ``AS IS'' AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL GMRS SOFTWARE GMBH BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+ * THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/* ------------------------------------------------------------------------- */
+
+#ifndef __vector_INCLUDED__ /* { */
+#define __vector_INCLUDED__
+
+/* ------------------------------------------------------------------------- */
+
+#ident "$Id: vector,v 1.2 1999/11/09 19:55:18 arno Exp $"
+
+#include <new>
+#include "../vector_base.h"
+
+/* ------------------------------------------------------------------------- */
+
+template <class value_type>
+class vector : public vector_base {
+
+  // Public types
+
+public:
+//typedef                  value_type;
+//typedef                  allocator_type;
+  typedef value_type       &reference;
+  typedef const value_type &const_reference;
+  typedef value_type       *iterator;
+  typedef const value_type *const_iterator;
+//typedef                  size_type;     // Inherited from "vector_base"
+//typedef                  difference_type;
+//typedef                  reverse_iterator;
+//typedef                  const_reverse_iterator;
+
+private:
+  typedef void (*value_printer)(ostream &, const value_type &);
+
+  // Construct/Copy/Destroy
+
+public:
+  explicit vector() : vector_base() {}
+  explicit vector(size_type n) :
+    vector_base(sizeof(value_type), n, construct_value2) {}
+  vector(size_type n, const value_type &value) :
+    vector_base(sizeof(value_type), n, construct_value2, (void *) &value) {}
+  vector(const vector<value_type> &x) :
+    vector_base(
+      sizeof(value_type),
+      construct_value2,
+      (char *) x.begin(),
+      (char *) x.end()
+    ) {}
+  vector(const_iterator from, const_iterator to) :
+    vector_base(
+      sizeof(value_type),
+      construct_value2,
+      (char *) from,
+      (char *) to
+    ) {}
+  ~vector() { vector_base::clear(sizeof(value_type), destroy_value2); }
+  const vector<value_type> &operator=(const vector<value_type> &x) {
+    assign(x.begin(), x.end());
+    return *this;
+  }
+  void assign(const_iterator from, const_iterator to) {
+    vector_base::assign(sizeof(value_type), (char *) from, (char *) to);
+  }
+  void assign(size_type n) {
+    vector_base::assign(sizeof(value_type), n);
+  }
+  void assign(size_type n, const value_type &x) {
+    vector_base::assign(sizeof(value_type), n, (void *) &x);
+  }
+//allocator_type get_allocator() const;
+
+  iterator begin() { return (iterator) p; }
+  const_iterator begin() const { return (const_iterator) p; }
+  iterator end() { return (iterator) p + size1; }
+  const_iterator end() const { return (const_iterator) p + size1; }
+//reverse_iterator rbegin();
+//const_reverse_iterator rbegin() const;
+//reverse_iterator rend();
+//const_reverse_iterator rend() const;
+
+  // Capacity
+
+//size_type size() const;        // Inherited from "vector_base".
+//size_type max_size() const;    // Inherited from "vector_base".
+  void resize(size_type n) { vector_base::resize(sizeof(value_type), n); }
+  void resize(size_type n, const value_type &v) {
+    vector_base::resize(sizeof(value_type), n, (void *) &v);
+  }
+//size_type capacity() const;    // Inherited from "vector_base".
+//bool empty() const;            // Inherited from "vector_base".
+  void reserve(size_type n) { vector_base::reserve(sizeof(value_type), n); }
+
+  // Element access
+
+  reference operator[](size_type i) { return ((iterator) p)[i]; }
+  const_reference operator[](size_type i) const {
+    return ((const_iterator) p)[i];
+  }
+  reference at(size_type i) { return ((iterator) p)[i]; }
+  const_reference at(size_type i) const { return ((const_iterator) p)[i]; }
+  reference front() { return *(iterator) p; }
+  const_reference front() const { return *(const_iterator) p; }
+  reference back() { return *((iterator) p + size1 - 1); }
+  const_reference back() const { return *((const_iterator) p + size1 - 1); }
+
+  // Modifiers
+
+  void push_back(const value_type &v) {
+    vector_base::push_back(sizeof(value_type), (void *) &v);
+  }
+  void pop_back() { vector_base::pop_back(sizeof(value_type)); }
+  iterator insert(iterator pos) {
+    return (iterator) vector_base::insert(sizeof(value_type), (char *) pos);
+  }
+  iterator insert(iterator pos, const value_type &v) {
+    return (iterator) vector_base::insert(
+      sizeof(value_type),
+      (char *) pos,
+      (void *) &v
+    );
+  }
+  void insert(iterator pos, size_type n, const value_type &v) {
+    vector_base::insert(sizeof(value_type), (char *) pos, n, (void *) &v);
+  }
+  void insert(iterator pos, const_iterator from, const_iterator to) {
+    vector_base::insert(
+      sizeof(value_type),
+      (char *) pos,
+      (char *) from, (char *) to
+    );
+  }
+  iterator erase(iterator pos) {
+    return (iterator) vector_base::erase(sizeof(value_type), (char *) pos);
+  }
+  iterator erase(iterator from, iterator to) {
+    return (iterator) vector_base::erase(
+      sizeof(value_type),
+      (char *) from,
+      (char *) to
+    );
+  }
+  void swap(vector<value_type> &x) { vector_base::swap(x); }
+  void clear() { vector_base::clear(sizeof(value_type)); }
+
+private:
+
+  /*
+   * Implement "vector_base"'s pure virtual methods.
+   */
+  /*virtual*/ void construct_value(void *that) { new(that) value_type; }
+  /*virtual*/ void construct_value(void *that, void *v) {
+    new(that) value_type(*(const value_type *) v);
+  }
+  typedef value_type xxxx;
+  /*virtual*/ void destruct_value(void *that) {
+    ((value_type *) that)->~xxxx();
+  }
+  /*virtual*/ void assign_value(void *to) {
+    *(value_type *) to = value_type();
+  }
+  /*virtual*/ void assign_value(void *to, void *from) {
+    *(value_type *) to = *(value_type *) from;
+  }
+  /*virtual*/ void print_value(ostream &os, void *v, void *closure) const {
+    (*(value_printer *) closure)(os, *(const value_type *) v);
+  }
+
+  /*
+   * Define some static helpers that are needed during construction and
+   * destruction.
+   */
+  static void construct_value2(void *that) { new(that) value_type; }
+  static void construct_value2(void *that, void *v) {
+    new(that) value_type(*(const value_type *) v);
+  }
+  static void destroy_value2(void *that) {
+    ((value_type *) that)->~xxxx();
+  }
+
+  friend bool operator==(
+    const vector<value_type> &x,
+    const vector<value_type> &y
+  );
+  friend bool operator<(
+    const vector<value_type> &x,
+    const vector<value_type> &y
+  );
+
+  void print(ostream &os, value_printer vp) const {
+    vector_base::print(sizeof(value_type), os, (void *) &vp);
+  }
+  friend ostream &operator<<(ostream &, const vector<value_type> &);
+};
+
+/* ------------------------------------------------------------------------- */
+
+template<class value_type>
+inline bool
+vector__value_equals(const value_type *x, const value_type *y)
+{
+  return *x == *y;
+}
+
+template<class value_type>
+inline bool
+operator==(const vector<value_type> &x, const vector<value_type> &y) {
+  if (x.size() != x.size()) return false;
+  return x.equals(sizeof(value_type), y, (
+    (bool (*)(void *, void *))
+    (bool (*)(const value_type *, const value_type *))
+    vector__value_equals
+  ));
+}
+
+/* ------------------------------------------------------------------------- */
+
+template<class value_type>
+inline bool
+vector__value_less_than(const value_type *x, const value_type *y)
+{
+  return *x < *y;
+}
+
+template<class value_type>
+inline bool
+operator<(const vector<value_type> &x, const vector<value_type> &y) {
+  return x.less_than(sizeof(value_type), y, (
+    (bool (*)(void *, void *))
+    (bool (*)(const value_type *, const value_type *))
+    vector__value_less_than
+  ));
+}
+
+/* ------------------------------------------------------------------------- */
+
+template<class value_type>
+inline void
+vector__print_value(ostream &os, const value_type &value)
+{
+  os << value;
+}
+
+template<class value_type>
+inline ostream &
+operator<<(ostream &os, const vector<value_type> &x)
+{
+  x.print(os, vector__print_value);
+  return os;
+}
+
+/* ------------------------------------------------------------------------- */
+
+#endif /* } */
+
+/* ------------------------------------------------------------------------- */
+
