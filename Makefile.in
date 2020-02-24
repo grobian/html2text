@@ -63,8 +63,8 @@ default : all
 
 all : html2text
 	@echo ;
-	@echo 'Compilation completed. You may now move "html2text", "html2text.1.gz"';
-	@echo 'and "html2textrc.5.gz" to their installation directories (e.g.';
+	@echo 'Compilation completed. You may now move "html2text", "html2text.1"';
+	@echo 'and "html2textrc.5" to their installation directories (e.g.';
 	@echo '"/usr/local/bin", "/usr/local/man/man1" and "/usr/local/man/man5").';
 	@echo
 
