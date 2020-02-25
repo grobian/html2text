@@ -1,0 +1,5 @@
+.gitignore
+*.o
+html2text
+Makefile
+Dependencies
