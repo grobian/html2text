@@ -166,13 +166,18 @@ main(int argc, char **argv)
 
 	if (argc == 2 && !strcmp(argv[1], "-version")) {
 		std::cout
-			<< "This is html2text, version " stringify(VERSION) << std::endl
+			<< "This is html2text, version " stringify(VERSION)
+			<< " a fork of 1.3.2a" << std::endl
 			<< std::endl
-			<< "The latest version can be found at http://userpage.fu-berlin.de/~mbayer/tools/" << std::endl
+			<< "The latest version can be found at "
+			<< "https://github.com/grobian/html2text" << std::endl
 			<< std::endl
-			<< "This program is distributed in the hope that it will be useful, but WITHOUT" << std::endl
-			<< "ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS" << std::endl
-			<< "FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details." << std::endl
+			<< "This program is distributed in the hope that it will "
+			<< "be useful, but WITHOUT" << std::endl
+			<< "ANY WARRANTY; without even the implied warranty of "
+			<< "MERCHANTABILITY or FITNESS" << std::endl
+			<< "FOR A PARTICULAR PURPOSE. See the GNU General Public "
+			<< "License for more details." << std::endl
 			<< std::endl;
 		exit(0);
 	}
