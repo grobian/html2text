@@ -210,12 +210,10 @@ EOF
 if $CXX -c $tmp_file.C 2>/dev/null; then
   LIBSTDCXX_INCLUDES="";
   LIBSTDCXX_LIBS="";
-  $echo 'works; no need to make "./libstd"';
+  $echo 'works';
 else
-  LIBSTDCXX_INCLUDES='-Ilibstd/include';
-  LIBSTDCXX_LIBS='libstd/libstd.a';
-  echo 'not available or not working; use "./libstd"';
-  makedirs="$makedirs ./libstd";
+  $echo 'Error: could not compile C++ program';
+  exit 1;
 fi;
 
 #
