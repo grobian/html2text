@@ -19,7 +19,7 @@
 # Tue Nov 11 21:30:26 CET 2003
 
 
-echo='/bin/echo -e'
+echo=echo
 
 rm -rf configure-tmp || exit 1;
 mkdir configure-tmp || exit 1;
