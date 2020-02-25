@@ -52,10 +52,10 @@ CXXFLAGS  = $(CPPFLAGS) $(DEBUG)
 LDFLAGS   = $(DEBUG)
 LOADLIBES = $(LIBSTDCXX_LIBS) $(SOCKET_LIBRARIES)
 
-.SUFFIXES : .C .o
+.SUFFIXES : .cpp .o
 
-.C.o :
-	$(CXX) -c $(CXXFLAGS) $*.C
+.cpp.o :
+	$(CXX) -c $(CXXFLAGS) $*.cpp
 
 # -----------------------------------------------------------------------------
 
@@ -76,12 +76,12 @@ html2text : $(OBJS) $(LIBSTDCXX_LIBS)
 # -----------------------------------------------------------------------------
 
 # Since it is very unlikely that bison++-2.2 is installed (available on
-# html2text's homepage), HTMLParser.h and HTMLParser.C are only built when
+# html2text's homepage), HTMLParser.h and HTMLParser.cpp are only built when
 # 'make bison-local' is issued.
 
 bison-local :
 	cmp -s HTMLParser.h HTMLParser.k || cp HTMLParser.k HTMLParser.h;
-	$(BISONXX) $(YFLAGS) -o HTMLParser.C -d -h HTMLParser.k HTMLParser.y
+	$(BISONXX) $(YFLAGS) -o HTMLParser.cpp -d -h HTMLParser.k HTMLParser.y
 
 # -----------------------------------------------------------------------------
 
@@ -107,7 +107,7 @@ local-clobber : local-clean
 depend : local-depend
 local-depend : HTMLParser.h
 	@>Dependencies
-	makedepend -f Dependencies $(CPPFLAGS) $(MAKEDEPEND_INCLUDES) *.C
+	makedepend -f Dependencies $(CPPFLAGS) $(MAKEDEPEND_INCLUDES) *.cpp
 	@rm -f Dependencies.bak
 
 # -----------------------------------------------------------------------------
