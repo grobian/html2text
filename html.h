@@ -51,7 +51,7 @@
 #  define auto_ptr broken_auto_ptr
 #  include <memory>
 #  undef auto_ptr
-#  include "libstd/include/auto_ptr.h"
+#  include "auto_ptr.h"
 #else /* } { */
 #  include <memory>
 #endif /* } */

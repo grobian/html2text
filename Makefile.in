@@ -73,9 +73,6 @@ OBJS = html2text.o html.o HTMLControl.o HTMLParser.o Area.o format.o sgml.o tabl
 html2text : $(OBJS) $(LIBSTDCXX_LIBS)
 	$(CXX) $(LDFLAGS) $(OBJS) $(LOADLIBES) $(LDLIBS) -o $@
 
-libstd/libstd.a :
-	cd libstd && $(MAKE)
-
 # -----------------------------------------------------------------------------
 
 # Since it is very unlikely that bison++-2.2 is installed (available on
@@ -98,21 +95,6 @@ install :
 	$(INSTALLER) -p -m 644 CHANGES COPYING CREDITS KNOWN_BUGS README RELEASE_NOTES TODO $(DOCDIR)
 
 # -----------------------------------------------------------------------------
-
-SUBDIRS = libstd
-
-# "./configure" creates "Makefile"s only in the subdirectories that need to
-# be built, so we check for the existance of these "Makefile".
-clean clobber depend :
-	@for i in $(SUBDIRS); do \
-	  if test -r $$i/Makefile; then \
-	    ( \
-	      cd $$i && echo "*** make $@ in `pwd`" && $(MAKE) $@ || \
-	      { echo "*** make $@ error in `pwd`" && false; } \
-	    ) || exit 1; \
-	    echo "*** Back in `pwd`"; \
-	  fi; \
-	done;
 
 clean : local-clean
 local-clean :

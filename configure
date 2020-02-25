@@ -246,7 +246,7 @@ EOF
 if eval "$CXX -c $LIBSTDCXX_INCLUDES $EXPLICIT $BOOL_DEFINITION $tmp_file.C" 2>/dev/null; then
   $echo 'defined in <memory>, good';
 else
-  $echo 'not defined or not working, use "./libstd/include/auto_ptr.h"';
+  $echo 'not defined or not working, use "auto_ptr.h"';
   AUTO_PTR_BROKEN="-DAUTO_PTR_BROKEN";
 fi;
 
