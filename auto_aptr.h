@@ -1,5 +1,5 @@
 
- /***************************************************************************/
+/***************************************************************************/
 
 /*
  * Portions Copyright (c) 1999 GMRS Software GmbH
@@ -15,7 +15,7 @@
  * products derived from this software without specific prior written
  * permission.
  */
- 
+
 /* This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -27,15 +27,15 @@
  * GNU General Public License in the file COPYING for more details.
  */
 
- /***************************************************************************/
+/***************************************************************************/
 
 /*
  * Changes to version 1.2.2 were made by Martin Bayer <mbayer@zedat.fu-berlin.de>
  * Dates and reasons of modifications:
  * Thu Oct  4 21:29:40 CEST 2001: ported to g++ 3.0
  */
-  
- /***************************************************************************/
+
+/***************************************************************************/
 
 
 #ifndef __auto_aptr_h_INCLUDED__ /* { */
@@ -60,34 +60,66 @@
 
 template <class T>
 class auto_aptr {
-
 public:
 
-  // Constructor/copy/destroy
+// Constructor/copy/destroy
 
-  auto_aptr() : p(0) {}
-  auto_aptr(T *x) : p(x) {}
-  auto_aptr(const auto_aptr<T> &x) : p(x.p) { ((auto_aptr<T> *) &x)->p = 0; }
-  void operator=(const auto_aptr<T> &x)
-  { delete[] p; p = x.p; ((auto_aptr<T> *) &x)->p = 0; }
-  // Extension: "operator=(T *)" is identical to "auto_aptr::reset(T *)".
-  void operator=(T *x) { delete[] p; p = x; }
-  ~auto_aptr() { delete[] p; }
+auto_aptr() : p(0)
+{}
+auto_aptr(T *x) : p(x)
+{}
+auto_aptr(const auto_aptr<T> &x) : p(x.p)
+{
+	((auto_aptr<T> *) &x)->p = 0;
+}
+void operator=(const auto_aptr<T> &x)
+{
+	delete[] p;
+	p = x.p;
+	((auto_aptr<T> *) &x)->p = 0;
+}
+// Extension: "operator=(T *)" is identical to "auto_aptr::reset(T *)".
+void operator=(T *x)
+{
+	delete[] p;
+	p = x;
+}
+~auto_aptr()
+{
+	delete[] p;
+}
 
-  // Members
+// Members
 
-  T    &operator[](size_t idx) const { if (!p) abort(); return p[idx]; }
-  T    *get() const        { return (T *) p; }
-  T    *release()          { T *tmp = p; p = 0; return tmp; }
-  void reset(T *x = 0)     { delete[] p; p = x; }
+T    &operator[](size_t idx) const
+{
+	if (!p)
+		abort();
+	return p[idx];
+}
+T    *get() const
+{
+	return (T *) p;
+}
+T    *release()
+{
+	T *tmp = p;
+	p = 0;
+	return tmp;
+}
+void reset(T *x = 0)
+{
+	delete[] p;
+	p = x;
+}
 
-  // These would make a nice extension, but are not provided by many other
-  // implementations.
+// These would make a nice extension, but are not provided by many other
+// implementations.
 //operator const void *() const { return p; }
 //int operator!() const { return p == 0; }
 
 private:
-  T *p;
+T *p;
 };
 
 /* ------------------------------------------------------------------------- */

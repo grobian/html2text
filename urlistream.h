@@ -1,5 +1,5 @@
 
- /***************************************************************************/
+/***************************************************************************/
 
 /*
  * Portions Copyright (c) 1999 GMRS Software GmbH
@@ -8,7 +8,7 @@
  *
  * Author: Arno Unkrig <arno@unkrig.de>
  */
- 
+
 /* This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -20,7 +20,7 @@
  * GNU General Public License in the file COPYING for more details.
  */
 
- /***************************************************************************/
+/***************************************************************************/
 
 /*
  * Changes to version 1.2.2 were made by Martin Bayer <mbayer@zedat.fu-berlin.de>
@@ -30,8 +30,8 @@
  * Wed Jul  2 22:08:05 CEST 2003: ported to g++ 3.3
  * Tue Nov 11 21:11:51 CET 2003: fd_ might be uninitialized
  */
-  
- /***************************************************************************/
+
+/***************************************************************************/
 
 
 #ifndef __urlistream_h_INCLUDED__ /* { */
@@ -52,39 +52,53 @@ using std::string;
  * of a file name.
  */
 class urlistream /* : public ifstream */ {
-
 public:
-  enum { default_timeout = 10000 };
+enum {
+	default_timeout = 10000
+};
 
-  urlistream() : open_error_(0), fd_(-1) {}
-  urlistream(
-    const char *url,
-    int        timeout = default_timeout   // Milliseconds
-  ) : open_error_(0), fd_(-1) { open(url, timeout); }
-  urlistream(
-    const string &url,
-    int          timeout = default_timeout   // Milliseconds
-  ) : open_error_(0), fd_(-1) { open(url, timeout); }
+urlistream() : open_error_(0), fd_(-1)
+{}
+urlistream(
+	const char *url,
+	int timeout = default_timeout          // Milliseconds
+	) : open_error_(0), fd_(-1)
+{
+	open(url, timeout);
+}
+urlistream(
+	const string &url,
+	int timeout = default_timeout            // Milliseconds
+	) : open_error_(0), fd_(-1)
+{
+	open(url, timeout);
+}
 
-  void open(
-    const char *url,
-    int        timeout = default_timeout   // Milliseconds
-  );
-  void open(
-    const string &url,
-    int          timeout = default_timeout   // Milliseconds
-  );
-  int is_open() const { return (fd_ > 0); }
-  void close() { ::close(fd_); }
-  const char *open_error() const;
-  int get();
+void open(
+	const char *url,
+	int timeout = default_timeout          // Milliseconds
+	);
+void open(
+	const string &url,
+	int timeout = default_timeout            // Milliseconds
+	);
+int is_open() const
+{
+	return fd_ > 0;
+}
+void close()
+{
+	::close(fd_);
+}
+const char *open_error() const;
+int get();
 
 private:
-  void http_open(const char *address, int timeout);
-  void file_open(const char *file_name);
+void http_open(const char *address, int timeout);
+void file_open(const char *file_name);
 
-  const char *open_error_;
-  int fd_;
+const char *open_error_;
+int fd_;
 };
 
 /* ------------------------------------------------------------------------- */

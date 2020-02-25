@@ -1,5 +1,5 @@
 
- /***************************************************************************/
+/***************************************************************************/
 
 /*
  * Portions Copyright (c) 1999 GMRS Software GmbH
@@ -15,7 +15,7 @@
  * products derived from this software without specific prior written
  * permission.
  */
- 
+
 /* This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -27,15 +27,15 @@
  * GNU General Public License in the file COPYING for more details.
  */
 
- /***************************************************************************/
+/***************************************************************************/
 
 /*
  * Changes to version 1.2.2 were made by Martin Bayer <mbayer@zedat.fu-berlin.de>
  * Dates and reasons of modifications:
  * Thu Oct  4 21:31:58 CEST 2001: ported to g++ 3.0
  */
-  
- /***************************************************************************/
+
+/***************************************************************************/
 
 
 #ifndef __cmp_nocase_h_INCLUDED__ /* { */
@@ -61,13 +61,21 @@ extern int _cmp_nocase(const char *s1, size_t l1, const char *s2, size_t l2);
 
 // -1: s1 < s2; 0: s1 == s2, 1: s1 > s2
 inline int cmp_nocase(const string &s1, const string &s2)
-      { return _cmp_nocase(s1.data(), s1.length(), s2.data(), s2.length()); }
+{
+	return _cmp_nocase(s1.data(), s1.length(), s2.data(), s2.length());
+}
 inline int cmp_nocase(const char   *s1, const string &s2)
-      { return _cmp_nocase(s1, strlen(s1), s2.data(), s2.length()); }
+{
+	return _cmp_nocase(s1, strlen(s1), s2.data(), s2.length());
+}
 inline int cmp_nocase(const string &s1, const char   *s2)
-      { return _cmp_nocase(s1.data(), s1.length(), s2, strlen(s2)); }
+{
+	return _cmp_nocase(s1.data(), s1.length(), s2, strlen(s2));
+}
 inline int cmp_nocase(const char   *s1, const char   *s2)
-      { return _cmp_nocase(s1, strlen(s1), s2, strlen(s2)); }
+{
+	return _cmp_nocase(s1, strlen(s1), s2, strlen(s2));
+}
 
 /* ------------------------------------------------------------------------- */
 

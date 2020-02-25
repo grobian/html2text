@@ -1,5 +1,5 @@
 
- /***************************************************************************/
+/***************************************************************************/
 
 /*
  * Portions Copyright (c) 1999 GMRS Software GmbH
@@ -8,7 +8,7 @@
  *
  * Author: Arno Unkrig <arno@unkrig.de>
  */
- 
+
 /* This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -20,7 +20,7 @@
  * GNU General Public License in the file COPYING for more details.
  */
 
- /***************************************************************************/
+/***************************************************************************/
 
 /*
  * Changes to version 1.2.2 were made by Martin Bayer <mbayer@zedat.fu-berlin.de>
@@ -29,8 +29,8 @@
  * Thu Oct  4 21:36:51 CEST 2001: ported to g++ 3.0
  * Wed Jul  2 22:05:32 CEST 2003: ported to g++ 3.3
  */
-  
- /***************************************************************************/
+
+/***************************************************************************/
 
 
 #ifndef __format_h_INCLUDED__ /* { */
@@ -50,21 +50,20 @@ using std::istream;
 /* ------------------------------------------------------------------------- */
 
 class Formatting {
-
 public:
-  static void           setProperty(const char *key, const char *value);
-  static void           loadProperties(istream &is);
+static void           setProperty(const char *key, const char *value);
+static void           loadProperties(istream &is);
 
-  static const char     *getString(const char *key, const char *dflt);
+static const char     *getString(const char *key, const char *dflt);
 // neue Methode fuer leere Attribute - Johannes Geiger
-  static const char     *getString(const char *key);
-  static vector<string> *getStringVector(const char *key, const char *dflt);
-  static int            getInt(const char *key, int dflt);
-  static vector<int> *  getIntVector(const char *key, const char *dflt);
-  static char           getAttributes(const char *key, char dflt);
+static const char     *getString(const char *key);
+static vector<string> *getStringVector(const char *key, const char *dflt);
+static int            getInt(const char *key, int dflt);
+static vector<int> *  getIntVector(const char *key, const char *dflt);
+static char           getAttributes(const char *key, char dflt);
 
 private:
-  Formatting();    // Do not instantiate me!
+Formatting();      // Do not instantiate me!
 };
 
 /* ------------------------------------------------------------------------- */
