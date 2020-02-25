@@ -436,12 +436,14 @@ replace_sgml_entities(string *s)
           j = beg + 1;
         } else if (USE_ASCII && entity->asciistr) {
           s->replace(beg, j - beg, entity->asciistr);
-        j = beg + 1;
+          j = beg + 1;
+        } else if (USE_UTF8) {
+          if (entity->unicode)
+            s->replace(beg, j - beg, mkutf(entity->unicode));
+          else if (entity->asciistr)
+            s->replace(beg, j - beg, entity->asciistr);
+          j = beg + 1;
         } /* else don't replace it at all, we don't have a translation */
-        else if(USE_UTF8 && entity->unicode) {
-        s->replace(beg, j - beg, mkutf(entity->unicode));
-        j = beg + 1;
-        }
       }
     } else {
       ;                         /* EXTENSION: Allow literal '&' sometimes. */
