@@ -1152,7 +1152,9 @@ get_link_cell_attributes(const string &href, int *refnum)
 			Formatting::getAttributes("A.attributes.internal_link", Cell::UNDERLINE);
 		return internal_link_attributes;
 	} else {
-		if (*refnum == 0 && enable_links) {
+		if (!enable_links) {
+			*refnum = 0;
+		} else if (*refnum == 0) {
 			ListNormalItem *lni = new ListNormalItem;
 			PCData *d = new PCData;
 			d->text = href;
@@ -1162,8 +1164,6 @@ get_link_cell_attributes(const string &href, int *refnum)
 			links->items->push_back(auto_ptr<ListItem>(lni));
 
 			*refnum = links->items->size();
-		} else {
-			*refnum = 0;
 		}
 
 		static const char external_link_attributes =
