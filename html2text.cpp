@@ -47,38 +47,41 @@
 #define stringify(x) stringify2(x)
 #define stringify2(x) #x
 
+/* global scope hack -- keeping this in the object is not easy */
+OrderedList *links;
+
 /* ------------------------------------------------------------------------- */
 
 class MyParser : public HTMLControl {
-public:
-enum {
-	PRINT_AS_ASCII, UNPARSE, SYNTAX_CHECK
-};
+	public:
+		enum {
+			PRINT_AS_ASCII, UNPARSE, SYNTAX_CHECK
+		};
 
-MyParser(
-	urlistream &is_,
-	bool debug_scanner_,
-	bool debug_parser_,
-	ostream    &os_,
-	int mode_,
-	int width_,
-	const char *file_name_
-	) :
-	HTMLControl(is_, debug_scanner_, debug_parser_),
-	os(os_),
-	mode(mode_),
-	width(width_),
-	file_name(file_name_)
-{}
+		MyParser(
+				urlistream &is_,
+				bool debug_scanner_,
+				bool debug_parser_,
+				ostream    &os_,
+				int mode_,
+				int width_,
+				const char *file_name_
+				) :
+			HTMLControl(is_, debug_scanner_, debug_parser_),
+			os(os_),
+			mode(mode_),
+			width(width_),
+			file_name(file_name_)
+	{}
 
-private:
-/*virtual*/ void yyerror(char *);
-/*virtual*/ void process(const Document &);
+	private:
+		/*virtual*/ void yyerror(char *);
+		/*virtual*/ void process(const Document &);
 
-ostream &os;
-int mode;
-int width;
-string file_name;
+		ostream &os;
+		int mode;
+		int width;
+		string file_name;
 };
 
 /*virtual*/ void
@@ -256,7 +259,8 @@ main(int argc, char **argv)
 		;
 	} else if (!strcmp(style, "pretty")) {
 		/*
-		 * The "pretty" style was kindly supplied by diligent user Rolf Niepraschk.
+		 * The "pretty" style was kindly supplied by diligent user Rolf
+		 * Niepraschk.
 		 */
 		static const struct {
 			const char *key;
