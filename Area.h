@@ -71,176 +71,176 @@ struct Cell {
 /* ------------------------------------------------------------------------- */
 
 class Line {
-public:
-typedef size_t size_type;
+	public:
+		typedef size_t size_type;
 
-Line(size_type l = 0);
-Line(const char *);
-Line(const string &);
-~Line();
+		Line(size_type l = 0);
+		Line(const char *);
+		Line(const string &);
+		~Line();
 
-size_type length() const
-{
-	return length_;
-}
-bool      empty()  const
-{
-	return length_ == 0;
-}
+		size_type length() const
+		{
+			return length_;
+		}
+		bool      empty()  const
+		{
+			return length_ == 0;
+		}
 
-const Cell &operator[](size_type x) const
-{
-	return cells_[x];
-}
-Cell       &operator[](size_type x)
-{
-	return cells_[x];
-}
-const Cell *cells() const
-{
-	return cells_;
-}
+		const Cell &operator[](size_type x) const
+		{
+			return cells_[x];
+		}
+		Cell       &operator[](size_type x)
+		{
+			return cells_[x];
+		}
+		const Cell *cells() const
+		{
+			return cells_;
+		}
 
-unsigned int utf_length(size_type f, size_type t) const;
+		unsigned int utf_length(size_type f, size_type t) const;
 
-void resize(size_type l);
-void enlarge(size_type l)
-{
-	if (l > length_)
-		resize(l);
-}
+		void resize(size_type l);
+		void enlarge(size_type l)
+		{
+			if (l > length_)
+				resize(l);
+		}
 
-void insert(const Line &, size_type x);
-void insert(const char *, size_type x);
-void insert(const string &, size_type x);
+		void insert(const Line &, size_type x);
+		void insert(const char *, size_type x);
+		void insert(const string &, size_type x);
 
-void append(char c);
-void append(const Line &l);
-void append(const char *p);
+		void append(char c);
+		void append(const Line &l);
+		void append(const char *p);
 
-const Line &operator+=(char c)
-{
-	append(c);
-	return *this;
-}
-const Line &operator+=(const Line &l)
-{
-	append(l);
-	return *this;
-}
-const Line &operator+=(const char *p)
-{
-	append(p);
-	return *this;
-}
+		const Line &operator+=(char c)
+		{
+			append(c);
+			return *this;
+		}
+		const Line &operator+=(const Line &l)
+		{
+			append(l);
+			return *this;
+		}
+		const Line &operator+=(const char *p)
+		{
+			append(p);
+			return *this;
+		}
 
-void add_attribute(char addition);
+		void add_attribute(char addition);
 
-private:
-Line(const Line &);
-const Line &operator=(const Line &);
+	private:
+		Line(const Line &);
+		const Line &operator=(const Line &);
 
-size_type length_;
-Cell      *cells_;
+		size_type length_;
+		Cell      *cells_;
 
-friend class Area;
+		friend class Area;
 };
 
 /* ------------------------------------------------------------------------- */
 
 class Area {
-public:
-typedef size_t size_type;
+	public:
+		typedef size_t size_type;
 
-enum {
-	LEFT, CENTER, RIGHT,
-	TOP, MIDDLE, BOTTOM
-};
+		enum {
+			LEFT, CENTER, RIGHT,
+			TOP, MIDDLE, BOTTOM
+		};
 
-Area();
-Area(size_type w, size_type h = 0, char = ' ', char = Cell::NONE);
-Area(const char *);
-Area(const string &);
-Area(const Line &);
-~Area();
+		Area();
+		Area(size_type w, size_type h = 0, char = ' ', char = Cell::NONE);
+		Area(const char *);
+		Area(const string &);
+		Area(const Line &);
+		~Area();
 
-size_type width() const
-{
-	return width_;
-}
-size_type height() const
-{
-	return height_;
-}
+		size_type width() const
+		{
+			return width_;
+		}
+		size_type height() const
+		{
+			return height_;
+		}
 
-const Cell *operator[](size_type y) const
-{
-	return cells_[y];
-}
-Cell       *operator[](size_type y)
-{
-	return cells_[y];
-}
-const Area &operator>>=(size_type rs);
-const Area &operator>>=(const char *prefix);
+		const Cell *operator[](size_type y) const
+		{
+			return cells_[y];
+		}
+		Cell       *operator[](size_type y)
+		{
+			return cells_[y];
+		}
+		const Area &operator>>=(size_type rs);
+		const Area &operator>>=(const char *prefix);
 
-unsigned int utf_width();
+		unsigned int utf_width();
 
-void resize(size_type w, size_type h);
-void enlarge(size_type w, size_type h);
+		void resize(size_type w, size_type h);
+		void enlarge(size_type w, size_type h);
 
-void insert(const Line &l, size_type x, size_type y)
-{
-	insert(l.cells_, l.length_, x, y);
-}
-void insert(const Area &, size_type x, size_type y);
-void insert(
-	const Area &,
-	size_type x,
-	size_type y,
-	size_type w,
-	size_type h,
-	int halign,
-	int valign
-	);
-void insert(const Cell &, size_type x, size_type y);
-void insert(const Cell *, size_type count, size_type x, size_type y);
-void insert(char, size_type x, size_type y);
-void insert(const string &, size_type x, size_type y);
-void prepend(int n);      // Prepend blank lines at top
-void append(int n)        // Append blank lines at bottom
-{
-	enlarge(width(), height() + n);
-}
-const Area &operator+=(const Area &);     // Append at bottom!
-const Area &operator+=(int n)
-{
-	append(n);
-	return *this;
-}
+		void insert(const Line &l, size_type x, size_type y)
+		{
+			insert(l.cells_, l.length_, x, y);
+		}
+		void insert(const Area &, size_type x, size_type y);
+		void insert(
+				const Area &,
+				size_type x,
+				size_type y,
+				size_type w,
+				size_type h,
+				int halign,
+				int valign
+				);
+		void insert(const Cell &, size_type x, size_type y);
+		void insert(const Cell *, size_type count, size_type x, size_type y);
+		void insert(char, size_type x, size_type y);
+		void insert(const string &, size_type x, size_type y);
+		void prepend(int n);      // Prepend blank lines at top
+		void append(int n)        // Append blank lines at bottom
+		{
+			enlarge(width(), height() + n);
+		}
+		const Area &operator+=(const Area &);     // Append at bottom!
+		const Area &operator+=(int n)
+		{
+			append(n);
+			return *this;
+		}
 
-void fill(const Cell &, size_type x, size_type y, size_type w, size_type h);
-void fill(char, size_type x, size_type y, size_type w, size_type h);
+		void fill(const Cell &, size_type x, size_type y, size_type w, size_type h);
+		void fill(char, size_type x, size_type y, size_type w, size_type h);
 
-void add_attribute(char addition);   // ...but not to left and right free areas
-void add_attribute(
-	char addition,
-	size_type x,
-	size_type y,
-	size_type w,
-	size_type h
-	);
-static bool use_backspaces;   // "true" by default.
+		void add_attribute(char addition);   // ...but not to left and right free areas
+		void add_attribute(
+				char addition,
+				size_type x,
+				size_type y,
+				size_type w,
+				size_type h
+				);
+		static bool use_backspaces;   // "true" by default.
 
-private:
-Area(const Area &);
-const Area &operator=(const Area &);
+	private:
+		Area(const Area &);
+		const Area &operator=(const Area &);
 
-size_type width_;
-size_type height_;
-Cell      **cells_;
+		size_type width_;
+		size_type height_;
+		Cell      **cells_;
 
-friend ostream &operator<<(ostream &, const Area &);
+		friend ostream &operator<<(ostream &, const Area &);
 };
 
 /* ------------------------------------------------------------------------- */
