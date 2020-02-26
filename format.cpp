@@ -52,6 +52,9 @@
 using std::endl;
 using std::flush;
 
+extern OrderedList *links;
+extern bool enable_links;
+
 #ifndef nelems
 #define nelems(array) (sizeof(array) / sizeof((array)[0]))
 #endif
@@ -148,7 +151,7 @@ void
 Document::format(
 	Area::size_type indent_left,
 	Area::size_type w,
-	int halign,
+	int             halign,
 	ostream         &os
 	) const
 {
@@ -1140,13 +1143,29 @@ Font2::line_format() const
 }
 
 static char
-get_link_cell_attributes(const string &href)
+get_link_cell_attributes(const string &href, int *refnum)
 {
 	if (href.at(0) == '#') {
+		*refnum = 0;
+
 		static const char internal_link_attributes =
 			Formatting::getAttributes("A.attributes.internal_link", Cell::UNDERLINE);
 		return internal_link_attributes;
 	} else {
+		if (*refnum == 0 && enable_links) {
+			ListNormalItem *lni = new ListNormalItem;
+			PCData *d = new PCData;
+			d->text = href;
+			list<auto_ptr<Element>> *data = new list<auto_ptr<Element>>;
+			data->push_back(auto_ptr<Element>(d));
+			lni->flow.reset(data);
+			links->items->push_back(auto_ptr<ListItem>(lni));
+
+			*refnum = links->items->size();
+		} else {
+			*refnum = 0;
+		}
+
 		static const char external_link_attributes =
 			Formatting::getAttributes("A.attributes.external_link", Cell::UNDERLINE);
 		return external_link_attributes;
@@ -1162,8 +1181,14 @@ Anchor::line_format() const
 		return 0;
 
 	string href(get_attribute(attributes.get(), "HREF", ""));
-	if (!href.empty())
-		res->add_attribute(get_link_cell_attributes(href));
+	if (!href.empty()) {
+		res->add_attribute(get_link_cell_attributes(href, &refnum));
+		if (refnum > 0) {
+			char refnumstr[16];
+			snprintf(refnumstr, sizeof(refnumstr), "[%d]", refnum);
+			res->append(refnumstr);
+		}
+	}
 	return res.release();
 }
 
@@ -1175,8 +1200,15 @@ Anchor::format(Area::size_type w, int halign) const
 		return 0;
 
 	string href(get_attribute(attributes.get(), "HREF", ""));
-	if (!href.empty())
-		res->add_attribute(get_link_cell_attributes(href));
+	if (!href.empty()) {
+		res->add_attribute(get_link_cell_attributes(href, &refnum));
+		if (refnum > 0) {
+			char refnumstr[16];
+			snprintf(refnumstr, sizeof(refnumstr), "[%d]", refnum);
+			auto_ptr<Area> l(new Area(refnumstr));
+			*res += *l;
+		}
+	}
 	return res.release();
 }
 
@@ -1429,7 +1461,7 @@ format(
 				*res += *a2;
 			} else {
 				res = a2;
-			} \
+			}
 		}
 	}
 

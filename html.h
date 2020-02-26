@@ -277,6 +277,7 @@ struct Font2 : public Element {
 struct Anchor : public Element {
 	auto_ptr<list<TagAttribute> >       attributes;// NAME HREF REL REV TITLE
 	auto_ptr<list<auto_ptr<Element> > > texts;
+	mutable int                         refnum;
 
 	/*virtual*/ void unparse(ostream &, ostream_manipulator separator) const;
 	/*virtual*/ Line *line_format() const;

@@ -65,13 +65,15 @@ class MyParser : public HTMLControl {
 				ostream    &os_,
 				int mode_,
 				int width_,
-				const char *file_name_
+				const char *file_name_,
+				bool enable_links_
 				) :
 			HTMLControl(is_, debug_scanner_, debug_parser_),
 			os(os_),
 			mode(mode_),
 			width(width_),
-			file_name(file_name_)
+			file_name(file_name_),
+			enable_links(enable_links_)
 	{}
 
 	private:
@@ -82,6 +84,7 @@ class MyParser : public HTMLControl {
 		int mode;
 		int width;
 		string file_name;
+		bool enable_links;
 };
 
 /*virtual*/ void
@@ -110,6 +113,18 @@ MyParser::process(const Document &document)
 {
 	switch (mode) {
 	case PRINT_AS_ASCII:
+		if (enable_links) {
+			Heading *h = new Heading;
+			PCData *d = new PCData;
+			h->level = 6;
+			d->text = "References";
+			list<auto_ptr<Element>> *data = new list<auto_ptr<Element>>;
+			data->push_back(auto_ptr<Element>(d));
+			h->content.reset(data);
+			document.body.content->push_back(auto_ptr<Element>(h));
+			document.body.content->push_back(auto_ptr<Element>(links));
+		}
+
 		document.format(/*indent_left*/ 0, width, Area::LEFT, os);
 		break;
 
@@ -147,6 +162,7 @@ text.\n\
   -rcfile <file> Read <file> instead of \"$HOME/.html2textrc\"\n\
   -style compact Create a \"compact\" output format (default)\n\
   -style pretty  Insert some vertical space for nicer output\n\
+  -links         Generate reference list with link targets\n\
   -width <w>     Optimize for screen widths other than 79\n\
   -o <file>      Redirect output into <file>\n\
   -nobs          Do not use backspaces for boldface and underlining\n\
@@ -155,6 +171,7 @@ text.\n\
 ";
 
 int use_encoding = ISO8859;
+bool enable_links = false;
 
 int
 main(int argc, char **argv)
@@ -211,6 +228,8 @@ main(int argc, char **argv)
 			rcfile = argv[++i];
 		} else if (!strcmp(arg, "-style")) {
 			style = argv[++i];
+		} else if (!strcmp(arg, "-links")) {
+			enable_links = true;
 		} else if (!strcmp(arg, "-width")) {
 			width = atoi(argv[++i]);
 		} else if (!strcmp(arg, "-o")) {
@@ -373,6 +392,10 @@ main(int argc, char **argv)
 			*osp << "###### " << input_url << " ######" << std::endl;
 		}
 
+		links = new OrderedList;
+		links->items.reset(new list<auto_ptr<ListItem>>);
+		links->nesting = 0;
+
 		istream    *isp;
 		urlistream uis;
 
@@ -394,7 +417,8 @@ main(int argc, char **argv)
 			*osp,
 			mode,
 			width,
-			input_url
+			input_url,
+			enable_links
 			);
 
 		if (parser.yyparse() != 0)
