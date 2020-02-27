@@ -113,7 +113,7 @@ MyParser::process(const Document &document)
 {
 	switch (mode) {
 	case PRINT_AS_ASCII:
-		if (enable_links) {
+		if (enable_links && links->items->size() > 0) {
 			Heading *h = new Heading;
 			PCData *d = new PCData;
 			h->level = 6;
