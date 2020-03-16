@@ -59,9 +59,9 @@
  * Keep this array sorted alphabetically!
  */
 static const struct TextToInt {
-	char name[8];
+	const char name[8];
 	int iso8859code;
-	char *asciistr;
+	const char *asciistr;
 	unsigned long unicode;
 }
 entities[] = {

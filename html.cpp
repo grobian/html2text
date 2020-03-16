@@ -37,7 +37,7 @@
 #include <iostream>
 
 #include "html.h"
-#include "HTMLParser.h"
+#include "HTMLParser.tab.hh"
 #include "cmp_nocase.h"
 
 /* ------------------------------------------------------------------------- */
@@ -440,15 +440,15 @@ void
 Font::unparse(ostream &os, ostream_manipulator separator) const
 {
 	const char *tag = (
-		attribute == HTMLParser::TT     ? "TT" :
-		attribute == HTMLParser::I      ? "I" :
-		attribute == HTMLParser::B      ? "B" :
-		attribute == HTMLParser::U      ? "U" :
-		attribute == HTMLParser::STRIKE ? "STRIKE" :
-		attribute == HTMLParser::BIG    ? "BIG" :
-		attribute == HTMLParser::SMALL  ? "SMALL" :
-		attribute == HTMLParser::SUB    ? "SUB" :
-		attribute == HTMLParser::SUP    ? "SUP" :
+		attribute == HTMLParser_token::TT     ? "TT" :
+		attribute == HTMLParser_token::I      ? "I" :
+		attribute == HTMLParser_token::B      ? "B" :
+		attribute == HTMLParser_token::U      ? "U" :
+		attribute == HTMLParser_token::STRIKE ? "STRIKE" :
+		attribute == HTMLParser_token::BIG    ? "BIG" :
+		attribute == HTMLParser_token::SMALL  ? "SMALL" :
+		attribute == HTMLParser_token::SUB    ? "SUB" :
+		attribute == HTMLParser_token::SUP    ? "SUP" :
 		"???"
 		);
 
@@ -462,14 +462,14 @@ void
 Phrase::unparse(ostream &os, ostream_manipulator separator) const
 {
 	const char *tag = (
-		attribute == HTMLParser::EM     ? "EM" :
-		attribute == HTMLParser::STRONG ? "STRONG" :
-		attribute == HTMLParser::DFN    ? "DFN" :
-		attribute == HTMLParser::CODE   ? "CODE" :
-		attribute == HTMLParser::SAMP   ? "SAMP" :
-		attribute == HTMLParser::KBD    ? "KBD" :
-		attribute == HTMLParser::VAR    ? "VAR" :
-		attribute == HTMLParser::CITE   ? "CITE" :
+		attribute == HTMLParser_token::EM     ? "EM" :
+		attribute == HTMLParser_token::STRONG ? "STRONG" :
+		attribute == HTMLParser_token::DFN    ? "DFN" :
+		attribute == HTMLParser_token::CODE   ? "CODE" :
+		attribute == HTMLParser_token::SAMP   ? "SAMP" :
+		attribute == HTMLParser_token::KBD    ? "KBD" :
+		attribute == HTMLParser_token::VAR    ? "VAR" :
+		attribute == HTMLParser_token::CITE   ? "CITE" :
 		"???"
 		);
 

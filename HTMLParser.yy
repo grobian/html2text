@@ -33,62 +33,59 @@
  /***************************************************************************/
 
 
-%name HTMLParser
-%define PURE
-%define DEBUG 1
+%skeleton "lalr1.cc"
+%require "3.5"
+%language "c++"
+%defines
+%define api.namespace {html2text}
+%define api.parser.class {HTMLParser}
 
-%{
-
-/* ------------------------------------------------------------------------- */
-
-#ident "$Id: HTMLParser.y,v 1.14 1999/10/26 10:56:55 arno Exp $"
-
+%code requires {
+#include <string>
+#define HTMLParser_token html2text::HTMLParser::token
 #include "html.h"
-#include "HTMLParser.h"
+class HTMLDriver;
+}
 
-// MIPS machines don't have "alloca()", so disable stack realloc'ing.
-#ifdef mips
-#define yyoverflow yyerror("parser stack overflow"), (void)
-#endif
+%parse-param {HTMLDriver &drv}
+
+%define parse.error verbose
+%debug
+
+%code {
+#include "HTMLDriver.h"
+// call the lex function of HTMLDriver instead of plain yylex
+#undef yylex
+#define yylex drv.lex
+#undef yyerror
+#define yyerror drv.yyerror
+}
 
 /* ------------------------------------------------------------------------- */
-
-%}
-
-/* ------------------------------------------------------------------------- */
-
-%define LEX_BODY = 0
-%define ERROR_BODY = 0
-%define MEMBERS\
-  virtual ~HTMLParser(); \
-  virtual void process(const Document &) = 0;\
-  virtual bool read_cdata(const char *terminal, string *) = 0;\
-  int list_nesting;
-%define CONSTRUCTOR_INIT : list_nesting(0)
 
 %union {
-  Document                   *document;
-  Element                    *element;
-  list<auto_ptr<Element> >   *element_list;
-  PCData                     *pcdata;
-  string                     *strinG;
-  list<TagAttribute>         *tag_attributes;
-  int                        inT;
-  list<auto_ptr<TableRow> >  *table_rows;
-  list<auto_ptr<TableCell> > *table_cells;
-  ListItem                   *list_item;
-  list<auto_ptr<ListItem> >  *list_items;
-  Caption                    *caption;
-  Heading                    *heading;
-  list<auto_ptr<Option> >    *option_list;
-  Option                     *option;
-  DefinitionList             *definition_list;
-  list<auto_ptr<DefinitionListItem> > *definition_list_item_list;
-  TermName                   *term_name;
-  TermDefinition             *term_definition;
-  Preformatted               *preformatted;
-  Address                    *address;
-  list<auto_ptr<list<TagAttribute> > > *tag_attributes_list;
+  Document                           *document;
+  Element                            *element;
+  list<auto_ptr<Element>>            *element_list;
+  PCData                             *pcdata;
+  string                             *strinG;
+  list<TagAttribute>                 *tag_attributes;
+  int                                inT;
+  list<auto_ptr<TableRow>>           *table_rows;
+  list<auto_ptr<TableCell>>          *table_cells;
+  ListItem                           *list_item;
+  list<auto_ptr<ListItem>>           *list_items;
+  Caption                            *caption;
+  Heading                            *heading;
+  list<auto_ptr<Option>>             *option_list;
+  Option                             *option;
+  DefinitionList                     *definition_list;
+  list<auto_ptr<DefinitionListItem>> *definition_list_item_list;
+  TermName                           *term_name;
+  TermDefinition                     *term_definition;
+  Preformatted                       *preformatted;
+  Address                            *address;
+  list<auto_ptr<list<TagAttribute>>> *tag_attributes_list;
 }
 
 %type  <document>                 document_
@@ -264,6 +261,8 @@
 %token                  END_UL
 %token                  END_VAR
 
+%token                  END               0  "end of file"
+
 /* ------------------------------------------------------------------------- */
 
 %start document
@@ -272,7 +271,7 @@
 
 document:
   document_ {
-    process(*$1);
+    drv.process(*$1);
     delete $1;
   }
   ;
@@ -345,7 +344,7 @@ document_:
   | document_ SCRIPT {
     auto_ptr<Script> s(new Script);
     s->attributes.reset($2);
-    if (!read_cdata("</SCRIPT>", &s->text)) {
+    if (!drv.read_cdata("</SCRIPT>", &s->text)) {
       yyerror("CDATA terminal not found");
     }
     ($$ = $1)->head.scripts.push_back(s);
@@ -353,7 +352,7 @@ document_:
   | document_ STYLE {
     auto_ptr<Style> s(new Style);
     s->attributes.reset($2);
-    if (!read_cdata("</STYLE>", &s->text)) {
+    if (!drv.read_cdata("</STYLE>", &s->text)) {
       yyerror("CDATA terminal not found");
     }
     ($$ = $1)->head.styles.push_back(s);
@@ -399,7 +398,7 @@ body_content:
   | body_content SCRIPT {
     auto_ptr<Script> s(new Script);
     s->attributes.reset($2);
-    if (!read_cdata("</SCRIPT>", &s->text)) {
+    if (!drv.read_cdata("</SCRIPT>", &s->text)) {
       yyerror("CDATA terminal not found");
     }
 //    ($$ = $1)->head.scripts.push_back(s);
@@ -407,7 +406,7 @@ body_content:
   | body_content STYLE {
     auto_ptr<Style> s(new Style);
     s->attributes.reset($2);
-    if (!read_cdata("</STYLE>", &s->text)) {
+    if (!drv.read_cdata("</STYLE>", &s->text)) {
       yyerror("CDATA terminal not found");
     }
 //    ($$ = $1)->head.styles.push_back(s);
@@ -517,32 +516,32 @@ block_except_p:
   ;
 
 list:
-  OL { ++list_nesting; } list_content END_OL {
+  OL { ++drv.list_nesting; } list_content END_OL {
     OrderedList *ol = new OrderedList;
     ol->attributes.reset($1);
     ol->items.reset($3);
-    ol->nesting = --list_nesting;
+    ol->nesting = --drv.list_nesting;
     $$ = ol;
   }
-  | UL { ++list_nesting; } list_content opt_END_UL {
+  | UL { ++drv.list_nesting; } list_content opt_END_UL {
     UnorderedList *ul = new UnorderedList;
     ul->attributes.reset($1);
     ul->items.reset($3);
-    ul->nesting = --list_nesting;
+    ul->nesting = --drv.list_nesting;
     $$ = ul;
   }
-  | DIR { ++list_nesting; } list_content END_DIR {
+  | DIR { ++drv.list_nesting; } list_content END_DIR {
     Dir *d = new Dir;
     d->attributes.reset($1);
     d->items.reset($3);
-    d->nesting = --list_nesting;
+    d->nesting = --drv.list_nesting;
     $$ = d;
   }
-  | MENU { ++list_nesting; } list_content END_MENU {
+  | MENU { ++drv.list_nesting; } list_content END_MENU {
     Menu *m = new Menu;
     m->attributes.reset($1);
     m->items.reset($3);
-    m->nesting = --list_nesting;
+    m->nesting = --drv.list_nesting;
     $$ = m;
   }
   ;
@@ -759,26 +758,26 @@ text:
   ;
 
 font:
-  TT       opt_texts opt_END_TT     { delete $1; $$ = new Font(TT,     $2); }
-  | I      opt_texts opt_END_I      { delete $1; $$ = new Font(I,      $2); }
-  | B      opt_texts opt_END_B      { delete $1; $$ = new Font(B,      $2); }
-  | U      opt_texts opt_END_U      { delete $1; $$ = new Font(U,      $2); }
-  | STRIKE opt_texts opt_END_STRIKE { delete $1; $$ = new Font(STRIKE, $2); }
-  | BIG    opt_texts opt_END_BIG    { delete $1; $$ = new Font(BIG,    $2); }
-  | SMALL  opt_texts opt_END_SMALL  { delete $1; $$ = new Font(SMALL,  $2); }
-  | SUB    opt_texts opt_END_SUB    { delete $1; $$ = new Font(SUB,    $2); }
-  | SUP    opt_texts opt_END_SUP    { delete $1; $$ = new Font(SUP,    $2); }
+  TT       opt_texts opt_END_TT     { delete $1; $$ = new Font(token::TT,     $2); }
+  | I      opt_texts opt_END_I      { delete $1; $$ = new Font(token::I,      $2); }
+  | B      opt_texts opt_END_B      { delete $1; $$ = new Font(token::B,      $2); }
+  | U      opt_texts opt_END_U      { delete $1; $$ = new Font(token::U,      $2); }
+  | STRIKE opt_texts opt_END_STRIKE { delete $1; $$ = new Font(token::STRIKE, $2); }
+  | BIG    opt_texts opt_END_BIG    { delete $1; $$ = new Font(token::BIG,    $2); }
+  | SMALL  opt_texts opt_END_SMALL  { delete $1; $$ = new Font(token::SMALL,  $2); }
+  | SUB    opt_texts opt_END_SUB    { delete $1; $$ = new Font(token::SUB,    $2); }
+  | SUP    opt_texts opt_END_SUP    { delete $1; $$ = new Font(token::SUP,    $2); }
   ;
 
 phrase:
-  EM       opt_texts opt_END_EM     { delete $1; $$ = new Phrase(EM,     $2); }
-  | STRONG opt_texts opt_END_STRONG { delete $1; $$ = new Phrase(STRONG, $2); }
-  | DFN    opt_texts opt_END_DFN    { delete $1; $$ = new Phrase(DFN,    $2); }
-  | CODE   opt_texts opt_END_CODE   { delete $1; $$ = new Phrase(CODE,   $2); }
-  | SAMP   opt_texts opt_END_SAMP   { delete $1; $$ = new Phrase(SAMP,   $2); }
-  | KBD    opt_texts opt_END_KBD    { delete $1; $$ = new Phrase(KBD,    $2); }
-  | VAR    opt_texts opt_END_VAR    { delete $1; $$ = new Phrase(VAR,    $2); }
-  | CITE   opt_texts opt_END_CITE   { delete $1; $$ = new Phrase(CITE,   $2); }
+  EM       opt_texts opt_END_EM     { delete $1; $$ = new Phrase(token::EM,     $2); }
+  | STRONG opt_texts opt_END_STRONG { delete $1; $$ = new Phrase(token::STRONG, $2); }
+  | DFN    opt_texts opt_END_DFN    { delete $1; $$ = new Phrase(token::DFN,    $2); }
+  | CODE   opt_texts opt_END_CODE   { delete $1; $$ = new Phrase(token::CODE,   $2); }
+  | SAMP   opt_texts opt_END_SAMP   { delete $1; $$ = new Phrase(token::SAMP,   $2); }
+  | KBD    opt_texts opt_END_KBD    { delete $1; $$ = new Phrase(token::KBD,    $2); }
+  | VAR    opt_texts opt_END_VAR    { delete $1; $$ = new Phrase(token::VAR,    $2); }
+  | CITE   opt_texts opt_END_CITE   { delete $1; $$ = new Phrase(token::CITE,   $2); }
   ;
 
 special:
@@ -964,15 +963,9 @@ opt_error:      /* empty */ | error;
 
 %% /* } */
 
-/*
- * Some C++ compilers (e.g. EGCS 2.91.66) have problems if all virtual
- * methods of a class are inline or pure virtual, so we define the destructor,
- * which is the only virtual method, non-inline, although it is empty.
- */
-
-HTMLParser::~HTMLParser()
+void
+html2text::HTMLParser::error(const std::string& msg)
 {
+	yyerror(msg.c_str());
 }
-
-/* ------------------------------------------------------------------------- */
 

@@ -28,8 +28,8 @@
 
 VERSION=2.0.0_pre
 
-BISONXX  = bison++
-YFLAGS   =
+BISON  = bison
+YFLAGS =
 
 INSTALLER = install
 BINDIR    = /usr/local/bin
@@ -57,12 +57,15 @@ LOADLIBES = $(LIBSTDCXX_LIBS) $(SOCKET_LIBRARIES)
 
 .SUFFIXES : .cpp .o
 
+default : all
+
 .cpp.o :
 	$(CXX) -c $(CXXFLAGS) $*.cpp
 
-# -----------------------------------------------------------------------------
+HTMLParser.o: HTMLParser.tab.cc HTMLParser.tab.hh
+	$(CXX) -c $(CXXFLAGS) -o HTMLParser.o HTMLParser.tab.cc
 
-default : all
+# -----------------------------------------------------------------------------
 
 all : html2text
 	@echo ;
@@ -71,20 +74,31 @@ all : html2text
 	@echo '"/usr/local/bin", "/usr/local/man/man1" and "/usr/local/man/man5").';
 	@echo
 
-OBJS = html2text.o html.o HTMLControl.o HTMLParser.o Area.o format.o sgml.o table.o urlistream.o Properties.o cmp_nocase.o
+OBJS = \
+	   Area.o \
+	   cmp_nocase.o \
+	   format.o \
+	   html.o \
+	   html2text.o \
+	   HTMLControl.o \
+	   HTMLDriver.o \
+	   HTMLParser.o \
+	   Properties.o \
+	   sgml.o \
+	   table.o \
+	   urlistream.o \
+	   $(NULL)
 
 html2text : $(OBJS) $(LIBSTDCXX_LIBS)
 	$(CXX) $(LDFLAGS) $(OBJS) $(LOADLIBES) $(LDLIBS) -o $@
 
 # -----------------------------------------------------------------------------
 
-# Since it is very unlikely that bison++-2.2 is installed (available on
-# html2text's homepage), HTMLParser.h and HTMLParser.cpp are only built when
-# 'make bison-local' is issued.
+# Since bison isn't always installed, HTMLParser.tab.hh and
+# HTMLParser.tab.cc are only built when 'make bison-local' is issued.
 
 bison-local :
-	cmp -s HTMLParser.h HTMLParser.k || cp HTMLParser.k HTMLParser.h;
-	$(BISONXX) $(YFLAGS) -o HTMLParser.cpp -d -h HTMLParser.k HTMLParser.y
+	$(BISON) $(YFLAGS) -d HTMLParser.yy
 
 # -----------------------------------------------------------------------------
 
@@ -108,7 +122,7 @@ local-clobber : local-clean
 	rm -f html2text
 
 depend : local-depend
-local-depend : HTMLParser.h
+local-depend : HTMLParser.tab.hh
 	@>Dependencies
 	makedepend -f Dependencies $(CPPFLAGS) $(MAKEDEPEND_INCLUDES) *.cpp
 	@rm -f Dependencies.bak

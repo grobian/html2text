@@ -43,7 +43,7 @@
 #include <map>
 
 #include "html.h"
-#include "HTMLParser.h"
+#include "HTMLParser.tab.hh"
 #include "sgml.h"
 #include "cmp_nocase.h"
 #include "format.h"
@@ -1004,31 +1004,31 @@ PCData::line_format() const
 static char
 get_font_cell_attributes(int attribute)
 {
-	if (attribute == HTMLParser::TT) {
+	if (attribute == HTMLParser_token::TT) {
 		static char a = Formatting::getAttributes("TT.attributes", Cell::NONE);
 		return a;
-	} else if (attribute == HTMLParser::I) {
+	} else if (attribute == HTMLParser_token::I) {
 		static char a = Formatting::getAttributes("I.attributes", Cell::NONE);
 		return a;
-	} else if (attribute == HTMLParser::B) {
+	} else if (attribute == HTMLParser_token::B) {
 		static char a = Formatting::getAttributes("B.attributes", Cell::BOLD);
 		return a;
-	} else if (attribute == HTMLParser::U) {
+	} else if (attribute == HTMLParser_token::U) {
 		static char a = Formatting::getAttributes("U.attributes", Cell::UNDERLINE);
 		return a;
-	} else if (attribute == HTMLParser::STRIKE) {
+	} else if (attribute == HTMLParser_token::STRIKE) {
 		static char a = Formatting::getAttributes("STRIKE.attributes", Cell::STRIKETHROUGH);
 		return a;
-	} else if (attribute == HTMLParser::BIG) {
+	} else if (attribute == HTMLParser_token::BIG) {
 		static char a = Formatting::getAttributes("BIG.attributes", Cell::NONE);
 		return a;
-	} else if (attribute == HTMLParser::SMALL) {
+	} else if (attribute == HTMLParser_token::SMALL) {
 		static char a = Formatting::getAttributes("SMALL.attributes", Cell::NONE);
 		return a;
-	} else if (attribute == HTMLParser::SUB) {
+	} else if (attribute == HTMLParser_token::SUB) {
 		static char a = Formatting::getAttributes("SUB.attributes", Cell::NONE);
 		return a;
-	} else if (attribute == HTMLParser::SUP) {
+	} else if (attribute == HTMLParser_token::SUP) {
 		static char a = Formatting::getAttributes("SUP.attributes", Cell::NONE);
 		return a;
 	}
@@ -1070,28 +1070,28 @@ Font::format(Area::size_type w, int halign) const
 static char
 get_phrase_cell_attributes(int attribute)
 {
-	if (attribute == HTMLParser::EM) {
+	if (attribute == HTMLParser_token::EM) {
 		static char a = Formatting::getAttributes("EM.attributes", Cell::BOLD);
 		return a;
-	} else if (attribute == HTMLParser::STRONG) {
+	} else if (attribute == HTMLParser_token::STRONG) {
 		static char a = Formatting::getAttributes("STRONG.attributes", Cell::BOLD);
 		return a;
-	} else if (attribute == HTMLParser::DFN) {
+	} else if (attribute == HTMLParser_token::DFN) {
 		static char a = Formatting::getAttributes("DFN.attributes", Cell::NONE);
 		return a;
-	} else if (attribute == HTMLParser::CODE) {
+	} else if (attribute == HTMLParser_token::CODE) {
 		static char a = Formatting::getAttributes("CODE.attributes", Cell::NONE);
 		return a;
-	} else if (attribute == HTMLParser::SAMP) {
+	} else if (attribute == HTMLParser_token::SAMP) {
 		static char a = Formatting::getAttributes("SAMP.attributes", Cell::NONE);
 		return a;
-	} else if (attribute == HTMLParser::KBD) {
+	} else if (attribute == HTMLParser_token::KBD) {
 		static char a = Formatting::getAttributes("KBD.attributes", Cell::NONE);
 		return a;
-	} else if (attribute == HTMLParser::VAR) {
+	} else if (attribute == HTMLParser_token::VAR) {
 		static char a = Formatting::getAttributes("VAR.attributes", Cell::NONE);
 		return a;
-	} else if (attribute == HTMLParser::CITE) {
+	} else if (attribute == HTMLParser_token::CITE) {
 		static char a = Formatting::getAttributes("CITE.attributes", Cell::NONE);
 		return a;
 	}

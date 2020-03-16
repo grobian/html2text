@@ -41,6 +41,7 @@
 
 #include "html.h"
 #include "HTMLControl.h"
+#include "HTMLDriver.h"
 #include "urlistream.h"
 #include "format.h"
 
@@ -49,98 +50,6 @@
 
 /* global scope hack -- keeping this in the object is not easy */
 OrderedList *links;
-
-/* ------------------------------------------------------------------------- */
-
-class MyParser : public HTMLControl {
-	public:
-		enum {
-			PRINT_AS_ASCII, UNPARSE, SYNTAX_CHECK
-		};
-
-		MyParser(
-				urlistream &is_,
-				bool debug_scanner_,
-				bool debug_parser_,
-				ostream    &os_,
-				int mode_,
-				int width_,
-				const char *file_name_,
-				bool enable_links_
-				) :
-			HTMLControl(is_, debug_scanner_, debug_parser_),
-			os(os_),
-			mode(mode_),
-			width(width_),
-			file_name(file_name_),
-			enable_links(enable_links_)
-	{}
-
-	private:
-		/*virtual*/ void yyerror(char *);
-		/*virtual*/ void process(const Document &);
-
-		ostream &os;
-		int mode;
-		int width;
-		string file_name;
-		bool enable_links;
-};
-
-/*virtual*/ void
-MyParser::yyerror(char *p)
-{
-	/*
-	 * Swallow parse error messages if not in "syntax check" mode.
-	 */
-	if (mode != SYNTAX_CHECK && !strcmp(p, "parse error"))
-		return;
-
-	std::cerr
-		<< "File \""
-		<< file_name
-		<< "\", line "
-		<< current_line
-		<< ", column "
-		<< current_column
-		<< ": "
-		<< p
-		<< std::endl;
-}
-
-/*virtual*/ void
-MyParser::process(const Document &document)
-{
-	switch (mode) {
-	case PRINT_AS_ASCII:
-		if (enable_links && links->items->size() > 0) {
-			Heading *h = new Heading;
-			PCData *d = new PCData;
-			h->level = 6;
-			d->text = "References";
-			list<auto_ptr<Element>> *data = new list<auto_ptr<Element>>;
-			data->push_back(auto_ptr<Element>(d));
-			h->content.reset(data);
-			document.body.content->push_back(auto_ptr<Element>(h));
-			document.body.content->push_back(auto_ptr<Element>(links));
-		}
-
-		document.format(/*indent_left*/ 0, width, Area::LEFT, os);
-		break;
-
-	case UNPARSE:
-		document.unparse(os, std::endl);
-		break;
-
-	case SYNTAX_CHECK:
-		break;
-
-	default:
-		std::cerr << "??? Invalid mode " << mode << " ??? " << std::endl;
-		exit(1);
-		break;
-	}
-}
 
 /* ------------------------------------------------------------------------- */
 
@@ -202,7 +111,7 @@ main(int argc, char **argv)
 		exit(0);
 	}
 
-	bool mode = MyParser::PRINT_AS_ASCII;
+	int mode = HTMLDriver::PRINT_AS_ASCII;
 	bool debug_scanner = false;
 	bool debug_parser = false;
 	const char *home = getenv("HOME");
@@ -217,9 +126,9 @@ main(int argc, char **argv)
 		const char *arg = argv[i];
 
 		if (!strcmp(arg, "-unparse")) {
-			mode = MyParser::UNPARSE;
+			mode = HTMLDriver::UNPARSE;
 		} else if (!strcmp(arg, "-check")) {
-			mode = MyParser::SYNTAX_CHECK;
+			mode = HTMLDriver::SYNTAX_CHECK;
 		} else if (!strcmp(arg, "-debug-scanner")) {
 			debug_scanner = true;
 		} else if (!strcmp(arg, "-debug-parser")) {
@@ -396,8 +305,8 @@ main(int argc, char **argv)
 		links->items.reset(new list<auto_ptr<ListItem>>);
 		links->nesting = 0;
 
-		istream    *isp;
-		urlistream uis;
+		istream     *isp;
+		urlistream  uis;
 
 		uis.open(input_url);
 		if (!uis.is_open()) {
@@ -410,18 +319,11 @@ main(int argc, char **argv)
 			exit(1);
 		}
 
-		MyParser parser(
-			uis,
-			debug_scanner,
-			debug_parser,
-			*osp,
-			mode,
-			width,
-			input_url,
-			enable_links
-			);
+		HTMLControl control(uis, mode, debug_scanner, input_url);
+		HTMLDriver driver(control, *osp, enable_links,
+				width, mode, debug_parser);
 
-		if (parser.yyparse() != 0)
+		if (driver.parse() != 0)
 			exit(1);
 	}
 

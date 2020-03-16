@@ -41,6 +41,8 @@
 
 #include "html.h"
 #include "HTMLControl.h"
+#include "HTMLDriver.h"
+#include "HTMLParser.tab.hh"
 #include "sgml.h"
 #include "cmp_nocase.h"
 
@@ -57,12 +59,34 @@ enum {
 
 /* ------------------------------------------------------------------------- */
 
+void
+HTMLControl::htmlparser_yyerror(const char *p)
+{
+	/*
+	 * Swallow parse error messages if not in "syntax check" mode.
+	 */
+	if (mode != HTMLDriver::SYNTAX_CHECK &&
+			!strncmp(p, "syntax error", sizeof("syntax error") - 1))
+		return;
+
+	std::cerr
+		<< "File \""
+		<< file_name
+		<< "\", line "
+		<< current_line
+		<< ", column "
+		<< current_column
+		<< ": "
+		<< p
+		<< std::endl;
+}
+
 /*
  * Effectively, this method simply invokes "yylex2()", but it does some
  * postprocessing on PCDATA tokens that would be difficult to do in "yylex2()".
  */
-int
-HTMLControl::yylex(yy_HTMLParser_stype *value_return)
+int HTMLControl::htmlparser_yylex(
+		html2text::HTMLParser::semantic_type *value_return)
 {
 	for (;;) { // Notice the "return" at the end of the body!
 		int token, tag_type;
@@ -79,7 +103,7 @@ HTMLControl::yylex(yy_HTMLParser_stype *value_return)
 		/*
 		 * Switch on/off "literal mode" on "<PRE>" and "</PRE>".
 		 */
-		if (token == PRE) {
+		if (token == HTMLParser_token::PRE) {
 			literal_mode = true;
 
 			/*
@@ -88,20 +112,20 @@ HTMLControl::yylex(yy_HTMLParser_stype *value_return)
 			if (next_token == EOF) {
 				next_token = yylex2(&next_token_value, &next_token_tag_type);
 			}
-			if (next_token == PCDATA) {
+			if (next_token == HTMLParser_token::PCDATA) {
 				string &s(*next_token_value.strinG);
 				if (!s.empty() && s[0] == '\n')
 					s.erase(0, 1);
 			}
 		}
 
-		if (token == END_PRE)
+		if (token == HTMLParser_token::END_PRE)
 			literal_mode = false;
 
-		if (token == PCDATA) {
+		if (token == HTMLParser_token::PCDATA) {
 			/*
-			 * In order to post-process the PCDATA token, we need to look ahead one
-			 * token...
+			 * In order to post-process the PCDATA token, we need to
+			 * look ahead one token...
 			 */
 			if (next_token == EOF) {
 				next_token = yylex2(&next_token_value, &next_token_tag_type);
@@ -110,7 +134,7 @@ HTMLControl::yylex(yy_HTMLParser_stype *value_return)
 			/*
 			 * Erase " '\n' { ' ' } " immediately before "</PRE>".
 			 */
-			if (next_token == END_PRE) {
+			if (next_token == HTMLParser_token::END_PRE) {
 				string &s(*value_return->strinG);
 				string::size_type x = s.length();
 				while (x > 0 && s[x - 1] == ' ')
@@ -165,15 +189,16 @@ HTMLControl::yylex(yy_HTMLParser_stype *value_return)
 					tag_type == START_TAG ||
 					tag_type == BLOCK_START_TAG ||
 					tag_type == BLOCK_END_TAG ||
-					token == BR ||
-					token == HR
+					token == HTMLParser_token::BR ||
+					token == HTMLParser_token::HR
 				) &&
-				token != SCRIPT && token != STYLE
+				token != HTMLParser_token::SCRIPT &&
+				token != HTMLParser_token::STYLE
 				)) {
 			if (next_token == EOF) {
 				next_token = yylex2(&next_token_value, &next_token_tag_type);
 			}
-			if (next_token == PCDATA) {
+			if (next_token == HTMLParser_token::PCDATA) {
 				string &s(*next_token_value.strinG);
 				string::size_type x;
 				for (x = 0; x < s.length() && isspace(s[x]); ++x)
@@ -199,13 +224,16 @@ HTMLControl::yylex(yy_HTMLParser_stype *value_return)
 static const struct TextToIntP {
 	char name[11];
 	char block_tag;
-	const int *start_tag_code;
-	const int *end_tag_code;
+	const int start_tag_code;
+	const int end_tag_code;
 }
 tag_names[] = {
-#define pack1(tag) { #tag, 0, &HTMLParser::tag, 0 }
-#define pack2(tag) { #tag, 0, &HTMLParser::tag, &HTMLParser::END_ ## tag }
-#define pack3(tag) { #tag, 1, &HTMLParser::tag, &HTMLParser::END_ ## tag }
+#define pack1(tag) \
+	{ #tag, 0, HTMLParser_token::tag, 0 }
+#define pack2(tag) \
+	{ #tag, 0, HTMLParser_token::tag, HTMLParser_token::END_ ## tag }
+#define pack3(tag) \
+	{ #tag, 1, HTMLParser_token::tag, HTMLParser_token::END_ ## tag }
 	pack2(A),
 	pack3(ADDRESS),
 	pack2(APPLET),
@@ -280,7 +308,8 @@ tag_names[] = {
 /* ------------------------------------------------------------------------- */
 
 int
-HTMLControl::yylex2(yy_HTMLParser_stype *value_return, int *tag_type_return)
+HTMLControl::yylex2(html2text::HTMLParser::semantic_type *value_return,
+		int *tag_type_return)
 {
 	int c;
 
@@ -303,7 +332,7 @@ HTMLControl::yylex2(yy_HTMLParser_stype *value_return, int *tag_type_return)
 				if (c == '-') {
 					c = get_char();
 					if (c != '-')
-						return SCAN_ERROR;
+						return HTMLParser_token::SCAN_ERROR;
 
 					/*
 					 * This is a comment... skip it!
@@ -314,13 +343,14 @@ HTMLControl::yylex2(yy_HTMLParser_stype *value_return, int *tag_type_return)
 					 *        line
 					 *        comment //-->
 					 *
-					 * EXTENSION: Allow "-->" as the terminator of a multi-line comment.
+					 * EXTENSION: Allow "-->" as the terminator of a
+					 *            multi-line comment.
 					 */
 					int state = 0;
 					do {
 						c = get_char();
 						if (c == EOF)
-							return SCAN_ERROR;
+							return HTMLParser_token::SCAN_ERROR;
 						switch (state) {
 						case 0: if (c == '-')
 								state = 1;
@@ -338,7 +368,7 @@ HTMLControl::yylex2(yy_HTMLParser_stype *value_return, int *tag_type_return)
 				 * Scan "<!DOCTYPE ...>" tag.
 				 */
 				if (!isalpha(c))
-					return SCAN_ERROR;
+					return HTMLParser_token::SCAN_ERROR;
 				string tag_name(1, '!');
 				tag_name += c;
 				for (;;) {
@@ -348,14 +378,14 @@ HTMLControl::yylex2(yy_HTMLParser_stype *value_return, int *tag_type_return)
 					tag_name += c;
 				}
 				if (cmp_nocase(tag_name, "!DOCTYPE") != 0)
-					return SCAN_ERROR;
+					return HTMLParser_token::SCAN_ERROR;
 				while (c != '>') {
 					c = get_char();
 					if (c == EOF)
-						return SCAN_ERROR;
+						return HTMLParser_token::SCAN_ERROR;
 					// Let newline not close the DOCTYPE tag - Arno
 				}
-				return DOCTYPE;
+				return HTMLParser_token::DOCTYPE;
 			}
 
 			if (c == '/' || isalpha(c) || c == '_') {
@@ -367,7 +397,7 @@ HTMLControl::yylex2(yy_HTMLParser_stype *value_return, int *tag_type_return)
 					c = get_char();
 				}
 				if (!isalpha(c) && c != '_')
-					return SCAN_ERROR;
+					return HTMLParser_token::SCAN_ERROR;
 				tag_name += c;
 				for (;;) {
 					c = get_char();
@@ -381,8 +411,9 @@ HTMLControl::yylex2(yy_HTMLParser_stype *value_return, int *tag_type_return)
 					c = get_char();
 
 				/*
-				 * Scan tag attributes (only for opening tags). Create the
-				 * "tag_attributes" only on demand; this saves a lot of overhead.
+				 * Scan tag attributes (only for opening tags). Create
+				 * the "tag_attributes" only on demand; this saves a lot
+				 * of overhead.
 				 */
 				auto_ptr<list<TagAttribute> > tag_attributes;
 				if (!is_end_tag) {
@@ -416,27 +447,32 @@ HTMLControl::yylex2(yy_HTMLParser_stype *value_return, int *tag_type_return)
 								for (;;) {
 									c = get_char();
 									if (c == EOF)
-										return SCAN_ERROR;
+										return HTMLParser_token::SCAN_ERROR;
 									// Accept multiple-line elements - Arno
 									if (c == closing_quote)
 										break;
 
 									/*
-									 * Do *not* interpret "&auml;" and consorts here! This
-									 * would ruin tag attributes like "HREF=hhh?a=1&b=2".
+									 * Do *not* interpret "&auml;" and
+									 * consorts here! This would ruin
+									 * tag attributes like
+									 * "HREF=hhh?a=1&b=2".
 									 */
 									attribute.second += c;
 								}
-								c = get_char(); // Get next char after closing quote.
-							} else
-								while (c != '>' && (unsigned char) c > (unsigned char) ' ') {
+								c = get_char(); // Get next after closing quote
+							} else {
+								while (c != '>' &&
+										(unsigned char)c > (unsigned char)' ')
+								{
 									// This is for non-ACSII chars - Arno
 									if (c == EOF)
-										return SCAN_ERROR;
+										return HTMLParser_token::SCAN_ERROR;
 									// Same as in line 390
 									attribute.second += c;
 									c = get_char();
 								}
+							}
 
 							while (isspace(c))
 								c = get_char();    // Skip WS after attr value
@@ -458,20 +494,22 @@ HTMLControl::yylex2(yy_HTMLParser_stype *value_return, int *tag_type_return)
 					if (c == '/') {
 						c = get_char();
 						if (c != '>') {
-							return SCAN_ERROR;
+							return HTMLParser_token::SCAN_ERROR;
 						}
 					} else {
-						return SCAN_ERROR;
+						return HTMLParser_token::SCAN_ERROR;
 					}
 				}
 
 				if (debug_scanner) {
-					std::cerr << "Scanned tag \"<" << (is_end_tag ? "/" : "") << tag_name;
+					std::cerr << "Scanned tag \"<" <<
+						(is_end_tag ? "/" : "") << tag_name;
 					if (!is_end_tag && tag_attributes.get()) {
 						const list<TagAttribute>           &ta(*tag_attributes);
 						list<TagAttribute>::const_iterator j;
 						for (j = ta.begin(); j != ta.end(); ++j) {
-							std::cerr << " " << (*j).first << "=\"" << (*j).second << "\"";
+							std::cerr << " " << (*j).first <<
+								"=\"" << (*j).second << "\"";
 						}
 					}
 					std::cerr << ">\"" << std::endl;
@@ -499,19 +537,20 @@ HTMLControl::yylex2(yy_HTMLParser_stype *value_return, int *tag_type_return)
 				if (is_end_tag) {
 					if (!tag->end_tag_code) {
 						if (debug_scanner) {
-							std::cerr << "Non-container end tag scanned." << std::endl;
+							std::cerr << "Non-container end tag scanned." <<
+								std::endl;
 						}
 						continue;
 					}
 					*tag_type_return = tag->block_tag ? BLOCK_END_TAG : END_TAG;
-					return *tag->end_tag_code;
+					return tag->end_tag_code;
 				} else {
 					*tag_type_return = (
 						!tag->end_tag_code ? NON_CONTAINER_TAG :
 						tag->block_tag     ? BLOCK_START_TAG   : START_TAG
 						);
 					value_return->tag_attributes = tag_attributes.release();
-					return *tag->start_tag_code;
+					return tag->start_tag_code;
 				}
 			}
 
@@ -557,10 +596,10 @@ HTMLControl::yylex2(yy_HTMLParser_stype *value_return, int *tag_type_return)
 			if (debug_scanner)
 				std::cerr << "Scanned PCDATA \"" << *s << "\"" << std::endl;
 
-			return PCDATA;
+			return HTMLParser_token::PCDATA;
 		}
 
-		return SCAN_ERROR;
+		return HTMLParser_token::SCAN_ERROR;
 	}
 }
 
@@ -623,7 +662,7 @@ void
 HTMLControl::unget_char(int c)
 {
 	if (number_of_ungotten_chars == nelems(ungotten_chars)) {
-		yyerror("Too many chars ungotten");
+		//error("Too many chars ungotten");
 		return;
 	}
 	ungotten_chars[number_of_ungotten_chars++] = c;

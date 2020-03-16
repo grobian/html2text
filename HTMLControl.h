@@ -37,57 +37,61 @@
 
 /* ------------------------------------------------------------------------- */
 
-#include "HTMLParser.h"
 #include "urlistream.h"
 #include <istream>
+
+#include "HTMLParser.tab.hh"
 
 using std::istream;
 
 /* ------------------------------------------------------------------------- */
 
-class HTMLControl : public HTMLParser {
-public:
-HTMLControl(urlistream &is_, bool debug_scanner_, bool debug_parser_) :
-	HTMLParser(),
-	current_line(1),
-	current_column(0),
-	literal_mode(false),
-	next_token(EOF),
-	debug_scanner(debug_scanner_),
-	is(is_),
-	number_of_ungotten_chars(0)
-{
-	yydebug = debug_parser_;
-}
+class HTMLControl {
+	public:
+		HTMLControl(urlistream& is_,
+				int& mode_,
+				bool debug_scanner_,
+				const char *file_name_) :
+			current_line(1),
+			current_column(0),
+			literal_mode(false),
+			next_token(EOF),
+			debug_scanner(debug_scanner_),
+			is(is_),
+			number_of_ungotten_chars(0),
+			file_name(file_name_),
+			mode(mode_)
+	{
+	}
 
-int current_line;
-int current_column;
+		void htmlparser_yyerror(const char *p);
+		int htmlparser_yylex(
+				html2text::HTMLParser::semantic_type *value_return);
+		bool read_cdata(const char *terminal, string *value_return);
+		int mode;
+		int current_line;
+		int current_column;
+		const char *file_name;
 
-private:
+	private:
 
-/*
- * Implementing virtual methods of "HTMLParser".
- */
-/*virtual*/ int yylex(yy_HTMLParser_stype *value_return);
-/*virtual*/ bool read_cdata(const char *terminal, string *value_return);
+		/*
+		 * Helpers.
+		 */
+		int yylex2(html2text::HTMLParser::semantic_type *value_return, int *tag_type_return);
+		bool literal_mode;
+		int next_token;
+		html2text::HTMLParser::semantic_type next_token_value;
+		int next_token_tag_type;
 
-/*
- * Helpers.
- */
-int yylex2(yy_HTMLParser_stype *value_return, int *tag_type_return);
-bool literal_mode;
-int next_token;
-yy_HTMLParser_stype next_token_value;
-int next_token_tag_type;
+		int get_char();
+		void unget_char(int);
 
-int get_char();
-void unget_char(int);
+		bool debug_scanner;
 
-bool debug_scanner;
-
-urlistream &is;
-int ungotten_chars[5];
-int number_of_ungotten_chars;
+		urlistream &is;
+		int ungotten_chars[5];
+		int number_of_ungotten_chars;
 };
 
 /* ------------------------------------------------------------------------- */
