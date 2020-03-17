@@ -48,9 +48,6 @@
 #define stringify(x) stringify2(x)
 #define stringify2(x) #x
 
-/* global scope hack -- keeping this in the object is not easy */
-OrderedList *links;
-
 /* ------------------------------------------------------------------------- */
 
 static const char *usage = "\
@@ -80,7 +77,6 @@ text.\n\
 ";
 
 int use_encoding = ISO8859;
-bool enable_links = false;
 
 int
 main(int argc, char **argv)
@@ -120,6 +116,7 @@ main(int argc, char **argv)
 	int width = 79;
 	const char *output_file_name = "-";
 	bool use_backspaces = true;
+	bool enable_links = false;
 
 	int i;
 	for (i = 1; i < argc && argv[i][0] == '-' && argv[i][1]; i++) {
@@ -300,10 +297,6 @@ main(int argc, char **argv)
 		if (number_of_input_urls != 1) {
 			*osp << "###### " << input_url << " ######" << std::endl;
 		}
-
-		links = new OrderedList;
-		links->items.reset(new list<auto_ptr<ListItem>>);
-		links->nesting = 0;
 
 		istream     *isp;
 		urlistream  uis;

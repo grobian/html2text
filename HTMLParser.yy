@@ -790,6 +790,18 @@ special:
     a->attributes.reset($1);
     a->texts.reset($3);
     $$ = a;
+
+	string href = get_attribute(a->attributes.get(), "HREF", "");
+	if (drv.enable_links && href.at(0) != '#') {
+        ListNormalItem *lni = new ListNormalItem;
+        PCData *d = new PCData;
+        d->text = href;
+        list<auto_ptr<Element>> *data = new list<auto_ptr<Element>>;
+        data->push_back(auto_ptr<Element>(d));
+        lni->flow.reset(data);
+        drv.links->items->push_back(auto_ptr<ListItem>(lni));
+        a->refnum = drv.links->items->size();
+    }
   }
   | IMG {
     Image *i = new Image;

@@ -32,6 +32,8 @@ class HTMLDriver {
 		void process(const Document&);
 		bool read_cdata(const char *terminal, string *);
 		int list_nesting = 0;
+		bool enable_links;
+		OrderedList *links = nullptr;
 
 		enum {
 			PRINT_AS_ASCII, UNPARSE, SYNTAX_CHECK
@@ -40,7 +42,6 @@ class HTMLDriver {
 	private:
 		HTMLControl& control;
 		bool trace_parsing;
-		bool enable_links;
 		int width;
 		int mode;
 		ostream& os;

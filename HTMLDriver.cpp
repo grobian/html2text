@@ -15,8 +15,6 @@
 #include "HTMLControl.h"
 #include "HTMLParser.tab.hh"
 
-extern OrderedList *links;
-
 HTMLDriver::HTMLDriver(HTMLControl& c,
 		ostream& os_,
 		bool& enable_links_,
@@ -30,6 +28,9 @@ HTMLDriver::HTMLDriver(HTMLControl& c,
 	mode(mode_),
 	trace_parsing(debug_parser)
 {
+	links = new OrderedList;
+	links->items.reset(new list<auto_ptr<ListItem>>);
+	links->nesting = 0;
 };
 
 int HTMLDriver::parse()

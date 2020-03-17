@@ -52,9 +52,6 @@
 using std::endl;
 using std::flush;
 
-extern OrderedList *links;
-extern bool enable_links;
-
 #ifndef nelems
 #define nelems(array) (sizeof(array) / sizeof((array)[0]))
 #endif
@@ -1143,29 +1140,13 @@ Font2::line_format() const
 }
 
 static char
-get_link_cell_attributes(const string &href, int *refnum)
+get_link_cell_attributes(const string &href)
 {
 	if (href.at(0) == '#') {
-		*refnum = 0;
-
 		static const char internal_link_attributes =
 			Formatting::getAttributes("A.attributes.internal_link", Cell::UNDERLINE);
 		return internal_link_attributes;
 	} else {
-		if (!enable_links) {
-			*refnum = 0;
-		} else if (*refnum == 0) {
-			ListNormalItem *lni = new ListNormalItem;
-			PCData *d = new PCData;
-			d->text = href;
-			list<auto_ptr<Element>> *data = new list<auto_ptr<Element>>;
-			data->push_back(auto_ptr<Element>(d));
-			lni->flow.reset(data);
-			links->items->push_back(auto_ptr<ListItem>(lni));
-
-			*refnum = links->items->size();
-		}
-
 		static const char external_link_attributes =
 			Formatting::getAttributes("A.attributes.external_link", Cell::UNDERLINE);
 		return external_link_attributes;
@@ -1182,7 +1163,7 @@ Anchor::line_format() const
 
 	string href(get_attribute(attributes.get(), "HREF", ""));
 	if (!href.empty()) {
-		res->add_attribute(get_link_cell_attributes(href, &refnum));
+		res->add_attribute(get_link_cell_attributes(href));
 		if (refnum > 0) {
 			char refnumstr[16];
 			snprintf(refnumstr, sizeof(refnumstr), "[%d]", refnum);
@@ -1201,7 +1182,7 @@ Anchor::format(Area::size_type w, int halign) const
 
 	string href(get_attribute(attributes.get(), "HREF", ""));
 	if (!href.empty()) {
-		res->add_attribute(get_link_cell_attributes(href, &refnum));
+		res->add_attribute(get_link_cell_attributes(href));
 		if (refnum > 0) {
 			char refnumstr[16];
 			snprintf(refnumstr, sizeof(refnumstr), "[%d]", refnum);
