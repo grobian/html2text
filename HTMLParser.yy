@@ -792,7 +792,7 @@ special:
     $$ = a;
 
 	string href = get_attribute(a->attributes.get(), "HREF", "");
-	if (drv.enable_links && href.at(0) != '#') {
+	if (drv.enable_links && !href.empty() && href.at(0) != '#') {
         ListNormalItem *lni = new ListNormalItem;
         PCData *d = new PCData;
         d->text = href;
