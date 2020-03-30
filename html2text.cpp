@@ -91,8 +91,7 @@ main(int argc, char **argv)
 
 	if (argc == 2 && !strcmp(argv[1], "-version")) {
 		std::cout
-			<< "This is html2text, version " stringify(VERSION)
-			<< " a fork of 1.3.2a" << std::endl
+			<< "This is html2text, version " stringify(VERSION) << std::endl
 			<< std::endl
 			<< "The latest version can be found at "
 			<< "https://github.com/grobian/html2text" << std::endl
