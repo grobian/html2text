@@ -317,6 +317,8 @@ main(int argc, char **argv)
 
 		if (driver.parse() != 0)
 			exit(1);
+
+		uis.close();
 	}
 
 	return 0;
