@@ -68,6 +68,7 @@ static pack(Option)
 static pack(DefinitionListItem)
 static pack(Script)
 static pack(Style)
+static pack(Meta)
 
 #undef pack
 
@@ -134,11 +135,16 @@ Head::unparse(ostream &os, ostream_manipulator separator) const
 		os << "<BASE" << base_attributes << ">" << std::endl;
 	foreach(scripts, os, separator);
 	foreach(styles, os, separator);
-	if (meta_attributes.get())
-		os << "<META" << meta_attributes << ">" << std::endl;
+	foreach(metas, os, separator);
 	if (link_attributes.get())
 		os << "<LINK" << link_attributes << ">" << std::endl;
 	os << "</HEAD>" << separator;
+}
+
+void
+Meta::unparse(ostream &os, ostream_manipulator separator) const
+{
+	os << "<META" << attributes << ">" << separator;
 }
 
 void

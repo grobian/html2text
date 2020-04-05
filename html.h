@@ -452,13 +452,19 @@ struct Style {
 	void unparse(ostream &, ostream_manipulator separator) const;
 };
 
+struct Meta {
+	auto_ptr<list<TagAttribute> > attributes;    // HTTP-EQUIV NAME CONTENT
+
+	void unparse(ostream &, ostream_manipulator separator) const;
+};
+
 struct Head {
 	auto_ptr<PCData>              title;
 	auto_ptr<list<TagAttribute> > isindex_attributes; // PROMPT
 	auto_ptr<list<TagAttribute> > base_attributes;  // HREF
 	list<auto_ptr<Script> >       scripts;
 	list<auto_ptr<Style> >        styles;
-	auto_ptr<list<TagAttribute> > meta_attributes;  // HTTP-EQUIV NAME CONTENT
+	list<auto_ptr<Meta> >         metas;
 	auto_ptr<list<TagAttribute> > link_attributes;  // HREF REL REV TITLE
 
 	void unparse(ostream &, ostream_manipulator separator) const;

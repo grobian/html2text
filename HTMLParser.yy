@@ -336,7 +336,9 @@ document_:
     ($$ = $1)->head.base_attributes.reset($2);
   }
   | document_ META {
-    ($$ = $1)->head.meta_attributes.reset($2);
+    auto_ptr<Meta> s(new Meta);
+    s->attributes.reset($2);
+    ($$ = $1)->head.metas.push_back(s);
   }
   | document_ LINK {
     ($$ = $1)->head.link_attributes.reset($2);
