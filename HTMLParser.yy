@@ -804,9 +804,47 @@ special:
     }
   }
   | IMG {
-    Image *i = new Image;
-    i->attributes.reset($1);
-    $$ = i;
+	auto_ptr<list<TagAttribute>> attr;
+	attr.reset($1);
+	string src = get_attribute(attr.get(), "SRC", "");
+	string alt = get_attribute(attr.get(), "ALT", "");
+	/* when ALT is empty, and SRC is what seems like an URL, replace it
+	 * with a link */
+	if (drv.enable_links &&
+		!src.empty() && src.compare(0, 4, "http") == 0 &&
+		alt.empty())
+	{
+		PCData *d = new PCData;
+		string nothing = "";
+        d->text = nothing;
+        list<auto_ptr<Element>> *data = new list<auto_ptr<Element>>;
+        data->push_back(auto_ptr<Element>(d));
+
+		TagAttribute attribute;
+		string href = "HREF";
+		attribute.first = href;
+		attribute.second = src;
+		attr->push_back(attribute);
+
+		Anchor *a = new Anchor;
+		a->attributes = attr;
+		a->texts.reset(data);
+
+        ListNormalItem *lni = new ListNormalItem;
+		d = new PCData;
+        d->text = src;
+        data = new list<auto_ptr<Element>>;
+        data->push_back(auto_ptr<Element>(d));
+        lni->flow.reset(data);
+        drv.links->items->push_back(auto_ptr<ListItem>(lni));
+        a->refnum = drv.links->items->size();
+
+		$$ = a;
+	} else {
+		Image *i = new Image;
+		i->attributes = attr;
+		$$ = i;
+	}
   }
   | APPLET applet_content END_APPLET {
     Applet *a = new Applet;
