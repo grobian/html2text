@@ -426,7 +426,7 @@ HTMLControl::yylex2(html2text::HTMLParser::semantic_type *value_return,
 						attribute.first = c;
 						for (;;) {
 							c = get_char();
-							if (!isalpha(c) && c != '-' && c != '_' && c != ':')
+							if (!isalnum(c) && c != '-' && c != '_' && c != ':')
 								break;
 							// Same as in line 352 - Arno
 							attribute.first += c;
