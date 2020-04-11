@@ -242,6 +242,7 @@
 &yen;     "YEN"
 &yuml;    "y""
 &zeta;    "z"
+&zwnj;    ""
 
 /* proposed, but not implemented substitutes */
 

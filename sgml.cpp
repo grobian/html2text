@@ -313,6 +313,7 @@ entities[] = {
 	{ "yen", LATIN1_yen, "YEN", 0x00a5 },
 	{ "yuml", LATIN1_yuml, "y\"", 0x00ff },
 	{ "zeta", 0, "z", 0x03b6 },
+	{ "zwnj", 0, "", 0x200c },
 };
 
 extern int use_encoding;
