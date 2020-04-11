@@ -48,40 +48,17 @@ using std::string;
 /* ------------------------------------------------------------------------- */
 
 /*
- * Similar to an "ifstream", but "open()" is overloaded: Pass an URL instead
- * of a file name.
+ * Similar to an "ifstream", but "open()" is overloaded: allow a
+ * conversion to take place.
  */
 class urlistream /* : public ifstream */ {
 public:
-enum {
-	default_timeout = 10000
-};
 
 urlistream() : open_error_(0), fd_(-1)
 {}
-urlistream(
-	const char *url,
-	int timeout = default_timeout          // Milliseconds
-	) : open_error_(0), fd_(-1)
-{
-	open(url, timeout);
-}
-urlistream(
-	const string &url,
-	int timeout = default_timeout            // Milliseconds
-	) : open_error_(0), fd_(-1)
-{
-	open(url, timeout);
-}
 
-void open(
-	const char *url,
-	int timeout = default_timeout          // Milliseconds
-	);
-void open(
-	const string &url,
-	int timeout = default_timeout            // Milliseconds
-	);
+void open(const char *url, const char *encoding);
+void open(const string &url, const char *encoding);
 int is_open() const
 {
 	return fd_ > 0;
@@ -94,7 +71,6 @@ const char *open_error() const;
 int get();
 
 private:
-void http_open(const char *address, int timeout);
 void file_open(const char *file_name);
 
 const char *open_error_;
