@@ -111,7 +111,7 @@ main(int argc, char **argv)
 	bool debug_scanner = false;
 	bool debug_parser = false;
 	const char *home = getenv("HOME");
-	string rcfile = string(home ? home : "") + "/.html2textrc";
+	const char *rcfile = NULL;
 	const char *style = "compact";
 	int width = 79;
 	const char *output_file_name = "-";
@@ -119,6 +119,8 @@ main(int argc, char **argv)
 	bool enable_links = false;
 	const char *from_encoding = NULL;
 	const char *to_encoding = NULL;
+	const char *widthstr = NULL;
+	const char **extarg = NULL;
 
 	int i;
 	for (i = 1; i < argc && argv[i][0] == '-' && argv[i][1]; i++) {
@@ -133,34 +135,23 @@ main(int argc, char **argv)
 		} else if (!strcmp(arg, "-debug-parser")) {
 			debug_parser = true;
 		} else if (!strcmp(arg, "-rcfile")) {
-			rcfile = argv[++i];
+			extarg = &rcfile;
 		} else if (!strcmp(arg, "-style")) {
-			style = argv[++i];
+			extarg = &style;
 		} else if (!strcmp(arg, "-links")) {
 			enable_links = true;
 		} else if (!strcmp(arg, "-width")) {
-			int nwidth = atoi(argv[++i]);
-			if (nwidth > 10) {
-				width = nwidth;
-			} else {
-				std::cerr
-					<< "width '" << nwidth << "' invalid, must be >10"
-					<< std::endl;
-				exit(1);
-			}
+			extarg = &widthstr;
 		} else if (!strcmp(arg, "-o")) {
-			output_file_name = argv[++i];
+			extarg = &output_file_name;
 		} else if (!strcmp(arg, "-nobs")) {
 			use_backspaces = false;
 		} else if (!strcmp(arg, "-from_encoding")) {
-			from_encoding = argv[++i];
+			extarg = &from_encoding;
 		} else if (!strcmp(arg, "-to_encoding")) {
-			to_encoding = argv[++i];
+			extarg = &to_encoding;
 		} else if (!strcmp(arg, "-ascii")) {
 			to_encoding = "ASCII//TRANSLIT";  /* create things like (c) */
-		} else if (!strcmp(arg, "-utf8")) {
-			from_encoding = "UTF-8";
-			to_encoding = "UTF-8";
 		} else {
 			std::cerr
 				<< "Unrecognized command line option \""
@@ -168,6 +159,30 @@ main(int argc, char **argv)
 				<< "\", try \"-help\"."
 				<< std::endl;
 			exit(1);
+		}
+
+		if (extarg != NULL) {
+			if (++i >= argc) {
+				std::cerr
+					<< "Option \"" << arg << "\" needs an additional "
+					<< "argument."
+					<< std::endl;
+				exit(1);
+			}
+			*extarg = argv[i];
+
+			/* handle the only integer argument inline */
+			if (extarg == &widthstr) {
+				int nwidth = atoi(widthstr);
+				if (nwidth > 10) {
+					width = nwidth;
+				} else {
+					std::cerr
+						<< "width '" << nwidth << "' invalid, must be >10"
+						<< std::endl;
+					exit(1);
+				}
+			}
 		}
 	}
 	if (i > argc) {
@@ -283,12 +298,16 @@ main(int argc, char **argv)
 	}
 
 	{
-		std::ifstream ifs(rcfile.c_str());
-		if (!ifs.rdbuf()->is_open())
+		std::ifstream ifs;
+
+		if (rcfile == NULL && home != NULL)
+			rcfile = (string(home) + "/.html2textrc").c_str();
+		if (rcfile != NULL)
+			ifs.open(rcfile);
+		if (rcfile == NULL || !ifs.rdbuf()->is_open())
 			ifs.open("/etc/html2textrc");
-		if (ifs.rdbuf()->is_open()) {
+		if (ifs.rdbuf()->is_open())
 			Formatting::loadProperties(ifs);
-		}
 	}
 
 	/*
