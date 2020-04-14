@@ -40,7 +40,7 @@
 
 #include <sys/types.h>
 #include <string>
-#include <istream>
+#include "iconvstream.h"
 
 #ifdef BOOL_DEFINITION
 BOOL_DEFINITION
@@ -48,8 +48,6 @@ BOOL_DEFINITION
 #endif
 
 using std::string;
-using std::ostream;
-
 
 /* ------------------------------------------------------------------------- */
 
@@ -240,7 +238,7 @@ class Area {
 		size_type height_;
 		Cell      **cells_;
 
-		friend ostream &operator<<(ostream &, const Area &);
+		friend iconvstream &operator<<(iconvstream&, const Area &);
 };
 
 /* ------------------------------------------------------------------------- */

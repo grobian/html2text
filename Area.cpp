@@ -33,15 +33,11 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <iostream>
 
 #include "Area.h"
 #include "html.h"
 #include "string.h"
-
-#define LATIN1_nbsp 160
-
-extern int use_encoding;
+#include "iconvstream.h"
 
 /* ------------------------------------------------------------------------- */
 
@@ -98,8 +94,7 @@ Line::~Line()
  *     Very simplified algorithm of calculating length of UTF-8
  *   string. No check for errors. Counting only ASCII bytes and
  *   leading bytes of UTF-8 multibyte sequences. All bytes like
- *   10xxxxxx are dropped. If USE_UTF8 is false then returns
- *   usual length.               --YS
+ *   10xxxxxx are dropped.    --YS
  */
 
 unsigned int
@@ -107,11 +102,9 @@ Line::utf_length(size_type f, size_type t) const
 {
 	size_type m = (t < length_ ? t : length_);
 	size_type r = m - f;
-	if (USE_UTF8) {
-		for (int i = f; i < m; i++)
-			if ((cells_[i].character & 0xc0) == 0x80)
-				r--;
-	}
+	for (int i = f; i < m; i++)
+		if ((cells_[i].character & 0xc0) == 0x80)
+			r--;
 	return r;
 }
 
@@ -312,19 +305,17 @@ unsigned int
 Area::utf_width()
 {
 	size_type r = width_;
-	if (USE_UTF8) {
-		r = 0;
-		for (size_type yy = 0; yy < height_; yy++) {
-			size_type r1 = 0;
-			for (int i = width_ - 1; i >= 0; i--) {
-				if (!r1 && isspace(cells_[yy][i].character))
-					continue;
-				if ((cells_[yy][i].character & 0xc0) != 0x80)
-					r1++;
-			}
-			if (r < r1)
-				r = r1;
+	r = 0;
+	for (size_type yy = 0; yy < height_; yy++) {
+		size_type r1 = 0;
+		for (int i = width_ - 1; i >= 0; i--) {
+			if (!r1 && isspace(cells_[yy][i].character))
+				continue;
+			if ((cells_[yy][i].character & 0xc0) != 0x80)
+				r1++;
 		}
+		if (r < r1)
+			r = r1;
 	}
 	return r;
 }
@@ -527,48 +518,47 @@ Area::add_attribute(
 
 /* ------------------------------------------------------------------------- */
 
-ostream &backspace(ostream &os)
-{
-	return os << '\b';
-}
+static char backspace = '\b';
 
-ostream &
-operator<<(ostream &os, const Area &a)
+iconvstream &
+operator<<(iconvstream& os, const Area &a)
 {
 	for (Area::size_type y = 0; y < a.height(); y++) {
-		const Cell *cell = a.cells_[y], *end = cell + a.width();
+		const Cell *cell = a.cells_[y];
+		const Cell *end = cell + a.width();
 		while (
-			end != cell &&
-			end[-1].character == ' ' &&
-			(end[-1].attribute & (Cell::UNDERLINE | Cell::STRIKETHROUGH)) == 0
-			)
+				end != cell && end[-1].character == ' ' &&
+				(end[-1].attribute &
+				 (Cell::UNDERLINE | Cell::STRIKETHROUGH)) == 0
+			  )
 			end--;
 
 		for (const Cell *p = cell; p != end; p++) {
 			char c = p->character;
 			char a = p->attribute;
 
-			if (c == (char) LATIN1_nbsp && !USE_UTF8)
-				c = ' ';
-
-			if (a == Cell::NONE) {
+			/* do not underline utf-8 continuation sequences */
+			if (a == Cell::NONE || (c & 0xC0) == 0x80) {
 				os << c;
 			} else {
 				if (Area::use_backspaces) {
 					/*
-					 * No LESS / terminal combination that I know of supports
-					 * dash-backspace-character as "strikethrough". Pity.
+					 * No LESS / terminal combination that I know of
+					 * supports dash-backspace-character as
+					 * "strikethrough". Pity.
 					 */
 					if (a & Cell::STRIKETHROUGH)
 						os << '-' << backspace;
 
 					/*
-					 * No LESS that I know of can combine underlining and boldface. In
-					 * practice, boldface always takes precedence.
+					 * No LESS that I know of can combine underlining
+					 * and boldface. In practice, boldface always takes
+					 * precedence.
 					 *
-					 * It's not a good idea to optimize an underlined space as a single
-					 * underscore (as opposed to underscore-backspace-space) -- this
-					 * would not look nice next to an underlined character.
+					 * It's not a good idea to optimize an underlined
+					 * space as a single underscore (as opposed to
+					 * underscore-backspace-space) -- this would not
+					 * look nice next to an underlined character.
 					 */
 					if ((a & Cell::UNDERLINE))
 						os << '_' << backspace;
@@ -580,7 +570,7 @@ operator<<(ostream &os, const Area &a)
 				}
 			}
 		}
-		os << std::endl;
+		os << endl;
 	}
 
 	return os;

@@ -123,6 +123,35 @@ else
 fi;
 
 #
+# $ICONV_LIBRARIES
+#
+
+$echo 'Checking for iconv libraries... \c';
+ICONV_LIBRARIES=unknown;
+cat >$tmp_file.C <<EOF;
+#include <iconv.h>
+int main() {
+  iconv_open("", "");
+  return 0;
+}
+EOF
+for i in "" "-liconv"; do
+  if $CXX $tmp_file.C $i -o $tmp_file 2>/dev/null; then
+    ICONV_LIBRARIES="$i";
+    break;
+  fi;
+done;
+if test "$ICONV_LIBRARIES" = unknown; then
+  $echo "Error: Could not determine the library for the iconv API.";
+  exit 1;
+fi;
+if test "$ICONV_LIBRARIES" = ""; then
+  $echo "no extra libraries required";
+else
+  $echo "use \"$ICONV_LIBRARIES\"";
+fi;
+
+#
 # $BOOL_DEFINITION
 #
 
@@ -276,6 +305,7 @@ cmd=sed;
 for i in \
   SYS_POLL_MISSING \
   SOCKET_LIBRARIES \
+  ICONV_LIBRARIES \
   CXX \
   BOOL_DEFINITION \
   EXPLICIT \

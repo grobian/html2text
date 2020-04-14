@@ -488,7 +488,7 @@ HTMLControl::yylex2(html2text::HTMLParser::semantic_type *value_return,
 					}
 				}
 
-// accept XHTML tags like <hr /> - Alexander Solovey
+				// accept XHTML tags like <hr /> - Alexander Solovey
 
 				if (c != '>') {
 					if (c == '/') {
@@ -522,8 +522,7 @@ HTMLControl::yylex2(html2text::HTMLParser::semantic_type *value_return,
 				const TextToIntP *tag = (const TextToIntP *) bsearch(
 						tag_name.c_str(),
 						tag_names, nelems(tag_names), sizeof(TextToIntP),
-						(int (*)(const void *, const void *))f
-						);
+						(int (*)(const void *, const void *))f);
 				if (tag == NULL) { /* EXTENSION: Swallow unknown tags. */
 					if (debug_scanner) {
 						std::cerr << "Tag unknown -- swallowed." << std::endl;
@@ -579,7 +578,15 @@ HTMLControl::yylex2(html2text::HTMLParser::semantic_type *value_return,
 					}
 				}
 
-				*s += c;
+				*s += c & 0xFF;
+				if ((c >> 7) & 1) {
+					unsigned int d = c;
+					unsigned char point = 1;
+					while ((c >> (7 - point++)) & 1) {
+						d >>= 8;
+						*s += d & 0xFF;
+					};
+				}
 				c = get_char();
 			}
 
@@ -636,22 +643,44 @@ HTMLControl::read_cdata(const char *terminal, string *value_return)
 int
 HTMLControl::get_char()
 {
+	/* our input is always converted to UTF-8, so load bytes as required */
+	unsigned int c = 0;
+
 	if (number_of_ungotten_chars > 0) {
-		return ungotten_chars[--number_of_ungotten_chars];
-	}
-
-	int c = is.get();
-	while (c == '\r')
-		c = is.get();
-
-	if (c == EOF) {
-		;
-	} else if (c == '\n') {
-		current_line++;
-		current_column = 0;
+		c = ungotten_chars[--number_of_ungotten_chars];
 	} else {
-		current_column++;
+		c = is.get();
+		while (c == '\r')
+			c = is.get();
+
+		if (c == EOF) {
+			;
+		} else if (c == '\n') {
+			current_line++;
+			current_column = 0;
+		} else {
+			current_column++;
+			if ((c >> 7) & 1) {
+				unsigned char nextpoint = 1;
+
+				/* we assume iconv produced valid UTF-8 here */
+				while ((c >> (7 - nextpoint)) & 1)
+					c |= ((is.get() & 0xFF) << (8 * nextpoint++));
+			}
+		}
 	}
+
+#if 0
+	if ((c >> 7) & 1) {
+		unsigned int d = c;
+		unsigned char point = 1;
+		fprintf(stderr, "utf-8 start %02x\n", c & 0xFF);
+		while ((c >> (7 - point++)) & 1) {
+			d >>= 8;
+			fprintf(stderr, "utf-8 join  %02x\n", d & 0xFF);
+		};
+	}
+#endif
 
 	return c;
 }

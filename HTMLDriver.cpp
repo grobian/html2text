@@ -14,9 +14,10 @@
 #include "HTMLDriver.h"
 #include "HTMLControl.h"
 #include "HTMLParser.tab.hh"
+#include "iconvstream.h"
 
 HTMLDriver::HTMLDriver(HTMLControl& c,
-		ostream& os_,
+		iconvstream& os_,
 		bool& enable_links_,
 		int& width_,
 		int& mode_,
@@ -65,7 +66,7 @@ void HTMLDriver::process(const Document& document)
 		break;
 
 	case UNPARSE:
-		document.unparse(os, std::endl);
+		document.unparse(os, endl);
 		break;
 
 	case SYNTAX_CHECK:

@@ -34,11 +34,11 @@
 
 #include <stdlib.h>
 #include <stdarg.h>
-#include <iostream>
 
 #include "html.h"
 #include "HTMLParser.tab.hh"
 #include "cmp_nocase.h"
+#include "iconvstream.h"
 
 /* ------------------------------------------------------------------------- */
 
@@ -56,7 +56,7 @@
 #define pack(T) \
 	define_foreach(list<auto_ptr<T> >, ( \
 			const list<auto_ptr<T> > &l, \
-			ostream & os, \
+			iconvstream& os, \
 			ostream_manipulator separator \
 			), (*i)->unparse(os, separator))
 
@@ -75,7 +75,8 @@ static pack(Meta)
 /*
  * Special helper for "const auto_ptr<list<TagAttribute> > &".
  */
-static ostream &operator<<(ostream & os, const auto_ptr<list<TagAttribute> > &a)
+static iconvstream &operator<<(iconvstream& os,
+		const auto_ptr<list<TagAttribute> > &a)
 {
 	if (a.get()) {
 		const list<TagAttribute> &al(*a);
@@ -84,16 +85,6 @@ static ostream &operator<<(ostream & os, const auto_ptr<list<TagAttribute> > &a)
 			os << " " << (*i).first << "=\"" << (*i).second << "\"";
 		}
 	}
-	return os;
-}
-
-/* ------------------------------------------------------------------------- */
-
-/*
- * Brothers of "endl".
- */
-static ostream &none(ostream &os)
-{
 	return os;
 }
 
@@ -111,7 +102,7 @@ Element::~Element()
 /* ------------------------------------------------------------------------- */
 
 void
-Document::unparse(ostream &os, ostream_manipulator separator) const
+Document::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<HTML" << attributes << ">" << separator;
 	head.unparse(os, separator);
@@ -120,7 +111,7 @@ Document::unparse(ostream &os, ostream_manipulator separator) const
 }
 
 void
-Head::unparse(ostream &os, ostream_manipulator separator) const
+Head::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<HEAD>" << separator;
 	if (title.get()) {
@@ -129,26 +120,26 @@ Head::unparse(ostream &os, ostream_manipulator separator) const
 		os << "</TITLE>" << separator;
 	}
 	if (isindex_attributes.get()) {
-		os << "<ISINDEX" << isindex_attributes << ">" << std::endl;
+		os << "<ISINDEX" << isindex_attributes << ">" << endl;
 	}
 	if (base_attributes.get())
-		os << "<BASE" << base_attributes << ">" << std::endl;
+		os << "<BASE" << base_attributes << ">" << endl;
 	foreach(scripts, os, separator);
 	foreach(styles, os, separator);
 	foreach(metas, os, separator);
 	if (link_attributes.get())
-		os << "<LINK" << link_attributes << ">" << std::endl;
+		os << "<LINK" << link_attributes << ">" << endl;
 	os << "</HEAD>" << separator;
 }
 
 void
-Meta::unparse(ostream &os, ostream_manipulator separator) const
+Meta::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<META" << attributes << ">" << separator;
 }
 
 void
-Script::unparse(ostream &os, ostream_manipulator separator) const
+Script::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os
 		<< "<SCRIPT" << attributes << ">" << separator
@@ -157,7 +148,7 @@ Script::unparse(ostream &os, ostream_manipulator separator) const
 }
 
 void
-Style::unparse(ostream &os, ostream_manipulator separator) const
+Style::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os
 		<< "<STYLE" << attributes << ">" << separator
@@ -166,7 +157,7 @@ Style::unparse(ostream &os, ostream_manipulator separator) const
 }
 
 void
-Body::unparse(ostream &os, ostream_manipulator separator) const
+Body::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<BODY" << attributes << ">" << separator;
 	if (content.get())
@@ -175,28 +166,26 @@ Body::unparse(ostream &os, ostream_manipulator separator) const
 }
 
 void
-PCData::unparse(ostream &os, ostream_manipulator separator) const
+PCData::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	for (string::size_type j = 0; j < text.length(); ++j) {
 		char c = text[j];
 		switch (((int) c) & 255) {
-		case LATIN1_nbsp: os << "&nbsp;";
-			break;
-		case '&':         os << "&amp;";
-			break;
-		case '<':         os << "&lt;";
-			break;
-		case '>':         os << "&gt;";
-			break;
-		case '"':         os << "&quot;";
-			break;
-		default:
-			if (c & 0x80) {
-				os << "&#" << (((int) c) & 255) << ";";
-			} else {
-				os << c;
-			}
-			break;
+			case '&':         os << "&amp;";
+							  break;
+			case '<':         os << "&lt;";
+							  break;
+			case '>':         os << "&gt;";
+							  break;
+			case '"':         os << "&quot;";
+							  break;
+			default:
+							  if (c & 0x80) {
+								  os << "&#" << (((int) c) & 255) << ";";
+							  } else {
+								  os << c;
+							  }
+							  break;
 		}
 	}
 
@@ -204,7 +193,7 @@ PCData::unparse(ostream &os, ostream_manipulator separator) const
 }
 
 void
-Heading::unparse(ostream &os, ostream_manipulator separator) const
+Heading::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<H" << level << attributes << ">" << separator;
 	if (content.get())
@@ -213,7 +202,7 @@ Heading::unparse(ostream &os, ostream_manipulator separator) const
 }
 
 void
-Paragraph::unparse(ostream &os, ostream_manipulator separator) const
+Paragraph::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<P" << attributes << ">" << separator;
 	if (texts.get())
@@ -222,13 +211,13 @@ Paragraph::unparse(ostream &os, ostream_manipulator separator) const
 }
 
 void
-Image::unparse(ostream &os, ostream_manipulator separator) const
+Image::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<IMG" << attributes << ">" << separator;
 }
 
 void
-Applet::unparse(ostream &os, ostream_manipulator separator) const
+Applet::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<APPLET" << attributes << ">" << separator;
 	if (content.get())
@@ -237,13 +226,13 @@ Applet::unparse(ostream &os, ostream_manipulator separator) const
 }
 
 void
-Param::unparse(ostream &os, ostream_manipulator separator) const
+Param::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<PARAM" << attributes << ">" << separator;
 }
 
 void
-Division::unparse(ostream &os, ostream_manipulator separator) const
+Division::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<DIV" << attributes << ">" << separator;
 	if (body_content.get())
@@ -252,7 +241,7 @@ Division::unparse(ostream &os, ostream_manipulator separator) const
 }
 
 void
-Center::unparse(ostream &os, ostream_manipulator separator) const
+Center::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<CENTER>" << separator;
 	if (body_content.get())
@@ -261,7 +250,7 @@ Center::unparse(ostream &os, ostream_manipulator separator) const
 }
 
 void
-BlockQuote::unparse(ostream &os, ostream_manipulator separator) const
+BlockQuote::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<BLOCKQUOTE>" << separator;
 	if (content.get())
@@ -270,7 +259,7 @@ BlockQuote::unparse(ostream &os, ostream_manipulator separator) const
 }
 
 void
-Address::unparse(ostream &os, ostream_manipulator separator) const
+Address::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<ADDRESS>" << separator;
 	if (content.get())
@@ -279,7 +268,7 @@ Address::unparse(ostream &os, ostream_manipulator separator) const
 }
 
 void
-Form::unparse(ostream &os, ostream_manipulator separator) const
+Form::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<FORM" << attributes << ">" << separator;
 	if (content.get())
@@ -288,59 +277,59 @@ Form::unparse(ostream &os, ostream_manipulator separator) const
 }
 
 void
-Preformatted::unparse(ostream &os, ostream_manipulator separator) const
+Preformatted::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<PRE" << attributes << ">" << separator;
 	if (texts.get()) {
-		foreach(*texts, os, none);
+		foreach(*texts, os, '\0');
 		os << separator;
 	}
 	os << "</PRE>" << separator;
 }
 
 void
-HorizontalRule::unparse(ostream &os, ostream_manipulator separator) const
+HorizontalRule::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<HR" << attributes << ">" << separator;
 }
 
 void
-Input::unparse(ostream &os, ostream_manipulator separator) const
+Input::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<INPUT" << attributes << ">" << separator;
 }
 
 void
-Option::unparse(ostream &os, ostream_manipulator separator) const
+Option::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<OPTION" << attributes << ">" << separator;
 	if (pcdata.get())
 		pcdata->unparse(os, separator);
-	os << "</OPTION>" << std::endl;
+	os << "</OPTION>" << endl;
 }
 
 void
-Select::unparse(ostream &os, ostream_manipulator separator) const
+Select::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<SELECT" << attributes << ">" << separator;
 	if (content.get())
 		foreach(*content, os, separator);
-	os << "</SELECT>" << std::endl;
+	os << "</SELECT>" << endl;
 }
 
 void
-TextArea::unparse(ostream &os, ostream_manipulator separator) const
+TextArea::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<TEXTAREA" << attributes << ">" << separator;
 	if (pcdata.get())
 		pcdata->unparse(os, separator);
-	os << "</TEXTAREA>" << std::endl;
+	os << "</TEXTAREA>" << endl;
 }
 
 /* ------------------------------------------------------------------------- */
 
 void
-OrderedList::unparse(ostream &os, ostream_manipulator separator) const
+OrderedList::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<OL" << attributes << ">" << separator;
 	if (items.get())
@@ -349,7 +338,7 @@ OrderedList::unparse(ostream &os, ostream_manipulator separator) const
 }
 
 void
-UnorderedList::unparse(ostream &os, ostream_manipulator separator) const
+UnorderedList::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<UL" << attributes << ">" << separator;
 	if (items.get())
@@ -358,7 +347,7 @@ UnorderedList::unparse(ostream &os, ostream_manipulator separator) const
 }
 
 void
-Dir::unparse(ostream &os, ostream_manipulator separator) const
+Dir::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<DIR" << attributes << ">" << separator;
 	if (items.get())
@@ -367,7 +356,7 @@ Dir::unparse(ostream &os, ostream_manipulator separator) const
 }
 
 void
-Menu::unparse(ostream &os, ostream_manipulator separator) const
+Menu::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<MENU" << attributes << ">" << separator;
 	if (items.get())
@@ -376,7 +365,7 @@ Menu::unparse(ostream &os, ostream_manipulator separator) const
 }
 
 void
-ListNormalItem::unparse(ostream &os, ostream_manipulator separator) const
+ListNormalItem::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<LI" << attributes << ">" << separator;
 	if (flow.get())
@@ -385,7 +374,7 @@ ListNormalItem::unparse(ostream &os, ostream_manipulator separator) const
 }
 
 void
-ListBlockItem::unparse(ostream &os, ostream_manipulator separator) const
+ListBlockItem::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	if (block.get())
 		block->unparse(os, separator);
@@ -394,7 +383,7 @@ ListBlockItem::unparse(ostream &os, ostream_manipulator separator) const
 /* ------------------------------------------------------------------------- */
 
 void
-DefinitionList::unparse(ostream &os, ostream_manipulator separator) const
+DefinitionList::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<DL" << attributes << ">" << separator;
 	if (items.get())
@@ -403,7 +392,7 @@ DefinitionList::unparse(ostream &os, ostream_manipulator separator) const
 }
 
 void
-TermName::unparse(ostream &os, ostream_manipulator separator) const
+TermName::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<DT>" << separator;
 	if (flow.get())
@@ -412,7 +401,7 @@ TermName::unparse(ostream &os, ostream_manipulator separator) const
 }
 
 void
-TermDefinition::unparse(ostream &os, ostream_manipulator separator) const
+TermDefinition::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<DD>" << separator;
 	if (flow.get())
@@ -423,7 +412,7 @@ TermDefinition::unparse(ostream &os, ostream_manipulator separator) const
 /* ------------------------------------------------------------------------- */
 
 void
-Table::unparse(ostream &os, ostream_manipulator separator) const
+Table::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<TABLE" << attributes << ">" << separator;
 	if (caption.get())
@@ -434,7 +423,7 @@ Table::unparse(ostream &os, ostream_manipulator separator) const
 }
 
 void
-NoBreak::unparse(ostream &os, ostream_manipulator separator) const
+NoBreak::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<NOBR>" << separator;
 	if (content.get())
@@ -443,7 +432,7 @@ NoBreak::unparse(ostream &os, ostream_manipulator separator) const
 }
 
 void
-Font::unparse(ostream &os, ostream_manipulator separator) const
+Font::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	const char *tag = (
 		attribute == HTMLParser_token::TT     ? "TT" :
@@ -465,7 +454,7 @@ Font::unparse(ostream &os, ostream_manipulator separator) const
 }
 
 void
-Phrase::unparse(ostream &os, ostream_manipulator separator) const
+Phrase::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	const char *tag = (
 		attribute == HTMLParser_token::EM     ? "EM" :
@@ -486,7 +475,7 @@ Phrase::unparse(ostream &os, ostream_manipulator separator) const
 }
 
 void
-Anchor::unparse(ostream &os, ostream_manipulator separator) const
+Anchor::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<A" << attributes << ">" << separator;
 	if (texts.get())
@@ -495,19 +484,19 @@ Anchor::unparse(ostream &os, ostream_manipulator separator) const
 }
 
 void
-BaseFont::unparse(ostream &os, ostream_manipulator separator) const
+BaseFont::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<BASEFONT" << attributes << ">" << separator;
 }
 
 void
-LineBreak::unparse(ostream &os, ostream_manipulator separator) const
+LineBreak::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<BR" << attributes << ">" << separator;
 }
 
 void
-Map::unparse(ostream &os, ostream_manipulator separator) const
+Map::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<MAP" << attributes << ">" << separator;
 	if (areas.get()) {
@@ -521,7 +510,7 @@ Map::unparse(ostream &os, ostream_manipulator separator) const
 }
 
 void
-Font2::unparse(ostream &os, ostream_manipulator separator) const
+Font2::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<FONT" << attributes << ">" << separator;
 	if (elements.get())
@@ -530,7 +519,7 @@ Font2::unparse(ostream &os, ostream_manipulator separator) const
 }
 
 void
-TableRow::unparse(ostream &os, ostream_manipulator separator) const
+TableRow::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<TR" << attributes << ">" << separator;
 	if (cells.get())
@@ -539,7 +528,7 @@ TableRow::unparse(ostream &os, ostream_manipulator separator) const
 }
 
 void
-TableCell::unparse(ostream &os, ostream_manipulator separator) const
+TableCell::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<TD" << attributes << ">" << separator;
 	if (content.get())
@@ -548,7 +537,7 @@ TableCell::unparse(ostream &os, ostream_manipulator separator) const
 }
 
 void
-TableHeadingCell::unparse(ostream &os, ostream_manipulator separator) const
+TableHeadingCell::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<TH" << attributes << ">" << separator;
 	if (content.get())
@@ -557,7 +546,7 @@ TableHeadingCell::unparse(ostream &os, ostream_manipulator separator) const
 }
 
 void
-Caption::unparse(ostream &os, ostream_manipulator separator) const
+Caption::unparse(iconvstream& os, ostream_manipulator separator) const
 {
 	os << "<CAPTION" << attributes << ">" << separator;
 	if (texts.get())

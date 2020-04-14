@@ -42,7 +42,7 @@
 #include "html.h"
 #include "HTMLControl.h"
 #include "HTMLDriver.h"
-#include "urlistream.h"
+#include "iconvstream.h"
 #include "format.h"
 
 #define stringify(x) stringify2(x)
@@ -80,8 +80,6 @@ text.\n\
   -utf8          Assume both terminal and input stream are in UTF-8 mode\n\
                  alias for: -from_encoding utf-8 -to_encoding utf-8\n\
 ";
-
-int use_encoding = ISO8859;
 
 int
 main(int argc, char **argv)
@@ -121,6 +119,8 @@ main(int argc, char **argv)
 	const char *output_file_name = "-";
 	bool use_backspaces = true;
 	bool enable_links = false;
+	const char *from_encoding = NULL;
+	const char *to_encoding = NULL;
 
 	int i;
 	for (i = 1; i < argc && argv[i][0] == '-' && argv[i][1]; i++) {
@@ -146,10 +146,15 @@ main(int argc, char **argv)
 			output_file_name = argv[++i];
 		} else if (!strcmp(arg, "-nobs")) {
 			use_backspaces = false;
+		} else if (!strcmp(arg, "-from_encoding")) {
+			from_encoding = argv[++i];
+		} else if (!strcmp(arg, "-to_encoding")) {
+			to_encoding = argv[++i];
 		} else if (!strcmp(arg, "-ascii")) {
-			use_encoding = ASCII;
+			to_encoding = "ASCII//TRANSLIT";  /* create things like (c) */
 		} else if (!strcmp(arg, "-utf8")) {
-			use_encoding = UTF8;
+			from_encoding = "UTF-8";
+			to_encoding = "UTF-8";
 		} else {
 			std::cerr
 				<< "Unrecognized command line option \""
@@ -167,6 +172,12 @@ main(int argc, char **argv)
 			<< std::endl;
 		exit(1);
 	}
+
+	/* historical defaults */
+	if (from_encoding == NULL)
+		from_encoding = "ISO-8859-1";
+	if (to_encoding == NULL)
+		to_encoding = "ISO-8859-1";
 
 	const char *const *input_urls;
 	int number_of_input_urls;
@@ -277,54 +288,45 @@ main(int argc, char **argv)
 	 */
 	Area::use_backspaces = use_backspaces;
 
-	ostream  *osp;
-	std::ofstream ofs;
+	iconvstream is;
 
-	if (!strcmp(output_file_name, "-")) {
-		osp = &std::cout;
-	} else {
-		ofs.open(output_file_name, std::ios::out);
-		if (!ofs) {
-			std::cerr
-				<< "Could not open output file \""
-				<< output_file_name
-				<< "\"."
-				<< std::endl;
-			exit(1);
-		}
-		osp = &ofs;
+	is.open_os(output_file_name, to_encoding);
+	if (!is.os_open()) {
+		std::cerr
+			<< "Could not open output file \""
+			<< output_file_name
+			<< "\": "
+			<< is.open_error_msg()
+			<< std::endl;
+		exit(1);
 	}
 
 	for (i = 0; i < number_of_input_urls; ++i) {
 		const char *input_url = input_urls[i];
 
-		if (number_of_input_urls != 1) {
-			*osp << "###### " << input_url << " ######" << std::endl;
-		}
+		if (number_of_input_urls != 1)
+			is << "###### " << input_url << " ######" << endl;
 
-		istream     *isp;
-		urlistream  uis;
-
-		uis.open(input_url, NULL);
-		if (!uis.is_open()) {
+		is.open_is(input_url, from_encoding);
+		if (!is.is_open()) {
 			std::cerr
 				<< "Opening input URL \""
 				<< input_url
 				<< "\": "
-				<< uis.open_error()
+				<< is.open_error_msg()
 				<< std::endl;
 			exit(1);
 		}
 
-		HTMLControl control(uis, mode, debug_scanner, input_url);
-		HTMLDriver driver(control, *osp, enable_links,
+		HTMLControl control(is, mode, debug_scanner, input_url);
+		HTMLDriver driver(control, is, enable_links,
 				width, mode, debug_parser);
 
 		if (driver.parse() != 0)
 			exit(1);
-
-		uis.close();
 	}
+
+	is.close();
 
 	return 0;
 }

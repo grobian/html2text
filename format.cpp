@@ -48,9 +48,7 @@
 #include "cmp_nocase.h"
 #include "format.h"
 #include "Properties.h"
-
-using std::endl;
-using std::flush;
+#include "iconvstream.h"
 
 #ifndef nelems
 #define nelems(array) (sizeof(array) / sizeof((array)[0]))
@@ -70,7 +68,7 @@ static void format(
 	Area::size_type indent_left,
 	Area::size_type w,
 	int halign,
-	ostream                        &os
+	iconvstream &os
 	);
 
 /* ------------------------------------------------------------------------- */
@@ -149,7 +147,7 @@ Document::format(
 	Area::size_type indent_left,
 	Area::size_type w,
 	int             halign,
-	ostream         &os
+	iconvstream     &os
 	) const
 {
 	static BlockFormat bf("DOCUMENT");
@@ -193,7 +191,7 @@ Body::format(
 	Area::size_type indent_left,
 	Area::size_type w,
 	int halign,
-	ostream         &os
+	iconvstream &os
 	) const
 {
 	static BlockFormat bf("BODY");
@@ -931,7 +929,7 @@ Input::line_format() const
 			size = 20;
 		res = '[' + string(size, '*') + ']';
 	} else if (cmp_nocase(type, "CHECKBOX") == 0) {
-		res = checked ? '*' : LATIN1_ordm; // "ordm" looks like a superscript zero.
+		res = '[' + (checked ? 'X' : ' ') + ']';
 	} else if (cmp_nocase(type, "RADIO") == 0) {
 		res = checked ? '#' : 'o';
 	} else if (cmp_nocase(type, "SUBMIT") == 0) {
@@ -1228,8 +1226,10 @@ NoBreak::line_format() const
 
 	for (Line::size_type i = 0; i < l->length(); ++i) {
 		Cell &c((*l)[i]);
+		/* we should inject nbsp UTF-8 sequence here
 		if (c.character == ' ')
-			c.character = LATIN1_nbsp;
+			c.character = (char)160;
+		 */
 	}
 	return l;
 }
@@ -1281,7 +1281,7 @@ make_up(const Line &line, Area::size_type w, int halign)
 				break;
 			}
 			char c1 = line[to].character, c2 = line[to - 1].character;
-			if (c1 == ' ' || c1 == '(' /*)*/ || c1 == '[' /*]*/ || c1 == '{' /*}*/ || (
+			if (c1 == ' ' || c1 == '(' || c1 == '[' || c1 == '{' || (
 					(
 						c2 == '-' ||
 						c2 == '/' ||
@@ -1459,7 +1459,7 @@ format(
 	Area::size_type indent_left,
 	Area::size_type w,
 	int halign,
-	ostream                        &os
+	iconvstream &os
 	)
 {
 	if (!elements)

@@ -37,7 +37,7 @@
 
 /* ------------------------------------------------------------------------- */
 
-#include "urlistream.h"
+#include "iconvstream.h"
 #include <istream>
 
 #include "HTMLParser.tab.hh"
@@ -48,7 +48,7 @@ using std::istream;
 
 class HTMLControl {
 	public:
-		HTMLControl(urlistream& is_,
+		HTMLControl(iconvstream& is_,
 				int& mode_,
 				bool debug_scanner_,
 				const char *file_name_) :
@@ -89,7 +89,7 @@ class HTMLControl {
 
 		bool debug_scanner;
 
-		urlistream &is;
+		iconvstream &is;
 		int ungotten_chars[5];
 		int number_of_ungotten_chars;
 };

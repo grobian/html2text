@@ -16,11 +16,12 @@
 
 #include "HTMLParser.tab.hh"
 #include "HTMLControl.h"
+#include "iconvstream.h"
 
 class HTMLDriver {
 	public:
 		HTMLDriver(HTMLControl &c,
-				ostream& os_,
+				iconvstream& os_,
 				bool& enable_links_,
 				int& width_,
 				int& mode_,
@@ -44,7 +45,7 @@ class HTMLDriver {
 		bool trace_parsing;
 		int width;
 		int mode;
-		ostream& os;
+		iconvstream& os;
 
 		html2text::HTMLParser::semantic_type *yylval = nullptr;
 };
