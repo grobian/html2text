@@ -392,7 +392,7 @@ pcdata:
 
 body_content:
   /* empty */ {
-    $$ = new list<auto_ptr<Element> >;
+    $$ = new list<auto_ptr<Element>>;
   }
   | body_content error {
     $$ = $1;
@@ -412,6 +412,12 @@ body_content:
       yyerror("CDATA terminal not found");
     }
 //    ($$ = $1)->head.styles.push_back(s);
+  }
+  | body_content META {
+    /* This seems to happen for instance by Mozilla Thunderbird in its
+     * replies, a blockquote is followed by a meta tag having content
+     * encoding.  Don't error out, just ignore this */
+    $$ = new list<auto_ptr<Element>>;
   }
   | body_content texts {
     Paragraph *p = new Paragraph;
