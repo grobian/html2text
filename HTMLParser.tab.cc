@@ -800,7 +800,7 @@ namespace html2text {
   case 24:
 #line 394 "HTMLParser.yy"
               {
-    (yylhs.value.element_list) = new list<auto_ptr<Element> >;
+    (yylhs.value.element_list) = new list<auto_ptr<Element>>;
   }
 #line 806 "HTMLParser.tab.cc"
     break;
@@ -841,40 +841,51 @@ namespace html2text {
 
   case 28:
 #line 416 "HTMLParser.yy"
+                      {
+    /* This seems to happen for instance by Mozilla Thunderbird in its
+	 * replies, a blockquote is followed by a meta tag having content
+	 * encoding.  Don't error out, just ignore this */
+	(yylhs.value.element_list) = new list<auto_ptr<Element>>;
+  }
+#line 851 "HTMLParser.tab.cc"
+    break;
+
+  case 29:
+#line 422 "HTMLParser.yy"
                        {
     Paragraph *p = new Paragraph;
     p->texts = auto_ptr<list<auto_ptr<Element> > >((yystack_[0].value.element_list));
     ((yylhs.value.element_list) = (yystack_[1].value.element_list))->push_back(auto_ptr<Element>(p));
   }
-#line 850 "HTMLParser.tab.cc"
-    break;
-
-  case 29:
-#line 421 "HTMLParser.yy"
-                         {
-    ((yylhs.value.element_list) = (yystack_[1].value.element_list))->push_back(auto_ptr<Element>((yystack_[0].value.heading)));
-  }
-#line 858 "HTMLParser.tab.cc"
+#line 861 "HTMLParser.tab.cc"
     break;
 
   case 30:
-#line 424 "HTMLParser.yy"
-                       {
-    ((yylhs.value.element_list) = (yystack_[1].value.element_list))->push_back(auto_ptr<Element>((yystack_[0].value.element)));
+#line 427 "HTMLParser.yy"
+                         {
+    ((yylhs.value.element_list) = (yystack_[1].value.element_list))->push_back(auto_ptr<Element>((yystack_[0].value.heading)));
   }
-#line 866 "HTMLParser.tab.cc"
+#line 869 "HTMLParser.tab.cc"
     break;
 
   case 31:
-#line 427 "HTMLParser.yy"
-                         {
-    ((yylhs.value.element_list) = (yystack_[1].value.element_list))->push_back(auto_ptr<Element>((yystack_[0].value.address)));
+#line 430 "HTMLParser.yy"
+                       {
+    ((yylhs.value.element_list) = (yystack_[1].value.element_list))->push_back(auto_ptr<Element>((yystack_[0].value.element)));
   }
-#line 874 "HTMLParser.tab.cc"
+#line 877 "HTMLParser.tab.cc"
     break;
 
   case 32:
 #line 433 "HTMLParser.yy"
+                         {
+    ((yylhs.value.element_list) = (yystack_[1].value.element_list))->push_back(auto_ptr<Element>((yystack_[0].value.address)));
+  }
+#line 885 "HTMLParser.tab.cc"
+    break;
+
+  case 33:
+#line 439 "HTMLParser.yy"
                               {
             /* EXTENSION: Allow paragraph content in heading, not only texts */
     if ((yystack_[2].value.heading)->level != (yystack_[0].value.inT)) {
@@ -883,102 +894,91 @@ namespace html2text {
     (yylhs.value.heading) = (yystack_[2].value.heading);
     (yylhs.value.heading)->content.reset((yystack_[1].value.element_list));
   }
-#line 887 "HTMLParser.tab.cc"
-    break;
-
-  case 33:
-#line 444 "HTMLParser.yy"
-                 {
-    (yylhs.value.element) = (yystack_[0].value.element);
-  }
-#line 895 "HTMLParser.tab.cc"
+#line 898 "HTMLParser.tab.cc"
     break;
 
   case 34:
-#line 447 "HTMLParser.yy"
+#line 450 "HTMLParser.yy"
+                 {
+    (yylhs.value.element) = (yystack_[0].value.element);
+  }
+#line 906 "HTMLParser.tab.cc"
+    break;
+
+  case 35:
+#line 453 "HTMLParser.yy"
                                   {
     Paragraph *p = new Paragraph;
     p->attributes.reset((yystack_[2].value.tag_attributes));
     p->texts.reset((yystack_[1].value.element_list));
     (yylhs.value.element) = p;
   }
-#line 906 "HTMLParser.tab.cc"
-    break;
-
-  case 35:
-#line 456 "HTMLParser.yy"
-              {
-    (yylhs.value.element_list) = new list<auto_ptr<Element> >;
-  }
-#line 914 "HTMLParser.tab.cc"
+#line 917 "HTMLParser.tab.cc"
     break;
 
   case 36:
-#line 459 "HTMLParser.yy"
-                            {
-    (yylhs.value.element_list) = (yystack_[1].value.element_list);
+#line 462 "HTMLParser.yy"
+              {
+    (yylhs.value.element_list) = new list<auto_ptr<Element> >;
   }
-#line 922 "HTMLParser.tab.cc"
+#line 925 "HTMLParser.tab.cc"
     break;
 
   case 37:
-#line 462 "HTMLParser.yy"
+#line 465 "HTMLParser.yy"
+                            {
+    (yylhs.value.element_list) = (yystack_[1].value.element_list);
+  }
+#line 933 "HTMLParser.tab.cc"
+    break;
+
+  case 38:
+#line 468 "HTMLParser.yy"
                             {
     (yylhs.value.element_list) = (yystack_[1].value.element_list);
     (yylhs.value.element_list)->splice((yylhs.value.element_list)->end(), *(yystack_[0].value.element_list));
     delete (yystack_[0].value.element_list);
   }
-#line 932 "HTMLParser.tab.cc"
-    break;
-
-  case 38:
-#line 467 "HTMLParser.yy"
-                                     {
-    ((yylhs.value.element_list) = (yystack_[1].value.element_list))->push_back(auto_ptr<Element>((yystack_[0].value.element)));
-  }
-#line 940 "HTMLParser.tab.cc"
+#line 943 "HTMLParser.tab.cc"
     break;
 
   case 39:
 #line 473 "HTMLParser.yy"
-       {
-    (yylhs.value.element) = (yystack_[0].value.element);
+                                     {
+    ((yylhs.value.element_list) = (yystack_[1].value.element_list))->push_back(auto_ptr<Element>((yystack_[0].value.element)));
   }
-#line 948 "HTMLParser.tab.cc"
+#line 951 "HTMLParser.tab.cc"
     break;
 
   case 40:
-#line 476 "HTMLParser.yy"
-                 {
-    (yylhs.value.element) = (yystack_[0].value.preformatted);
+#line 479 "HTMLParser.yy"
+       {
+    (yylhs.value.element) = (yystack_[0].value.element);
   }
-#line 956 "HTMLParser.tab.cc"
+#line 959 "HTMLParser.tab.cc"
     break;
 
   case 41:
-#line 479 "HTMLParser.yy"
-                    {
-    (yylhs.value.element) = (yystack_[0].value.definition_list);
+#line 482 "HTMLParser.yy"
+                 {
+    (yylhs.value.element) = (yystack_[0].value.preformatted);
   }
-#line 964 "HTMLParser.tab.cc"
+#line 967 "HTMLParser.tab.cc"
     break;
 
   case 42:
-#line 482 "HTMLParser.yy"
-                                 {
-    Division *p = new Division;
-    p->attributes.reset((yystack_[2].value.tag_attributes));
-    p->body_content.reset((yystack_[1].value.element_list));
-    (yylhs.value.element) = p;
+#line 485 "HTMLParser.yy"
+                    {
+    (yylhs.value.element) = (yystack_[0].value.definition_list);
   }
 #line 975 "HTMLParser.tab.cc"
     break;
 
   case 43:
 #line 488 "HTMLParser.yy"
-                                       {
-    Center *p = new Center;
-    delete (yystack_[2].value.tag_attributes);       // CENTER has no attributes.
+                                 {
+    Division *p = new Division;
+    p->attributes.reset((yystack_[2].value.tag_attributes));
     p->body_content.reset((yystack_[1].value.element_list));
     (yylhs.value.element) = p;
   }
@@ -987,38 +987,49 @@ namespace html2text {
 
   case 44:
 #line 494 "HTMLParser.yy"
-                                               {
-    delete (yystack_[2].value.tag_attributes); // BLOCKQUOTE has no attributes!
-    BlockQuote *bq = new BlockQuote;
-    bq->content.reset((yystack_[1].value.element_list));
-    (yylhs.value.element) = bq;
+                                       {
+    Center *p = new Center;
+    delete (yystack_[2].value.tag_attributes);       // CENTER has no attributes.
+    p->body_content.reset((yystack_[1].value.element_list));
+    (yylhs.value.element) = p;
   }
 #line 997 "HTMLParser.tab.cc"
     break;
 
   case 45:
 #line 500 "HTMLParser.yy"
-                                   {
-    Form *f = new Form;
-    f->attributes.reset((yystack_[2].value.tag_attributes));
-    f->content.reset((yystack_[1].value.element_list));
-    (yylhs.value.element) = f;
+                                               {
+    delete (yystack_[2].value.tag_attributes); // BLOCKQUOTE has no attributes!
+    BlockQuote *bq = new BlockQuote;
+    bq->content.reset((yystack_[1].value.element_list));
+    (yylhs.value.element) = bq;
   }
 #line 1008 "HTMLParser.tab.cc"
     break;
 
   case 46:
 #line 506 "HTMLParser.yy"
+                                   {
+    Form *f = new Form;
+    f->attributes.reset((yystack_[2].value.tag_attributes));
+    f->content.reset((yystack_[1].value.element_list));
+    (yylhs.value.element) = f;
+  }
+#line 1019 "HTMLParser.tab.cc"
+    break;
+
+  case 47:
+#line 512 "HTMLParser.yy"
        {
     HorizontalRule *h = new HorizontalRule;
     h->attributes.reset((yystack_[0].value.tag_attributes));
     (yylhs.value.element) = h;
   }
-#line 1018 "HTMLParser.tab.cc"
+#line 1029 "HTMLParser.tab.cc"
     break;
 
-  case 47:
-#line 511 "HTMLParser.yy"
+  case 48:
+#line 517 "HTMLParser.yy"
                                            {
     Table *t = new Table;
     t->attributes.reset((yystack_[3].value.tag_attributes));
@@ -1026,17 +1037,17 @@ namespace html2text {
     t->rows.reset((yystack_[1].value.table_rows));
     (yylhs.value.element) = t;
   }
-#line 1030 "HTMLParser.tab.cc"
-    break;
-
-  case 48:
-#line 521 "HTMLParser.yy"
-     { ++drv.list_nesting; }
-#line 1036 "HTMLParser.tab.cc"
+#line 1041 "HTMLParser.tab.cc"
     break;
 
   case 49:
-#line 521 "HTMLParser.yy"
+#line 527 "HTMLParser.yy"
+     { ++drv.list_nesting; }
+#line 1047 "HTMLParser.tab.cc"
+    break;
+
+  case 50:
+#line 527 "HTMLParser.yy"
                                                  {
     OrderedList *ol = new OrderedList;
     ol->attributes.reset((yystack_[3].value.tag_attributes));
@@ -1044,17 +1055,17 @@ namespace html2text {
     ol->nesting = --drv.list_nesting;
     (yylhs.value.element) = ol;
   }
-#line 1048 "HTMLParser.tab.cc"
-    break;
-
-  case 50:
-#line 528 "HTMLParser.yy"
-       { ++drv.list_nesting; }
-#line 1054 "HTMLParser.tab.cc"
+#line 1059 "HTMLParser.tab.cc"
     break;
 
   case 51:
-#line 528 "HTMLParser.yy"
+#line 534 "HTMLParser.yy"
+       { ++drv.list_nesting; }
+#line 1065 "HTMLParser.tab.cc"
+    break;
+
+  case 52:
+#line 534 "HTMLParser.yy"
                                                        {
     UnorderedList *ul = new UnorderedList;
     ul->attributes.reset((yystack_[3].value.tag_attributes));
@@ -1062,17 +1073,17 @@ namespace html2text {
     ul->nesting = --drv.list_nesting;
     (yylhs.value.element) = ul;
   }
-#line 1066 "HTMLParser.tab.cc"
-    break;
-
-  case 52:
-#line 535 "HTMLParser.yy"
-        { ++drv.list_nesting; }
-#line 1072 "HTMLParser.tab.cc"
+#line 1077 "HTMLParser.tab.cc"
     break;
 
   case 53:
-#line 535 "HTMLParser.yy"
+#line 541 "HTMLParser.yy"
+        { ++drv.list_nesting; }
+#line 1083 "HTMLParser.tab.cc"
+    break;
+
+  case 54:
+#line 541 "HTMLParser.yy"
                                                      {
     Dir *d = new Dir;
     d->attributes.reset((yystack_[3].value.tag_attributes));
@@ -1080,17 +1091,17 @@ namespace html2text {
     d->nesting = --drv.list_nesting;
     (yylhs.value.element) = d;
   }
-#line 1084 "HTMLParser.tab.cc"
-    break;
-
-  case 54:
-#line 542 "HTMLParser.yy"
-         { ++drv.list_nesting; }
-#line 1090 "HTMLParser.tab.cc"
+#line 1095 "HTMLParser.tab.cc"
     break;
 
   case 55:
-#line 542 "HTMLParser.yy"
+#line 548 "HTMLParser.yy"
+         { ++drv.list_nesting; }
+#line 1101 "HTMLParser.tab.cc"
+    break;
+
+  case 56:
+#line 548 "HTMLParser.yy"
                                                        {
     Menu *m = new Menu;
     m->attributes.reset((yystack_[3].value.tag_attributes));
@@ -1098,77 +1109,77 @@ namespace html2text {
     m->nesting = --drv.list_nesting;
     (yylhs.value.element) = m;
   }
-#line 1102 "HTMLParser.tab.cc"
-    break;
-
-  case 56:
-#line 552 "HTMLParser.yy"
-              {
-    (yylhs.value.list_items) = 0;
-  }
-#line 1110 "HTMLParser.tab.cc"
+#line 1113 "HTMLParser.tab.cc"
     break;
 
   case 57:
-#line 555 "HTMLParser.yy"
-                       {
-    (yylhs.value.list_items) = (yystack_[1].value.list_items);
+#line 558 "HTMLParser.yy"
+              {
+    (yylhs.value.list_items) = 0;
   }
-#line 1118 "HTMLParser.tab.cc"
+#line 1121 "HTMLParser.tab.cc"
     break;
 
   case 58:
-#line 558 "HTMLParser.yy"
-                           {
-    (yylhs.value.list_items) = (yystack_[1].value.list_items) ? (yystack_[1].value.list_items) : new list<auto_ptr<ListItem> >;
-    (yylhs.value.list_items)->push_back(auto_ptr<ListItem>((yystack_[0].value.list_item)));
+#line 561 "HTMLParser.yy"
+                       {
+    (yylhs.value.list_items) = (yystack_[1].value.list_items);
   }
-#line 1127 "HTMLParser.tab.cc"
+#line 1129 "HTMLParser.tab.cc"
     break;
 
   case 59:
-#line 565 "HTMLParser.yy"
-                         {
-    ListNormalItem *lni = new ListNormalItem;
-    lni->attributes.reset((yystack_[2].value.tag_attributes));
-    lni->flow.reset((yystack_[1].value.element_list));
-    (yylhs.value.list_item) = lni;
+#line 564 "HTMLParser.yy"
+                           {
+    (yylhs.value.list_items) = (yystack_[1].value.list_items) ? (yystack_[1].value.list_items) : new list<auto_ptr<ListItem> >;
+    (yylhs.value.list_items)->push_back(auto_ptr<ListItem>((yystack_[0].value.list_item)));
   }
 #line 1138 "HTMLParser.tab.cc"
     break;
 
   case 60:
 #line 571 "HTMLParser.yy"
+                         {
+    ListNormalItem *lni = new ListNormalItem;
+    lni->attributes.reset((yystack_[2].value.tag_attributes));
+    lni->flow.reset((yystack_[1].value.element_list));
+    (yylhs.value.list_item) = lni;
+  }
+#line 1149 "HTMLParser.tab.cc"
+    break;
+
+  case 61:
+#line 577 "HTMLParser.yy"
           {   /* EXTENSION: Handle a "block" in a list as an indented block. */
     ListBlockItem *lbi = new ListBlockItem;
     lbi->block.reset((yystack_[0].value.element));
     (yylhs.value.list_item) = lbi;
   }
-#line 1148 "HTMLParser.tab.cc"
+#line 1159 "HTMLParser.tab.cc"
     break;
 
-  case 61:
-#line 576 "HTMLParser.yy"
+  case 62:
+#line 582 "HTMLParser.yy"
           {              /* EXTENSION: Treat "texts" in a list as an "<LI>". */
     ListNormalItem *lni = new ListNormalItem;
     lni->flow.reset((yystack_[0].value.element_list));
     (yylhs.value.list_item) = lni;
   }
-#line 1158 "HTMLParser.tab.cc"
+#line 1169 "HTMLParser.tab.cc"
     break;
 
-  case 62:
-#line 586 "HTMLParser.yy"
+  case 63:
+#line 592 "HTMLParser.yy"
                                                    {
     delete (yystack_[4].value.tag_attributes);
     delete (yystack_[3].value.element_list); /* Kludge */
     (yylhs.value.definition_list) = (yystack_[1].value.definition_list);
   }
-#line 1168 "HTMLParser.tab.cc"
+#line 1179 "HTMLParser.tab.cc"
     break;
 
-  case 63:
-#line 592 "HTMLParser.yy"
+  case 64:
+#line 598 "HTMLParser.yy"
                                                          {
     DefinitionList *dl = new DefinitionList;
     dl->attributes.reset((yystack_[4].value.tag_attributes));
@@ -1176,210 +1187,210 @@ namespace html2text {
     dl->items.reset((yystack_[1].value.definition_list_item_list));
     (yylhs.value.definition_list) = dl;
   }
-#line 1180 "HTMLParser.tab.cc"
-    break;
-
-  case 64:
-#line 602 "HTMLParser.yy"
-              {
-    (yylhs.value.definition_list_item_list) = 0;
-  }
-#line 1188 "HTMLParser.tab.cc"
+#line 1191 "HTMLParser.tab.cc"
     break;
 
   case 65:
-#line 605 "HTMLParser.yy"
-                            {
-    (yylhs.value.definition_list_item_list) = (yystack_[0].value.definition_list_item_list);
+#line 608 "HTMLParser.yy"
+              {
+    (yylhs.value.definition_list_item_list) = 0;
   }
-#line 1196 "HTMLParser.tab.cc"
+#line 1199 "HTMLParser.tab.cc"
     break;
 
   case 66:
-#line 608 "HTMLParser.yy"
+#line 611 "HTMLParser.yy"
+                            {
+    (yylhs.value.definition_list_item_list) = (yystack_[0].value.definition_list_item_list);
+  }
+#line 1207 "HTMLParser.tab.cc"
+    break;
+
+  case 67:
+#line 614 "HTMLParser.yy"
                                       {
     (yylhs.value.definition_list_item_list) = (yystack_[1].value.definition_list_item_list) ? (yystack_[1].value.definition_list_item_list) : new list<auto_ptr<DefinitionListItem> >;
     (yylhs.value.definition_list_item_list)->push_back(auto_ptr<DefinitionListItem>((yystack_[0].value.term_name)));
   }
-#line 1205 "HTMLParser.tab.cc"
+#line 1216 "HTMLParser.tab.cc"
     break;
 
-  case 67:
-#line 612 "HTMLParser.yy"
+  case 68:
+#line 618 "HTMLParser.yy"
                                             {
     (yylhs.value.definition_list_item_list) = (yystack_[1].value.definition_list_item_list) ? (yystack_[1].value.definition_list_item_list) : new list<auto_ptr<DefinitionListItem> >;
     (yylhs.value.definition_list_item_list)->push_back(auto_ptr<DefinitionListItem>((yystack_[0].value.term_definition)));
   }
-#line 1214 "HTMLParser.tab.cc"
+#line 1225 "HTMLParser.tab.cc"
     break;
 
-  case 68:
-#line 619 "HTMLParser.yy"
+  case 69:
+#line 625 "HTMLParser.yy"
                         {      /* EXTENSION: Allow "flow" instead of "texts" */
     delete (yystack_[2].value.tag_attributes);
     (yylhs.value.term_name) = new TermName;
     (yylhs.value.term_name)->flow.reset((yystack_[1].value.element_list));
   }
-#line 1224 "HTMLParser.tab.cc"
+#line 1235 "HTMLParser.tab.cc"
     break;
 
-  case 69:
-#line 624 "HTMLParser.yy"
+  case 70:
+#line 630 "HTMLParser.yy"
                                        {/* EXTENSION: Ignore <P> after </DT> */
     delete (yystack_[4].value.tag_attributes);
     delete (yystack_[1].value.tag_attributes);
     (yylhs.value.term_name) = new TermName;
     (yylhs.value.term_name)->flow.reset((yystack_[3].value.element_list));
   }
-#line 1235 "HTMLParser.tab.cc"
+#line 1246 "HTMLParser.tab.cc"
     break;
 
-  case 70:
-#line 633 "HTMLParser.yy"
+  case 71:
+#line 639 "HTMLParser.yy"
                         {
     delete (yystack_[2].value.tag_attributes);
     (yylhs.value.term_definition) = new TermDefinition;
     (yylhs.value.term_definition)->flow.reset((yystack_[1].value.element_list));
   }
-#line 1245 "HTMLParser.tab.cc"
+#line 1256 "HTMLParser.tab.cc"
     break;
 
-  case 71:
-#line 638 "HTMLParser.yy"
+  case 72:
+#line 644 "HTMLParser.yy"
                                        {/* EXTENSION: Ignore <P> after </DD> */
     delete (yystack_[4].value.tag_attributes);
     delete (yystack_[1].value.tag_attributes);
     (yylhs.value.term_definition) = new TermDefinition;
     (yylhs.value.term_definition)->flow.reset((yystack_[3].value.element_list));
   }
-#line 1256 "HTMLParser.tab.cc"
+#line 1267 "HTMLParser.tab.cc"
     break;
 
-  case 72:
-#line 647 "HTMLParser.yy"
+  case 73:
+#line 653 "HTMLParser.yy"
         {
     (yylhs.value.element_list) = new list<auto_ptr<Element> >;
     (yylhs.value.element_list)->push_back(auto_ptr<Element>((yystack_[0].value.element)));
   }
-#line 1265 "HTMLParser.tab.cc"
-    break;
-
-  case 73:
-#line 651 "HTMLParser.yy"
-               {
-    (yylhs.value.element_list) = (yystack_[1].value.element_list);
-  }
-#line 1273 "HTMLParser.tab.cc"
+#line 1276 "HTMLParser.tab.cc"
     break;
 
   case 74:
-#line 654 "HTMLParser.yy"
+#line 657 "HTMLParser.yy"
                {
-    ((yylhs.value.element_list) = (yystack_[1].value.element_list))->push_back(auto_ptr<Element>((yystack_[0].value.element)));
+    (yylhs.value.element_list) = (yystack_[1].value.element_list);
   }
-#line 1281 "HTMLParser.tab.cc"
+#line 1284 "HTMLParser.tab.cc"
     break;
 
   case 75:
 #line 660 "HTMLParser.yy"
-       {
-    (yylhs.value.element) = (yystack_[0].value.element);
+               {
+    ((yylhs.value.element_list) = (yystack_[1].value.element_list))->push_back(auto_ptr<Element>((yystack_[0].value.element)));
   }
-#line 1289 "HTMLParser.tab.cc"
+#line 1292 "HTMLParser.tab.cc"
     break;
 
   case 76:
-#line 663 "HTMLParser.yy"
-            {          /* EXTENSION: Allow headings in "flow", i.e. in lists */
-    (yylhs.value.element) = (yystack_[0].value.heading);
+#line 666 "HTMLParser.yy"
+       {
+    (yylhs.value.element) = (yystack_[0].value.element);
   }
-#line 1297 "HTMLParser.tab.cc"
+#line 1300 "HTMLParser.tab.cc"
     break;
 
   case 77:
-#line 666 "HTMLParser.yy"
-          {
-    (yylhs.value.element) = (yystack_[0].value.element);
+#line 669 "HTMLParser.yy"
+            {          /* EXTENSION: Allow headings in "flow", i.e. in lists */
+    (yylhs.value.element) = (yystack_[0].value.heading);
   }
-#line 1305 "HTMLParser.tab.cc"
+#line 1308 "HTMLParser.tab.cc"
     break;
 
   case 78:
 #line 672 "HTMLParser.yy"
+          {
+    (yylhs.value.element) = (yystack_[0].value.element);
+  }
+#line 1316 "HTMLParser.tab.cc"
+    break;
+
+  case 79:
+#line 678 "HTMLParser.yy"
                             {
     (yylhs.value.preformatted) = new Preformatted;
     (yylhs.value.preformatted)->attributes.reset((yystack_[2].value.tag_attributes));
     (yylhs.value.preformatted)->texts.reset((yystack_[1].value.element_list));
   }
-#line 1315 "HTMLParser.tab.cc"
+#line 1326 "HTMLParser.tab.cc"
     break;
 
-  case 79:
-#line 680 "HTMLParser.yy"
+  case 80:
+#line 686 "HTMLParser.yy"
                                 {
     (yylhs.value.caption) = new Caption;
     (yylhs.value.caption)->attributes.reset((yystack_[2].value.tag_attributes));
     (yylhs.value.caption)->texts.reset((yystack_[1].value.element_list));
   }
-#line 1325 "HTMLParser.tab.cc"
-    break;
-
-  case 80:
-#line 688 "HTMLParser.yy"
-              {
-    (yylhs.value.table_rows) = new list<auto_ptr<TableRow> >;
-  }
-#line 1333 "HTMLParser.tab.cc"
+#line 1336 "HTMLParser.tab.cc"
     break;
 
   case 81:
-#line 691 "HTMLParser.yy"
-                     {
-    (yylhs.value.table_rows) = (yystack_[1].value.table_rows);
+#line 694 "HTMLParser.yy"
+              {
+    (yylhs.value.table_rows) = new list<auto_ptr<TableRow> >;
   }
-#line 1341 "HTMLParser.tab.cc"
+#line 1344 "HTMLParser.tab.cc"
     break;
 
   case 82:
-#line 694 "HTMLParser.yy"
+#line 697 "HTMLParser.yy"
+                     {
+    (yylhs.value.table_rows) = (yystack_[1].value.table_rows);
+  }
+#line 1352 "HTMLParser.tab.cc"
+    break;
+
+  case 83:
+#line 700 "HTMLParser.yy"
                                          {
     TableRow *tr = new TableRow;
     tr->attributes.reset((yystack_[2].value.tag_attributes));
     tr->cells.reset((yystack_[1].value.table_cells));
     ((yylhs.value.table_rows) = (yystack_[3].value.table_rows))->push_back(auto_ptr<TableRow>(tr));
   }
-#line 1352 "HTMLParser.tab.cc"
-    break;
-
-  case 83:
-#line 703 "HTMLParser.yy"
-              {
-    (yylhs.value.table_cells) = new list<auto_ptr<TableCell> >;
-  }
-#line 1360 "HTMLParser.tab.cc"
+#line 1363 "HTMLParser.tab.cc"
     break;
 
   case 84:
-#line 706 "HTMLParser.yy"
-                      {
-    (yylhs.value.table_cells) = (yystack_[1].value.table_cells);
+#line 709 "HTMLParser.yy"
+              {
+    (yylhs.value.table_cells) = new list<auto_ptr<TableCell> >;
   }
-#line 1368 "HTMLParser.tab.cc"
+#line 1371 "HTMLParser.tab.cc"
     break;
 
   case 85:
-#line 709 "HTMLParser.yy"
-                                           {
-    TableCell *tc = new TableCell;
-    tc->attributes.reset((yystack_[2].value.tag_attributes));
-    tc->content.reset((yystack_[1].value.element_list));
-    ((yylhs.value.table_cells) = (yystack_[3].value.table_cells))->push_back(auto_ptr<TableCell>(tc));
+#line 712 "HTMLParser.yy"
+                      {
+    (yylhs.value.table_cells) = (yystack_[1].value.table_cells);
   }
 #line 1379 "HTMLParser.tab.cc"
     break;
 
   case 86:
 #line 715 "HTMLParser.yy"
+                                           {
+    TableCell *tc = new TableCell;
+    tc->attributes.reset((yystack_[2].value.tag_attributes));
+    tc->content.reset((yystack_[1].value.element_list));
+    ((yylhs.value.table_cells) = (yystack_[3].value.table_cells))->push_back(auto_ptr<TableCell>(tc));
+  }
+#line 1390 "HTMLParser.tab.cc"
+    break;
+
+  case 87:
+#line 721 "HTMLParser.yy"
                                                       {
                             /* EXTENSION: Allow "</TD>" in place of "</TH>". */
     TableHeadingCell *thc = new TableHeadingCell;
@@ -1387,190 +1398,190 @@ namespace html2text {
     thc->content.reset((yystack_[2].value.element_list));
     ((yylhs.value.table_cells) = (yystack_[4].value.table_cells))->push_back(auto_ptr<TableCell>(thc));
   }
-#line 1391 "HTMLParser.tab.cc"
+#line 1402 "HTMLParser.tab.cc"
     break;
 
-  case 87:
-#line 722 "HTMLParser.yy"
+  case 88:
+#line 728 "HTMLParser.yy"
                       {    /* EXTENSION: Ignore <INPUT> between table cells. */
     delete (yystack_[0].value.tag_attributes);
     (yylhs.value.table_cells) = (yystack_[1].value.table_cells);
   }
-#line 1400 "HTMLParser.tab.cc"
+#line 1411 "HTMLParser.tab.cc"
     break;
 
-  case 88:
-#line 729 "HTMLParser.yy"
+  case 89:
+#line 735 "HTMLParser.yy"
                                 { /* Should be "address_content"... */
     delete (yystack_[2].value.tag_attributes);
     (yylhs.value.address) = new Address;
     (yylhs.value.address)->content.reset((yystack_[1].value.element_list));
   }
-#line 1410 "HTMLParser.tab.cc"
+#line 1421 "HTMLParser.tab.cc"
     break;
 
-  case 89:
-#line 739 "HTMLParser.yy"
+  case 90:
+#line 745 "HTMLParser.yy"
        {
     (yylhs.value.element_list) = new list<auto_ptr<Element> >;
     (yylhs.value.element_list)->push_back(auto_ptr<Element>((yystack_[0].value.element)));
   }
-#line 1419 "HTMLParser.tab.cc"
-    break;
-
-  case 90:
-#line 743 "HTMLParser.yy"
-               {
-    ((yylhs.value.element_list) = (yystack_[1].value.element_list))->push_back(auto_ptr<Element>((yystack_[0].value.element)));
-  }
-#line 1427 "HTMLParser.tab.cc"
+#line 1430 "HTMLParser.tab.cc"
     break;
 
   case 91:
 #line 749 "HTMLParser.yy"
-                                      { (yylhs.value.element) = (yystack_[1].value.pcdata); }
-#line 1433 "HTMLParser.tab.cc"
+               {
+    ((yylhs.value.element_list) = (yystack_[1].value.element_list))->push_back(auto_ptr<Element>((yystack_[0].value.element)));
+  }
+#line 1438 "HTMLParser.tab.cc"
     break;
 
   case 92:
-#line 750 "HTMLParser.yy"
-                                      { (yylhs.value.element) = (yystack_[1].value.element); }
-#line 1439 "HTMLParser.tab.cc"
+#line 755 "HTMLParser.yy"
+                                      { (yylhs.value.element) = (yystack_[1].value.pcdata); }
+#line 1444 "HTMLParser.tab.cc"
     break;
 
   case 93:
-#line 751 "HTMLParser.yy"
+#line 756 "HTMLParser.yy"
                                       { (yylhs.value.element) = (yystack_[1].value.element); }
-#line 1445 "HTMLParser.tab.cc"
+#line 1450 "HTMLParser.tab.cc"
     break;
 
   case 94:
-#line 752 "HTMLParser.yy"
+#line 757 "HTMLParser.yy"
                                       { (yylhs.value.element) = (yystack_[1].value.element); }
-#line 1451 "HTMLParser.tab.cc"
+#line 1456 "HTMLParser.tab.cc"
     break;
 
   case 95:
-#line 753 "HTMLParser.yy"
+#line 758 "HTMLParser.yy"
                                       { (yylhs.value.element) = (yystack_[1].value.element); }
-#line 1457 "HTMLParser.tab.cc"
+#line 1462 "HTMLParser.tab.cc"
     break;
 
   case 96:
-#line 754 "HTMLParser.yy"
+#line 759 "HTMLParser.yy"
+                                      { (yylhs.value.element) = (yystack_[1].value.element); }
+#line 1468 "HTMLParser.tab.cc"
+    break;
+
+  case 97:
+#line 760 "HTMLParser.yy"
                                       { /* EXTENSION: NS 1.1 / IE 2.0 */
     NoBreak *nb = new NoBreak;
     delete (yystack_[3].value.tag_attributes);
     nb->content.reset((yystack_[2].value.element_list));
     (yylhs.value.element) = nb;
   }
-#line 1468 "HTMLParser.tab.cc"
-    break;
-
-  case 97:
-#line 763 "HTMLParser.yy"
-                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::TT,     (yystack_[1].value.element_list)); }
-#line 1474 "HTMLParser.tab.cc"
+#line 1479 "HTMLParser.tab.cc"
     break;
 
   case 98:
-#line 764 "HTMLParser.yy"
-                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::I,      (yystack_[1].value.element_list)); }
-#line 1480 "HTMLParser.tab.cc"
+#line 769 "HTMLParser.yy"
+                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::TT,     (yystack_[1].value.element_list)); }
+#line 1485 "HTMLParser.tab.cc"
     break;
 
   case 99:
-#line 765 "HTMLParser.yy"
-                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::B,      (yystack_[1].value.element_list)); }
-#line 1486 "HTMLParser.tab.cc"
+#line 770 "HTMLParser.yy"
+                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::I,      (yystack_[1].value.element_list)); }
+#line 1491 "HTMLParser.tab.cc"
     break;
 
   case 100:
-#line 766 "HTMLParser.yy"
-                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::U,      (yystack_[1].value.element_list)); }
-#line 1492 "HTMLParser.tab.cc"
+#line 771 "HTMLParser.yy"
+                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::B,      (yystack_[1].value.element_list)); }
+#line 1497 "HTMLParser.tab.cc"
     break;
 
   case 101:
-#line 767 "HTMLParser.yy"
-                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::STRIKE, (yystack_[1].value.element_list)); }
-#line 1498 "HTMLParser.tab.cc"
+#line 772 "HTMLParser.yy"
+                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::U,      (yystack_[1].value.element_list)); }
+#line 1503 "HTMLParser.tab.cc"
     break;
 
   case 102:
-#line 768 "HTMLParser.yy"
-                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::BIG,    (yystack_[1].value.element_list)); }
-#line 1504 "HTMLParser.tab.cc"
+#line 773 "HTMLParser.yy"
+                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::STRIKE, (yystack_[1].value.element_list)); }
+#line 1509 "HTMLParser.tab.cc"
     break;
 
   case 103:
-#line 769 "HTMLParser.yy"
-                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::SMALL,  (yystack_[1].value.element_list)); }
-#line 1510 "HTMLParser.tab.cc"
+#line 774 "HTMLParser.yy"
+                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::BIG,    (yystack_[1].value.element_list)); }
+#line 1515 "HTMLParser.tab.cc"
     break;
 
   case 104:
-#line 770 "HTMLParser.yy"
-                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::SUB,    (yystack_[1].value.element_list)); }
-#line 1516 "HTMLParser.tab.cc"
+#line 775 "HTMLParser.yy"
+                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::SMALL,  (yystack_[1].value.element_list)); }
+#line 1521 "HTMLParser.tab.cc"
     break;
 
   case 105:
-#line 771 "HTMLParser.yy"
-                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::SUP,    (yystack_[1].value.element_list)); }
-#line 1522 "HTMLParser.tab.cc"
+#line 776 "HTMLParser.yy"
+                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::SUB,    (yystack_[1].value.element_list)); }
+#line 1527 "HTMLParser.tab.cc"
     break;
 
   case 106:
-#line 775 "HTMLParser.yy"
-                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Phrase(token::EM,     (yystack_[1].value.element_list)); }
-#line 1528 "HTMLParser.tab.cc"
+#line 777 "HTMLParser.yy"
+                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::SUP,    (yystack_[1].value.element_list)); }
+#line 1533 "HTMLParser.tab.cc"
     break;
 
   case 107:
-#line 776 "HTMLParser.yy"
-                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Phrase(token::STRONG, (yystack_[1].value.element_list)); }
-#line 1534 "HTMLParser.tab.cc"
+#line 781 "HTMLParser.yy"
+                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Phrase(token::EM,     (yystack_[1].value.element_list)); }
+#line 1539 "HTMLParser.tab.cc"
     break;
 
   case 108:
-#line 777 "HTMLParser.yy"
-                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Phrase(token::DFN,    (yystack_[1].value.element_list)); }
-#line 1540 "HTMLParser.tab.cc"
+#line 782 "HTMLParser.yy"
+                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Phrase(token::STRONG, (yystack_[1].value.element_list)); }
+#line 1545 "HTMLParser.tab.cc"
     break;
 
   case 109:
-#line 778 "HTMLParser.yy"
-                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Phrase(token::CODE,   (yystack_[1].value.element_list)); }
-#line 1546 "HTMLParser.tab.cc"
+#line 783 "HTMLParser.yy"
+                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Phrase(token::DFN,    (yystack_[1].value.element_list)); }
+#line 1551 "HTMLParser.tab.cc"
     break;
 
   case 110:
-#line 779 "HTMLParser.yy"
-                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Phrase(token::SAMP,   (yystack_[1].value.element_list)); }
-#line 1552 "HTMLParser.tab.cc"
+#line 784 "HTMLParser.yy"
+                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Phrase(token::CODE,   (yystack_[1].value.element_list)); }
+#line 1557 "HTMLParser.tab.cc"
     break;
 
   case 111:
-#line 780 "HTMLParser.yy"
-                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Phrase(token::KBD,    (yystack_[1].value.element_list)); }
-#line 1558 "HTMLParser.tab.cc"
+#line 785 "HTMLParser.yy"
+                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Phrase(token::SAMP,   (yystack_[1].value.element_list)); }
+#line 1563 "HTMLParser.tab.cc"
     break;
 
   case 112:
-#line 781 "HTMLParser.yy"
-                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Phrase(token::VAR,    (yystack_[1].value.element_list)); }
-#line 1564 "HTMLParser.tab.cc"
+#line 786 "HTMLParser.yy"
+                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Phrase(token::KBD,    (yystack_[1].value.element_list)); }
+#line 1569 "HTMLParser.tab.cc"
     break;
 
   case 113:
-#line 782 "HTMLParser.yy"
-                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Phrase(token::CITE,   (yystack_[1].value.element_list)); }
-#line 1570 "HTMLParser.tab.cc"
+#line 787 "HTMLParser.yy"
+                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Phrase(token::VAR,    (yystack_[1].value.element_list)); }
+#line 1575 "HTMLParser.tab.cc"
     break;
 
   case 114:
-#line 789 "HTMLParser.yy"
+#line 788 "HTMLParser.yy"
+                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Phrase(token::CITE,   (yystack_[1].value.element_list)); }
+#line 1581 "HTMLParser.tab.cc"
+    break;
+
+  case 115:
+#line 795 "HTMLParser.yy"
                               {
     delete (yystack_[2].value.tag_attributes);
     Anchor *a = new Anchor;
@@ -1590,11 +1601,11 @@ namespace html2text {
         a->refnum = drv.links->items->size();
     }
   }
-#line 1594 "HTMLParser.tab.cc"
+#line 1605 "HTMLParser.tab.cc"
     break;
 
-  case 115:
-#line 808 "HTMLParser.yy"
+  case 116:
+#line 814 "HTMLParser.yy"
         {
 	auto_ptr<list<TagAttribute>> attr;
 	attr.reset((yystack_[0].value.tag_attributes));
@@ -1638,320 +1649,320 @@ namespace html2text {
 		(yylhs.value.element) = i;
 	}
   }
-#line 1642 "HTMLParser.tab.cc"
+#line 1653 "HTMLParser.tab.cc"
     break;
 
-  case 116:
-#line 851 "HTMLParser.yy"
+  case 117:
+#line 857 "HTMLParser.yy"
                                      {
     Applet *a = new Applet;
     a->attributes.reset((yystack_[2].value.tag_attributes));
     a->content.reset((yystack_[1].value.element_list));
     (yylhs.value.element) = a;
   }
-#line 1653 "HTMLParser.tab.cc"
+#line 1664 "HTMLParser.tab.cc"
     break;
 
-  case 117:
-#line 859 "HTMLParser.yy"
+  case 118:
+#line 865 "HTMLParser.yy"
                                {
     Font2 *f2 = new Font2;
     f2->attributes.reset((yystack_[2].value.tag_attributes));
     f2->elements.reset((yystack_[1].value.element_list));
     (yylhs.value.element) = f2;
   }
-#line 1664 "HTMLParser.tab.cc"
+#line 1675 "HTMLParser.tab.cc"
     break;
 
-  case 118:
-#line 865 "HTMLParser.yy"
+  case 119:
+#line 871 "HTMLParser.yy"
              {
     BaseFont *bf = new BaseFont;
     bf->attributes.reset((yystack_[0].value.tag_attributes));
     (yylhs.value.element) = bf;
   }
-#line 1674 "HTMLParser.tab.cc"
+#line 1685 "HTMLParser.tab.cc"
     break;
 
-  case 119:
-#line 870 "HTMLParser.yy"
+  case 120:
+#line 876 "HTMLParser.yy"
        {
     LineBreak *lb = new LineBreak;
     lb->attributes.reset((yystack_[0].value.tag_attributes));
     (yylhs.value.element) = lb;
   }
-#line 1684 "HTMLParser.tab.cc"
+#line 1695 "HTMLParser.tab.cc"
     break;
 
-  case 120:
-#line 875 "HTMLParser.yy"
+  case 121:
+#line 881 "HTMLParser.yy"
                             {
     Map *m = new Map;
     m->attributes.reset((yystack_[2].value.tag_attributes));
     m->areas.reset((yystack_[1].value.tag_attributes_list));
     (yylhs.value.element) = m;
   }
-#line 1695 "HTMLParser.tab.cc"
-    break;
-
-  case 121:
-#line 884 "HTMLParser.yy"
-              {
-    (yylhs.value.element_list) = 0;
-  }
-#line 1703 "HTMLParser.tab.cc"
+#line 1706 "HTMLParser.tab.cc"
     break;
 
   case 122:
-#line 887 "HTMLParser.yy"
+#line 890 "HTMLParser.yy"
+              {
+    (yylhs.value.element_list) = 0;
+  }
+#line 1714 "HTMLParser.tab.cc"
+    break;
+
+  case 123:
+#line 893 "HTMLParser.yy"
                         {
     (yylhs.value.element_list) = (yystack_[1].value.element_list) ? (yystack_[1].value.element_list) : new list<auto_ptr<Element> >;
     (yylhs.value.element_list)->push_back(auto_ptr<Element>((yystack_[0].value.element)));
   }
-#line 1712 "HTMLParser.tab.cc"
+#line 1723 "HTMLParser.tab.cc"
     break;
 
-  case 123:
-#line 891 "HTMLParser.yy"
+  case 124:
+#line 897 "HTMLParser.yy"
                          {
     (yylhs.value.element_list) = (yystack_[1].value.element_list) ? (yystack_[1].value.element_list) : new list<auto_ptr<Element> >;
     Param *p = new Param;
     p->attributes.reset((yystack_[0].value.tag_attributes));
     (yylhs.value.element_list)->push_back(auto_ptr<Element>(p));
   }
-#line 1723 "HTMLParser.tab.cc"
-    break;
-
-  case 124:
-#line 900 "HTMLParser.yy"
-              {
-    (yylhs.value.tag_attributes_list) = 0;
-  }
-#line 1731 "HTMLParser.tab.cc"
+#line 1734 "HTMLParser.tab.cc"
     break;
 
   case 125:
-#line 903 "HTMLParser.yy"
-                      {
-    (yylhs.value.tag_attributes_list) = (yystack_[1].value.tag_attributes_list);
+#line 906 "HTMLParser.yy"
+              {
+    (yylhs.value.tag_attributes_list) = 0;
   }
-#line 1739 "HTMLParser.tab.cc"
+#line 1742 "HTMLParser.tab.cc"
     break;
 
   case 126:
-#line 906 "HTMLParser.yy"
+#line 909 "HTMLParser.yy"
+                      {
+    (yylhs.value.tag_attributes_list) = (yystack_[1].value.tag_attributes_list);
+  }
+#line 1750 "HTMLParser.tab.cc"
+    break;
+
+  case 127:
+#line 912 "HTMLParser.yy"
                      {
     (yylhs.value.tag_attributes_list) = (yystack_[1].value.tag_attributes_list) ? (yystack_[1].value.tag_attributes_list) : new list<auto_ptr<list<TagAttribute> > >;
     (yylhs.value.tag_attributes_list)->push_back(auto_ptr<list<TagAttribute> >((yystack_[0].value.tag_attributes)));
   }
-#line 1748 "HTMLParser.tab.cc"
+#line 1759 "HTMLParser.tab.cc"
     break;
 
-  case 127:
-#line 913 "HTMLParser.yy"
+  case 128:
+#line 919 "HTMLParser.yy"
         {
     Input *i = new Input;
     i->attributes.reset((yystack_[0].value.tag_attributes));
     (yylhs.value.element) = i;
-  }
-#line 1758 "HTMLParser.tab.cc"
-    break;
-
-  case 128:
-#line 918 "HTMLParser.yy"
-                                     {
-    Select *s = new Select;
-    s->attributes.reset((yystack_[2].value.tag_attributes));
-    s->content.reset((yystack_[1].value.option_list));
-    (yylhs.value.element) = s;
   }
 #line 1769 "HTMLParser.tab.cc"
     break;
 
   case 129:
 #line 924 "HTMLParser.yy"
+                                     {
+    Select *s = new Select;
+    s->attributes.reset((yystack_[2].value.tag_attributes));
+    s->content.reset((yystack_[1].value.option_list));
+    (yylhs.value.element) = s;
+  }
+#line 1780 "HTMLParser.tab.cc"
+    break;
+
+  case 130:
+#line 930 "HTMLParser.yy"
                                  {
     TextArea *ta = new TextArea;
     ta->attributes.reset((yystack_[2].value.tag_attributes));
     ta->pcdata.reset((yystack_[1].value.pcdata));
     (yylhs.value.element) = ta;
   }
-#line 1780 "HTMLParser.tab.cc"
+#line 1791 "HTMLParser.tab.cc"
     break;
 
-  case 130:
-#line 933 "HTMLParser.yy"
+  case 131:
+#line 939 "HTMLParser.yy"
          {
     (yylhs.value.option_list) = new list<auto_ptr<Option> >;
     (yylhs.value.option_list)->push_back(auto_ptr<Option>((yystack_[0].value.option)));
   }
-#line 1789 "HTMLParser.tab.cc"
-    break;
-
-  case 131:
-#line 937 "HTMLParser.yy"
-                          {
-    ((yylhs.value.option_list) = (yystack_[1].value.option_list))->push_back(auto_ptr<Option>((yystack_[0].value.option)));
-  }
-#line 1797 "HTMLParser.tab.cc"
+#line 1800 "HTMLParser.tab.cc"
     break;
 
   case 132:
 #line 943 "HTMLParser.yy"
+                          {
+    ((yylhs.value.option_list) = (yystack_[1].value.option_list))->push_back(auto_ptr<Option>((yystack_[0].value.option)));
+  }
+#line 1808 "HTMLParser.tab.cc"
+    break;
+
+  case 133:
+#line 949 "HTMLParser.yy"
                                {
     (yylhs.value.option) = new Option;
     (yylhs.value.option)->attributes.reset((yystack_[2].value.tag_attributes));
     (yylhs.value.option)->pcdata.reset((yystack_[1].value.pcdata));
   }
-#line 1807 "HTMLParser.tab.cc"
-    break;
-
-  case 133:
-#line 953 "HTMLParser.yy"
-       { (yylhs.value.heading) = new Heading; (yylhs.value.heading)->level = 1; (yylhs.value.heading)->attributes.reset((yystack_[0].value.tag_attributes)); }
-#line 1813 "HTMLParser.tab.cc"
+#line 1818 "HTMLParser.tab.cc"
     break;
 
   case 134:
-#line 954 "HTMLParser.yy"
-       { (yylhs.value.heading) = new Heading; (yylhs.value.heading)->level = 2; (yylhs.value.heading)->attributes.reset((yystack_[0].value.tag_attributes)); }
-#line 1819 "HTMLParser.tab.cc"
+#line 959 "HTMLParser.yy"
+       { (yylhs.value.heading) = new Heading; (yylhs.value.heading)->level = 1; (yylhs.value.heading)->attributes.reset((yystack_[0].value.tag_attributes)); }
+#line 1824 "HTMLParser.tab.cc"
     break;
 
   case 135:
-#line 955 "HTMLParser.yy"
-       { (yylhs.value.heading) = new Heading; (yylhs.value.heading)->level = 3; (yylhs.value.heading)->attributes.reset((yystack_[0].value.tag_attributes)); }
-#line 1825 "HTMLParser.tab.cc"
+#line 960 "HTMLParser.yy"
+       { (yylhs.value.heading) = new Heading; (yylhs.value.heading)->level = 2; (yylhs.value.heading)->attributes.reset((yystack_[0].value.tag_attributes)); }
+#line 1830 "HTMLParser.tab.cc"
     break;
 
   case 136:
-#line 956 "HTMLParser.yy"
-       { (yylhs.value.heading) = new Heading; (yylhs.value.heading)->level = 4; (yylhs.value.heading)->attributes.reset((yystack_[0].value.tag_attributes)); }
-#line 1831 "HTMLParser.tab.cc"
+#line 961 "HTMLParser.yy"
+       { (yylhs.value.heading) = new Heading; (yylhs.value.heading)->level = 3; (yylhs.value.heading)->attributes.reset((yystack_[0].value.tag_attributes)); }
+#line 1836 "HTMLParser.tab.cc"
     break;
 
   case 137:
-#line 957 "HTMLParser.yy"
-       { (yylhs.value.heading) = new Heading; (yylhs.value.heading)->level = 5; (yylhs.value.heading)->attributes.reset((yystack_[0].value.tag_attributes)); }
-#line 1837 "HTMLParser.tab.cc"
+#line 962 "HTMLParser.yy"
+       { (yylhs.value.heading) = new Heading; (yylhs.value.heading)->level = 4; (yylhs.value.heading)->attributes.reset((yystack_[0].value.tag_attributes)); }
+#line 1842 "HTMLParser.tab.cc"
     break;
 
   case 138:
-#line 958 "HTMLParser.yy"
-       { (yylhs.value.heading) = new Heading; (yylhs.value.heading)->level = 6; (yylhs.value.heading)->attributes.reset((yystack_[0].value.tag_attributes)); }
-#line 1843 "HTMLParser.tab.cc"
+#line 963 "HTMLParser.yy"
+       { (yylhs.value.heading) = new Heading; (yylhs.value.heading)->level = 5; (yylhs.value.heading)->attributes.reset((yystack_[0].value.tag_attributes)); }
+#line 1848 "HTMLParser.tab.cc"
     break;
 
   case 139:
-#line 962 "HTMLParser.yy"
-           { (yylhs.value.inT) = 1; }
-#line 1849 "HTMLParser.tab.cc"
+#line 964 "HTMLParser.yy"
+       { (yylhs.value.heading) = new Heading; (yylhs.value.heading)->level = 6; (yylhs.value.heading)->attributes.reset((yystack_[0].value.tag_attributes)); }
+#line 1854 "HTMLParser.tab.cc"
     break;
 
   case 140:
-#line 963 "HTMLParser.yy"
-           { (yylhs.value.inT) = 2; }
-#line 1855 "HTMLParser.tab.cc"
+#line 968 "HTMLParser.yy"
+           { (yylhs.value.inT) = 1; }
+#line 1860 "HTMLParser.tab.cc"
     break;
 
   case 141:
-#line 964 "HTMLParser.yy"
-           { (yylhs.value.inT) = 3; }
-#line 1861 "HTMLParser.tab.cc"
+#line 969 "HTMLParser.yy"
+           { (yylhs.value.inT) = 2; }
+#line 1866 "HTMLParser.tab.cc"
     break;
 
   case 142:
-#line 965 "HTMLParser.yy"
-           { (yylhs.value.inT) = 4; }
-#line 1867 "HTMLParser.tab.cc"
+#line 970 "HTMLParser.yy"
+           { (yylhs.value.inT) = 3; }
+#line 1872 "HTMLParser.tab.cc"
     break;
 
   case 143:
-#line 966 "HTMLParser.yy"
-           { (yylhs.value.inT) = 5; }
-#line 1873 "HTMLParser.tab.cc"
+#line 971 "HTMLParser.yy"
+           { (yylhs.value.inT) = 4; }
+#line 1878 "HTMLParser.tab.cc"
     break;
 
   case 144:
-#line 967 "HTMLParser.yy"
-           { (yylhs.value.inT) = 6; }
-#line 1879 "HTMLParser.tab.cc"
+#line 972 "HTMLParser.yy"
+           { (yylhs.value.inT) = 5; }
+#line 1884 "HTMLParser.tab.cc"
     break;
 
   case 145:
-#line 972 "HTMLParser.yy"
-                            { (yylhs.value.pcdata) = 0; }
-#line 1885 "HTMLParser.tab.cc"
+#line 973 "HTMLParser.yy"
+           { (yylhs.value.inT) = 6; }
+#line 1890 "HTMLParser.tab.cc"
     break;
 
   case 146:
-#line 972 "HTMLParser.yy"
-                                                  { (yylhs.value.pcdata) = (yystack_[0].value.pcdata); }
-#line 1891 "HTMLParser.tab.cc"
+#line 978 "HTMLParser.yy"
+                            { (yylhs.value.pcdata) = 0; }
+#line 1896 "HTMLParser.tab.cc"
     break;
 
   case 147:
-#line 973 "HTMLParser.yy"
-                            { (yylhs.value.caption) = 0; }
-#line 1897 "HTMLParser.tab.cc"
+#line 978 "HTMLParser.yy"
+                                                  { (yylhs.value.pcdata) = (yystack_[0].value.pcdata); }
+#line 1902 "HTMLParser.tab.cc"
     break;
 
   case 148:
-#line 973 "HTMLParser.yy"
-                                                  { (yylhs.value.caption) = (yystack_[0].value.caption); }
-#line 1903 "HTMLParser.tab.cc"
+#line 979 "HTMLParser.yy"
+                            { (yylhs.value.caption) = 0; }
+#line 1908 "HTMLParser.tab.cc"
     break;
 
   case 149:
-#line 974 "HTMLParser.yy"
-                            { (yylhs.value.element_list) = 0; }
-#line 1909 "HTMLParser.tab.cc"
+#line 979 "HTMLParser.yy"
+                                                  { (yylhs.value.caption) = (yystack_[0].value.caption); }
+#line 1914 "HTMLParser.tab.cc"
     break;
 
   case 150:
-#line 974 "HTMLParser.yy"
-                                                  { (yylhs.value.element_list) = (yystack_[0].value.element_list); }
-#line 1915 "HTMLParser.tab.cc"
+#line 980 "HTMLParser.yy"
+                            { (yylhs.value.element_list) = 0; }
+#line 1920 "HTMLParser.tab.cc"
     break;
 
   case 151:
-#line 975 "HTMLParser.yy"
-                            { (yylhs.value.element_list) = 0; }
-#line 1921 "HTMLParser.tab.cc"
+#line 980 "HTMLParser.yy"
+                                                  { (yylhs.value.element_list) = (yystack_[0].value.element_list); }
+#line 1926 "HTMLParser.tab.cc"
     break;
 
   case 152:
-#line 975 "HTMLParser.yy"
-                                                  { (yylhs.value.element_list) = (yystack_[0].value.element_list); }
-#line 1927 "HTMLParser.tab.cc"
+#line 981 "HTMLParser.yy"
+                            { (yylhs.value.element_list) = 0; }
+#line 1932 "HTMLParser.tab.cc"
     break;
 
   case 153:
-#line 977 "HTMLParser.yy"
-                            { (yylhs.value.tag_attributes) = 0; }
-#line 1933 "HTMLParser.tab.cc"
+#line 981 "HTMLParser.yy"
+                                                  { (yylhs.value.element_list) = (yystack_[0].value.element_list); }
+#line 1938 "HTMLParser.tab.cc"
     break;
 
   case 154:
-#line 977 "HTMLParser.yy"
-                                                  { (yylhs.value.tag_attributes) = (yystack_[0].value.tag_attributes); }
-#line 1939 "HTMLParser.tab.cc"
+#line 983 "HTMLParser.yy"
+                            { (yylhs.value.tag_attributes) = 0; }
+#line 1944 "HTMLParser.tab.cc"
     break;
 
   case 155:
-#line 978 "HTMLParser.yy"
-                            { (yylhs.value.tag_attributes) = 0; }
-#line 1945 "HTMLParser.tab.cc"
+#line 983 "HTMLParser.yy"
+                                                  { (yylhs.value.tag_attributes) = (yystack_[0].value.tag_attributes); }
+#line 1950 "HTMLParser.tab.cc"
     break;
 
   case 156:
-#line 978 "HTMLParser.yy"
+#line 984 "HTMLParser.yy"
+                            { (yylhs.value.tag_attributes) = 0; }
+#line 1956 "HTMLParser.tab.cc"
+    break;
+
+  case 157:
+#line 984 "HTMLParser.yy"
                                                   { (yylhs.value.tag_attributes) = (yystack_[0].value.tag_attributes); }
-#line 1951 "HTMLParser.tab.cc"
+#line 1962 "HTMLParser.tab.cc"
     break;
 
 
-#line 1955 "HTMLParser.tab.cc"
+#line 1966 "HTMLParser.tab.cc"
 
             default:
               break;
@@ -2218,325 +2229,330 @@ namespace html2text {
   }
 
 
-  const short HTMLParser::yypact_ninf_ = -157;
+  const short HTMLParser::yypact_ninf_ = -168;
 
-  const short HTMLParser::yytable_ninf_ = -224;
+  const short HTMLParser::yytable_ninf_ = -225;
 
   const short
   HTMLParser::yypact_[] =
   {
-    -157,     9,  1696,  -157,  -157,  -157,  -157,   -13,  2104,  -157,
-    2104,  -157,  -157,  2104,  -157,  -157,  -157,  -157,  2104,  2104,
-    2104,  -157,  -157,  2034,  2104,  2034,  -157,  -157,  -157,  -157,
-    -157,  -157,  -157,  -157,  -157,  -157,  2104,  -157,  -157,  -157,
-    2104,  -157,  -157,  -157,  -157,  2104,  -157,  -157,  2104,  2104,
-    -157,   -22,  2104,  2104,  2104,  -157,  2104,  2104,    17,    28,
-      28,  2104,  2104,  -157,  2104,  -157,  -157,  -157,   284,  -157,
-    -157,  -157,  -157,  -157,  -157,  -157,  2104,  -157,   284,   284,
-     284,   284,  -157,  -157,  2034,  2104,   -42,  1963,   -39,   -43,
-     415,   546,   -40,   -44,   -37,  -157,   677,  -157,  -157,   808,
-    -157,  -157,    16,   -36,   -35,   939,   -54,   -49,    15,  -157,
-     -51,  -157,  1070,   -53,   -50,    28,   -31,  -157,   -52,   -55,
-     -41,   -45,   -56,  2104,  -157,  -157,   -58,  -157,   -59,   -48,
-     -47,  -157,   -46,  -157,  -157,  -157,  -157,  -157,  -157,  -157,
-    1794,     6,  -157,  -157,  -157,  -157,  -157,  -157,  -157,  -157,
-    -157,  -157,  -157,  -157,  -157,  -157,  -157,  2104,  -157,  -157,
-    -157,  -157,  -157,  -157,  -157,  -157,  -157,  1893,  -157,  -157,
-    -157,  -157,    50,  -157,  -157,  -157,  -157,  -157,  -157,  -157,
-    -157,  -157,  -157,  -157,  -157,  -157,  1616,   284,  1543,  -157,
-    -157,  -157,  2104,  -157,  -157,  -157,  -157,  -157,   -19,  -157,
-    -157,  -157,  -157,  -157,  -157,  -157,  -157,  -157,  -157,  -157,
-    -157,    12,     3,  -157,  -157,  -157,  -157,  -157,  -157,  -157,
-    1201,  -157,  -157,  -157,  -157,  -157,  -157,  -157,  -157,  -157,
-    -157,  -157,  -157,  2034,  -157,  -157,  -157,  2104,   -11,    -3,
-    -157,  -157,  -157,  -157,  -157,  -157,  -157,  -157,  -157,  -157,
-    -157,    -9,  -157,  -157,  2034,  2034,  -157,  -157,  -157,     4,
-    -157,  -157,    26,    18,  -157,  -157,  -157,  -157,  -157,  -157,
-      33,  -157,    33,  -157,  1455,  1331,  -157,    25,    25,  -157,
-    -157,  -157,   -26,  -157,  -157,  -157
+    -168,     9,  1742,  -168,  -168,  -168,  -168,   -13,  2150,  -168,
+    2150,  -168,  -168,  2150,  -168,  -168,  -168,  -168,  2150,  2150,
+    2150,  -168,  -168,  2080,  2150,  2080,  -168,  -168,  -168,  -168,
+    -168,  -168,  -168,  -168,  -168,  -168,  2150,  -168,  -168,  -168,
+    2150,  -168,  -168,  -168,  -168,  2150,  -168,  -168,  2150,  2150,
+    -168,   -22,  2150,  2150,  2150,  -168,  2150,  2150,    17,    28,
+      28,  2150,  2150,  -168,  2150,  -168,  -168,  -168,   285,  -168,
+    -168,  -168,  -168,  -168,  -168,  -168,  2150,  -168,   285,   285,
+     285,   285,  -168,  -168,  2080,  2150,   -42,  2009,   -39,   -43,
+     416,   547,   -40,   -44,   -37,  -168,   678,  -168,  -168,   809,
+    -168,  -168,    16,   -36,   -35,   940,   -54,   -49,    15,  -168,
+     -51,  -168,  1071,   -53,   -50,    28,   -31,  -168,   -52,   -55,
+     -41,   -45,   -56,  2150,  -168,  -168,   -58,  -168,   -59,   -48,
+     -47,  -168,   -46,  -168,  -168,  -168,  -168,  -168,  -168,  -168,
+    1840,     6,  -168,  -168,  -168,  -168,  -168,  -168,  -168,  -168,
+    -168,  -168,  -168,  -168,  -168,  -168,  -168,  -168,  2150,  -168,
+    -168,  -168,  -168,  -168,  -168,  -168,  -168,  -168,  1939,  -168,
+    -168,  -168,  -168,    50,  -168,  -168,  -168,  -168,  -168,  -168,
+    -168,  -168,  -168,  -168,  -168,  -168,  -168,  1662,   285,  1589,
+    -168,  -168,  -168,  2150,  -168,  -168,  -168,  -168,  -168,   -19,
+    -168,  -168,  -168,  -168,  -168,  -168,  -168,  -168,  -168,  -168,
+    -168,  -168,    12,     3,  -168,  -168,  -168,  -168,  -168,  -168,
+    -168,  1202,  -168,  -168,  -168,  -168,  -168,  -168,  -168,  -168,
+    -168,  -168,  -168,  -168,  2080,  -168,  -168,  -168,  2150,   -11,
+      -3,  -168,  -168,  -168,  -168,  -168,  -168,  -168,  -168,  -168,
+    -168,  -168,    -9,  -168,  -168,  2080,  2080,  -168,  -168,  -168,
+       4,  -168,  -168,    26,    18,  -168,  -168,  -168,  -168,  -168,
+    -168,    33,  -168,    33,  -168,  1456,  1332,  -168,    25,    25,
+    -168,  -168,  -168,   -26,  -168,  -168,  -168
   };
 
   const unsigned char
   HTMLParser::yydefact_[] =
   {
-       3,     0,     0,     1,     4,     5,    23,   153,   149,   121,
-     149,    12,   118,   149,    24,    17,   119,    24,   149,   149,
-     149,    52,    24,   151,   149,   151,    24,   133,   134,   135,
-     136,   137,   138,     8,    46,     6,   149,   115,   127,    11,
-     149,    14,   124,    54,    13,   149,    48,    35,   149,   149,
-      15,     0,   149,   149,   149,    16,   149,   149,   147,     0,
-     145,   149,   149,    50,   149,    18,     9,     7,     0,    20,
-      21,    33,    39,    41,    40,    22,    19,    89,     0,     0,
-       0,     0,    35,   154,   151,   150,     0,     0,   159,   163,
-       0,     0,   167,   169,   171,    56,     0,    76,    77,     0,
-      72,    75,     0,   177,   179,     0,   183,   185,     0,    56,
-       0,    56,     0,   193,   195,     0,     0,   130,   197,   199,
-     201,   203,   205,   149,   148,    80,     0,   146,   211,   215,
-     217,    56,   221,   224,    91,    90,    92,    93,    94,    95,
-       0,   157,    88,   123,   116,   122,   160,    99,   164,   102,
-      25,    26,    27,   162,    29,    30,    31,    28,    44,   166,
-      43,   168,   113,   170,   109,   172,   108,     0,   174,    42,
-      73,    74,    64,   178,   106,   180,   117,   182,    45,   184,
-      98,   186,   111,   125,   126,   120,     0,     0,     0,    36,
-     192,    38,    37,    34,   194,    78,   196,   110,   189,   128,
-     131,   198,   103,   200,   101,   202,   107,   204,   104,   206,
-     105,     0,     0,   129,   212,    10,   216,    97,   218,   100,
-       0,   222,   112,   139,   140,   141,   142,   143,   144,    32,
-     158,   114,    57,   151,    53,    60,    58,    61,   175,     0,
-      55,    96,    49,   190,   132,    79,    81,    83,    47,   220,
-      51,   187,   176,    62,   151,   151,    63,    66,    67,     0,
-     188,    59,     0,     0,    84,    87,    24,    24,   214,    82,
-     155,    70,   155,    68,     0,     0,   156,     0,     0,   208,
-      85,   210,   207,    71,    69,    86
+       3,     0,     0,     1,     4,     5,    23,   154,   150,   122,
+     150,    12,   119,   150,    24,    17,   120,    24,   150,   150,
+     150,    53,    24,   152,   150,   152,    24,   134,   135,   136,
+     137,   138,   139,     8,    47,     6,   150,   116,   128,    11,
+     150,    14,   125,    55,    13,   150,    49,    36,   150,   150,
+      15,     0,   150,   150,   150,    16,   150,   150,   148,     0,
+     146,   150,   150,    51,   150,    18,     9,     7,     0,    20,
+      21,    34,    40,    42,    41,    22,    19,    90,     0,     0,
+       0,     0,    36,   155,   152,   151,     0,     0,   160,   164,
+       0,     0,   168,   170,   172,    57,     0,    77,    78,     0,
+      73,    76,     0,   178,   180,     0,   184,   186,     0,    57,
+       0,    57,     0,   194,   196,     0,     0,   131,   198,   200,
+     202,   204,   206,   150,   149,    81,     0,   147,   212,   216,
+     218,    57,   222,   225,    92,    91,    93,    94,    95,    96,
+       0,   158,    89,   124,   117,   123,   161,   100,   165,   103,
+      25,    28,    26,    27,   163,    30,    31,    32,    29,    45,
+     167,    44,   169,   114,   171,   110,   173,   109,     0,   175,
+      43,    74,    75,    65,   179,   107,   181,   118,   183,    46,
+     185,    99,   187,   112,   126,   127,   121,     0,     0,     0,
+      37,   193,    39,    38,    35,   195,    79,   197,   111,   190,
+     129,   132,   199,   104,   201,   102,   203,   108,   205,   105,
+     207,   106,     0,     0,   130,   213,    10,   217,    98,   219,
+     101,     0,   223,   113,   140,   141,   142,   143,   144,   145,
+      33,   159,   115,    58,   152,    54,    61,    59,    62,   176,
+       0,    56,    97,    50,   191,   133,    80,    82,    84,    48,
+     221,    52,   188,   177,    63,   152,   152,    64,    67,    68,
+       0,   189,    60,     0,     0,    85,    88,    24,    24,   215,
+      83,   156,    71,   156,    69,     0,     0,   157,     0,     0,
+     209,    86,   211,   208,    72,    70,    87
   };
 
   const short
   HTMLParser::yypgoto_[] =
   {
-    -157,  -157,  -157,   -38,   -15,     8,     1,     5,   -87,  -157,
-    -157,  -157,  -157,  -157,   -81,  -157,   -72,  -157,  -157,  -157,
-    -157,     2,  -157,  -157,  -157,  -157,   100,    -2,   -17,  -157,
-    -157,  -157,  -157,  -157,  -157,  -157,     0,  -157,  -157,  -157,
-    -157,    99,   -24,  -157,  -150,  -157,  -157,  -157,  -157,  -157,
-    -157,  -157,  -157,  -157,  -157,  -157,  -157,  -157,  -157,  -157,
-    -157,  -157,  -157,  -157,  -157,  -157,  -157,  -157,  -157,  -157,
-    -156,  -157,  -157,  -157,  -157,  -157,  -157,  -157,   -66
+    -168,  -168,  -168,   -38,   -15,     8,     1,     5,   -87,  -168,
+    -168,  -168,  -168,  -168,   -81,  -168,   -73,  -168,  -168,  -168,
+    -168,     2,  -168,  -168,  -168,  -168,   100,    -2,   -17,  -168,
+    -168,  -168,  -168,  -168,  -168,  -168,    -7,  -168,  -168,  -168,
+    -168,  1527,   -24,  -168,  -161,  -168,  -168,  -168,  -168,  -168,
+    -168,  -168,  -168,  -168,  -168,  -168,  -168,  -168,  -168,  -168,
+    -168,  -168,  -168,  -168,  -168,  -168,  -168,  -168,  -168,  -168,
+    -167,  -168,  -168,  -168,  -168,  -168,  -168,  -168,   -66
   };
 
   const short
   HTMLParser::yydefgoto_[] =
   {
       -1,     1,     2,    68,    90,    97,    98,   112,    71,    72,
-     111,   131,    95,   109,   167,   236,    73,   239,   257,   258,
-      99,   100,    74,   124,   212,   259,   156,    85,    77,    78,
-      79,    80,    87,   108,    81,   116,   117,    82,   229,   128,
-     125,    86,   102,    84,   277,   231,   147,   158,   149,   160,
-     162,   164,   166,   169,   253,   174,   176,   178,   180,   182,
-     261,   244,   193,   195,   197,   202,   204,   206,   208,   210,
-     280,   282,   215,   269,   217,   219,   250,   222,   134
+     111,   131,    95,   109,   168,   237,    73,   240,   258,   259,
+      99,   100,    74,   124,   213,   260,   157,    85,    77,    78,
+      79,    80,    87,   108,    81,   116,   117,    82,   230,   128,
+     125,    86,   102,    84,   278,   232,   147,   159,   149,   161,
+     163,   165,   167,   170,   254,   175,   177,   179,   181,   183,
+     262,   245,   194,   196,   198,   203,   205,   207,   209,   211,
+     281,   283,   216,   270,   218,   220,   251,   223,   134
   };
 
   const short
   HTMLParser::yytable_[] =
   {
-      76,   104,    91,    70,   246,   264,   101,    96,   101,     3,
-      69,   105,   136,   137,   138,   139,   183,   133,   254,   133,
-     115,   126,   127,   255,   184,   191,   133,   133,   186,   115,
-     188,    83,     6,   142,   123,   148,   172,  -223,   146,  -223,
-     163,  -223,  -223,   161,  -223,   265,  -223,  -223,   179,   165,
-     220,  -223,  -223,   191,   181,   173,   187,   175,   194,   135,
-     141,   203,   196,   201,   209,   213,   214,   101,   135,   266,
-     145,   267,   247,  -213,   207,    23,   205,   198,   252,   216,
-     230,   218,   101,   199,   221,   276,   256,   140,   157,   157,
-     243,   155,   155,   245,   157,   260,   279,   155,   154,   154,
-     238,   171,    75,   157,   154,  -223,   155,  -223,   272,    88,
-     192,   270,    89,   154,  -223,  -223,   200,    92,    93,    94,
-     185,   241,   278,   103,   248,  -213,   285,     0,     0,     0,
-     268,     0,     0,     0,     0,   106,     0,     0,   192,   107,
-     135,     0,     0,     0,   110,     0,     0,   113,   114,     0,
-       0,   118,   119,   120,     0,   121,   122,     0,     0,     0,
-     129,   130,     0,   132,     0,   237,     0,     0,   235,     0,
-       0,     0,     0,     0,     0,   135,     0,     0,     0,     0,
-       0,     0,     0,     0,   237,     0,   237,   235,     0,   235,
-       0,     0,     0,     0,     0,     0,   271,   273,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,   251,
-       0,   283,   284,     0,     0,     0,   101,     0,   237,     0,
-     135,   235,   211,     0,     0,     0,     0,     0,     0,     0,
-     262,   263,     0,     0,     0,     0,     0,   101,   101,     0,
+      76,   104,    91,    70,   247,   265,   101,    96,   101,     3,
+      69,   105,   136,   137,   138,   139,   184,   133,   255,   133,
+     115,   126,   127,   256,   185,   192,   133,   133,   187,   115,
+     189,    83,     6,   142,   123,   148,   173,  -224,   146,  -224,
+     164,  -224,  -224,   162,  -224,   266,  -224,  -224,   180,   166,
+     221,  -224,  -224,   192,   182,   174,   188,   176,   195,   135,
+     141,   204,   197,   202,   210,   214,   215,   101,   135,   267,
+     145,   268,   248,  -214,   208,    23,   206,   199,   253,   217,
+     231,   219,   101,   200,   222,   277,   257,   140,   158,   158,
+     244,   156,   156,   246,   158,   261,   280,   156,   155,   155,
+     239,   172,    75,   158,   155,  -224,   156,  -224,   273,   201,
+     193,   271,   279,   155,  -224,  -224,   286,     0,     0,     0,
+     186,     0,   242,     0,   249,  -214,     0,     0,     0,     0,
+     269,     0,     0,     0,     0,     0,     0,     0,   193,     0,
+       0,   135,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,   274,   275,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,   238,     0,     0,   236,
+       0,     0,     0,     0,     0,     0,   135,     0,     0,     0,
+       0,     0,     0,     0,     0,   238,     0,   238,   236,     0,
+     236,     0,     0,     0,     0,     0,     0,   272,   274,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,   157,   157,     0,   155,   155,     0,     0,     0,
-       0,     0,   154,   154,  -223,   133,     0,  -223,  -223,     0,
-    -223,  -223,  -223,     0,  -223,  -223,  -223,  -223,  -223,  -223,
-    -223,     0,  -223,  -223,  -223,  -223,  -223,  -223,  -223,  -223,
-    -223,  -223,  -223,  -223,  -223,  -223,  -223,  -223,  -223,  -223,
-    -223,  -223,  -223,  -223,  -223,  -223,  -223,  -223,  -223,  -223,
-    -223,  -223,  -223,  -223,  -223,     0,  -223,  -223,  -223,  -223,
-    -223,  -223,  -223,  -223,  -223,  -223,  -223,  -223,  -223,  -223,
-    -223,  -223,  -223,  -223,  -223,  -223,  -223,  -223,  -223,  -223,
-    -223,  -223,  -223,  -223,  -223,  -223,  -223,  -223,  -223,  -223,
-    -223,  -223,  -223,  -223,  -223,  -223,  -223,  -223,  -223,  -223,
-    -223,  -223,  -223,  -223,  -223,  -223,  -223,  -223,  -223,     0,
-    -223,  -223,  -223,     0,  -223,  -223,  -223,     0,     0,  -223,
-    -223,  -223,     0,  -223,  -223,  -223,  -223,     0,  -223,     0,
-    -223,  -223,  -223,  -223,  -223,  -161,   150,     0,  -161,     6,
-       0,     7,     8,     9,     0,    10,  -161,    12,    13,    14,
-    -161,    16,     0,    17,    18,    19,  -161,    20,    21,    22,
-      23,  -161,    24,    25,    26,    27,    28,    29,    30,    31,
-      32,  -161,    34,  -161,    36,    37,    38,  -161,    40,  -161,
-    -161,    42,    43,  -161,    45,    46,     0,    47,  -161,    48,
-      49,   151,    51,    52,    53,    54,   152,    56,    57,    58,
-    -161,    59,  -161,  -161,  -161,    61,    62,    63,    64,  -161,
-    -161,  -161,  -161,  -161,   153,  -161,  -161,  -161,  -161,  -161,
-    -161,  -161,  -161,  -161,  -161,  -161,  -161,  -161,  -161,  -161,
-    -161,  -161,  -161,  -161,  -161,  -161,  -161,  -161,  -161,  -161,
-       0,  -161,  -161,  -161,     0,  -161,  -161,  -161,     0,     0,
-    -161,  -161,  -161,     0,  -161,  -161,  -161,  -161,     0,  -161,
-       0,  -161,  -161,  -161,  -161,  -161,  -165,   150,     0,  -165,
-       6,     0,     7,     8,     9,     0,    10,  -165,    12,    13,
-      14,  -165,    16,     0,    17,    18,    19,  -165,    20,    21,
-      22,    23,  -165,    24,    25,    26,    27,    28,    29,    30,
-      31,    32,  -165,    34,  -165,    36,    37,    38,  -165,    40,
-    -165,  -165,    42,    43,  -165,    45,    46,     0,    47,  -165,
-      48,    49,   151,    51,    52,    53,    54,   152,    56,    57,
-      58,  -165,    59,  -165,  -165,  -165,    61,    62,    63,    64,
-    -165,  -165,  -165,  -165,  -165,  -165,  -165,  -165,   159,  -165,
-    -165,  -165,  -165,  -165,  -165,  -165,  -165,  -165,  -165,  -165,
-    -165,  -165,  -165,  -165,  -165,  -165,  -165,  -165,  -165,  -165,
-    -165,     0,  -165,  -165,  -165,     0,  -165,  -165,  -165,     0,
-       0,  -165,  -165,  -165,     0,  -165,  -165,  -165,  -165,     0,
-    -165,     0,  -165,  -165,  -165,  -165,  -165,  -173,   150,     0,
-    -173,     6,     0,     7,     8,     9,     0,    10,  -173,    12,
-      13,    14,  -173,    16,     0,    17,    18,    19,  -173,    20,
-      21,    22,    23,  -173,    24,    25,    26,    27,    28,    29,
-      30,    31,    32,  -173,    34,  -173,    36,    37,    38,  -173,
-      40,  -173,  -173,    42,    43,  -173,    45,    46,     0,    47,
-    -173,    48,    49,   151,    51,    52,    53,    54,   152,    56,
-      57,    58,  -173,    59,  -173,  -173,  -173,    61,    62,    63,
-      64,  -173,  -173,  -173,  -173,  -173,  -173,  -173,  -173,  -173,
-    -173,  -173,  -173,  -173,  -173,   168,  -173,  -173,  -173,  -173,
-    -173,  -173,  -173,  -173,  -173,  -173,  -173,  -173,  -173,  -173,
-    -173,  -173,     0,  -173,  -173,  -173,     0,  -173,  -173,  -173,
-       0,     0,  -173,  -173,  -173,     0,  -173,  -173,  -173,  -173,
-       0,  -173,     0,  -173,  -173,  -173,  -173,  -173,  -152,   170,
-       0,  -152,     6,     0,     7,  -152,     9,     0,    10,  -152,
-      12,    13,    14,  -152,    16,     0,    17,    18,    19,  -152,
-      20,    21,    22,    23,  -152,    24,    25,    26,    27,    28,
-      29,    30,    31,    32,  -152,    34,  -152,    36,    37,    38,
-    -152,    40,  -152,  -152,    42,    43,  -152,    45,    46,     0,
-      47,  -152,    48,    49,  -152,    51,    52,    53,    54,  -152,
-      56,    57,    58,  -152,    59,  -152,  -152,  -152,    61,    62,
-      63,    64,  -152,  -152,  -152,  -152,  -152,  -152,  -152,  -152,
-    -152,  -152,  -152,  -152,  -152,  -152,  -152,  -152,  -152,  -152,
-    -152,  -152,  -152,  -152,  -152,  -152,  -152,  -152,  -152,  -152,
-    -152,  -152,  -152,     0,  -152,  -152,  -152,     0,  -152,  -152,
-    -152,     0,     0,  -152,  -152,  -152,     0,  -152,  -152,  -152,
-    -152,     0,  -152,     0,  -152,  -152,  -152,  -152,  -152,  -181,
-     150,     0,  -181,     6,     0,     7,     8,     9,     0,    10,
-    -181,    12,    13,    14,  -181,    16,     0,    17,    18,    19,
-    -181,    20,    21,    22,    23,  -181,    24,    25,    26,    27,
-      28,    29,    30,    31,    32,  -181,    34,  -181,    36,    37,
-      38,  -181,    40,  -181,  -181,    42,    43,  -181,    45,    46,
-       0,    47,  -181,    48,    49,   151,    51,    52,    53,    54,
-     152,    56,    57,    58,  -181,    59,  -181,  -181,  -181,    61,
-      62,    63,    64,  -181,  -181,  -181,  -181,  -181,  -181,  -181,
-    -181,  -181,  -181,  -181,  -181,  -181,  -181,  -181,  -181,  -181,
-    -181,  -181,   177,  -181,  -181,  -181,  -181,  -181,  -181,  -181,
-    -181,  -181,  -181,  -181,     0,  -181,  -181,  -181,     0,  -181,
-    -181,  -181,     0,     0,  -181,  -181,  -181,     0,  -181,  -181,
-    -181,  -181,     0,  -181,     0,  -181,  -181,  -181,  -181,  -181,
-    -191,   189,     0,  -191,     6,     0,     7,  -191,     9,     0,
-      10,  -191,    12,    13,    14,  -191,    16,     0,    17,    18,
-      19,  -191,    20,    21,    22,    23,  -191,    24,    25,    26,
-    -191,  -191,  -191,  -191,  -191,  -191,  -191,    34,  -191,    36,
-      37,    38,  -191,    40,  -191,  -191,    42,    43,  -191,    45,
-      46,     0,  -191,  -191,    48,    49,  -191,    51,    52,    53,
-      54,  -191,    56,    57,    58,  -191,    59,  -191,  -191,  -191,
-      61,    62,    63,    64,  -191,  -191,  -191,  -191,  -191,  -191,
-    -191,  -191,  -191,  -191,  -191,  -191,  -191,  -191,  -191,  -191,
-    -191,  -191,  -191,  -191,  -191,  -191,  -191,  -191,  -191,  -191,
-    -191,  -191,  -191,  -191,  -191,     0,  -191,  -191,  -191,     0,
-     190,  -191,  -191,     0,     0,  -191,  -191,  -191,     0,  -191,
-    -191,  -191,  -191,     0,  -191,     0,  -191,  -191,  -191,  -191,
-    -191,  -219,   232,     0,  -219,     6,     0,     7,  -219,     9,
-       0,    10,  -219,    12,    13,    14,  -219,    16,     0,    17,
-      18,    19,  -219,    20,    21,    22,    23,  -219,    24,    25,
-      26,  -219,  -219,  -219,  -219,  -219,  -219,  -219,    34,  -219,
-      36,    37,    38,  -219,    40,   233,  -219,    42,    43,  -219,
-      45,    46,     0,    47,  -219,    48,    49,  -219,    51,    52,
-      53,    54,  -219,    56,    57,    58,  -219,    59,  -219,  -219,
-    -219,    61,    62,    63,    64,  -219,  -219,  -219,  -219,  -219,
-    -219,  -219,  -219,  -219,  -219,  -219,  -219,  -219,  -219,  -219,
-    -219,  -219,  -219,  -219,  -219,  -219,  -219,  -219,  -219,  -219,
-    -219,  -219,  -219,  -219,  -219,  -219,     0,  -219,  -219,  -219,
-       0,  -219,  -219,  -219,     0,     0,  -219,  -219,  -219,     0,
-    -219,  -219,  -219,  -219,     0,  -219,     0,  -219,  -219,  -219,
-     249,  -219,   150,     0,     0,     6,     0,     7,     8,     9,
-       0,    10,     0,    12,    13,    14,     0,    16,     0,    17,
-      18,    19,     0,    20,    21,    22,    23,     0,    24,    25,
-      26,    27,    28,    29,    30,    31,    32,     0,    34,     0,
-      36,    37,    38,     0,    40,     0,     0,    42,    43,     0,
-      45,    46,     0,    47,     0,    48,    49,   151,    51,    52,
-      53,    54,   152,    56,    57,    58,  -209,    59,  -209,     0,
-    -209,    61,    62,    63,    64,     0,     0,     0,     0,     0,
+     252,     0,   284,   285,     0,     0,     0,   101,     0,   238,
+       0,   135,   236,     0,     0,     0,     0,     0,     0,     0,
+       0,   263,   264,     0,     0,     0,     0,     0,   101,   101,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,   275,   276,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,   158,   158,     0,   156,   156,     0,     0,
+       0,     0,     0,   155,   155,  -224,   133,     0,  -224,  -224,
+       0,  -224,  -224,  -224,     0,  -224,  -224,  -224,  -224,  -224,
+    -224,  -224,     0,  -224,  -224,  -224,  -224,  -224,  -224,  -224,
+    -224,  -224,  -224,  -224,  -224,  -224,  -224,  -224,  -224,  -224,
+    -224,  -224,  -224,  -224,  -224,  -224,  -224,  -224,  -224,  -224,
+    -224,  -224,  -224,  -224,  -224,  -224,     0,  -224,  -224,  -224,
+    -224,  -224,  -224,  -224,  -224,  -224,  -224,  -224,  -224,  -224,
+    -224,  -224,  -224,  -224,  -224,  -224,  -224,  -224,  -224,  -224,
+    -224,  -224,  -224,  -224,  -224,  -224,  -224,  -224,  -224,  -224,
+    -224,  -224,  -224,  -224,  -224,  -224,  -224,  -224,  -224,  -224,
+    -224,  -224,  -224,  -224,  -224,  -224,  -224,  -224,  -224,  -224,
+       0,  -224,  -224,  -224,     0,  -224,  -224,  -224,     0,     0,
+    -224,  -224,  -224,     0,  -224,  -224,  -224,  -224,     0,  -224,
+       0,  -224,  -224,  -224,  -224,  -224,  -162,   150,     0,  -162,
+       6,     0,     7,     8,     9,     0,    10,  -162,    12,    13,
+      14,  -162,    16,     0,    17,    18,    19,  -162,    20,    21,
+      22,    23,  -162,    24,    25,    26,    27,    28,    29,    30,
+      31,    32,  -162,    34,  -162,    36,    37,    38,  -162,    40,
+    -162,  -162,    42,    43,   151,    45,    46,     0,    47,  -162,
+      48,    49,   152,    51,    52,    53,    54,   153,    56,    57,
+      58,  -162,    59,  -162,  -162,  -162,    61,    62,    63,    64,
+    -162,  -162,  -162,  -162,  -162,   154,  -162,  -162,  -162,  -162,
+    -162,  -162,  -162,  -162,  -162,  -162,  -162,  -162,  -162,  -162,
+    -162,  -162,  -162,  -162,  -162,  -162,  -162,  -162,  -162,  -162,
+    -162,     0,  -162,  -162,  -162,     0,  -162,  -162,  -162,     0,
+       0,  -162,  -162,  -162,     0,  -162,  -162,  -162,  -162,     0,
+    -162,     0,  -162,  -162,  -162,  -162,  -162,  -166,   150,     0,
+    -166,     6,     0,     7,     8,     9,     0,    10,  -166,    12,
+      13,    14,  -166,    16,     0,    17,    18,    19,  -166,    20,
+      21,    22,    23,  -166,    24,    25,    26,    27,    28,    29,
+      30,    31,    32,  -166,    34,  -166,    36,    37,    38,  -166,
+      40,  -166,  -166,    42,    43,   151,    45,    46,     0,    47,
+    -166,    48,    49,   152,    51,    52,    53,    54,   153,    56,
+      57,    58,  -166,    59,  -166,  -166,  -166,    61,    62,    63,
+      64,  -166,  -166,  -166,  -166,  -166,  -166,  -166,  -166,   160,
+    -166,  -166,  -166,  -166,  -166,  -166,  -166,  -166,  -166,  -166,
+    -166,  -166,  -166,  -166,  -166,  -166,  -166,  -166,  -166,  -166,
+    -166,  -166,     0,  -166,  -166,  -166,     0,  -166,  -166,  -166,
+       0,     0,  -166,  -166,  -166,     0,  -166,  -166,  -166,  -166,
+       0,  -166,     0,  -166,  -166,  -166,  -166,  -166,  -174,   150,
+       0,  -174,     6,     0,     7,     8,     9,     0,    10,  -174,
+      12,    13,    14,  -174,    16,     0,    17,    18,    19,  -174,
+      20,    21,    22,    23,  -174,    24,    25,    26,    27,    28,
+      29,    30,    31,    32,  -174,    34,  -174,    36,    37,    38,
+    -174,    40,  -174,  -174,    42,    43,   151,    45,    46,     0,
+      47,  -174,    48,    49,   152,    51,    52,    53,    54,   153,
+      56,    57,    58,  -174,    59,  -174,  -174,  -174,    61,    62,
+      63,    64,  -174,  -174,  -174,  -174,  -174,  -174,  -174,  -174,
+    -174,  -174,  -174,  -174,  -174,  -174,   169,  -174,  -174,  -174,
+    -174,  -174,  -174,  -174,  -174,  -174,  -174,  -174,  -174,  -174,
+    -174,  -174,  -174,     0,  -174,  -174,  -174,     0,  -174,  -174,
+    -174,     0,     0,  -174,  -174,  -174,     0,  -174,  -174,  -174,
+    -174,     0,  -174,     0,  -174,  -174,  -174,  -174,  -174,  -153,
+     171,     0,  -153,     6,     0,     7,  -153,     9,     0,    10,
+    -153,    12,    13,    14,  -153,    16,     0,    17,    18,    19,
+    -153,    20,    21,    22,    23,  -153,    24,    25,    26,    27,
+      28,    29,    30,    31,    32,  -153,    34,  -153,    36,    37,
+      38,  -153,    40,  -153,  -153,    42,    43,  -153,    45,    46,
+       0,    47,  -153,    48,    49,  -153,    51,    52,    53,    54,
+    -153,    56,    57,    58,  -153,    59,  -153,  -153,  -153,    61,
+      62,    63,    64,  -153,  -153,  -153,  -153,  -153,  -153,  -153,
+    -153,  -153,  -153,  -153,  -153,  -153,  -153,  -153,  -153,  -153,
+    -153,  -153,  -153,  -153,  -153,  -153,  -153,  -153,  -153,  -153,
+    -153,  -153,  -153,  -153,     0,  -153,  -153,  -153,     0,  -153,
+    -153,  -153,     0,     0,  -153,  -153,  -153,     0,  -153,  -153,
+    -153,  -153,     0,  -153,     0,  -153,  -153,  -153,  -153,  -153,
+    -182,   150,     0,  -182,     6,     0,     7,     8,     9,     0,
+      10,  -182,    12,    13,    14,  -182,    16,     0,    17,    18,
+      19,  -182,    20,    21,    22,    23,  -182,    24,    25,    26,
+      27,    28,    29,    30,    31,    32,  -182,    34,  -182,    36,
+      37,    38,  -182,    40,  -182,  -182,    42,    43,   151,    45,
+      46,     0,    47,  -182,    48,    49,   152,    51,    52,    53,
+      54,   153,    56,    57,    58,  -182,    59,  -182,  -182,  -182,
+      61,    62,    63,    64,  -182,  -182,  -182,  -182,  -182,  -182,
+    -182,  -182,  -182,  -182,  -182,  -182,  -182,  -182,  -182,  -182,
+    -182,  -182,  -182,   178,  -182,  -182,  -182,  -182,  -182,  -182,
+    -182,  -182,  -182,  -182,  -182,     0,  -182,  -182,  -182,     0,
+    -182,  -182,  -182,     0,     0,  -182,  -182,  -182,     0,  -182,
+    -182,  -182,  -182,     0,  -182,     0,  -182,  -182,  -182,  -182,
+    -182,  -192,   190,     0,  -192,     6,     0,     7,  -192,     9,
+       0,    10,  -192,    12,    13,    14,  -192,    16,     0,    17,
+      18,    19,  -192,    20,    21,    22,    23,  -192,    24,    25,
+      26,  -192,  -192,  -192,  -192,  -192,  -192,  -192,    34,  -192,
+      36,    37,    38,  -192,    40,  -192,  -192,    42,    43,  -192,
+      45,    46,     0,  -192,  -192,    48,    49,  -192,    51,    52,
+      53,    54,  -192,    56,    57,    58,  -192,    59,  -192,  -192,
+    -192,    61,    62,    63,    64,  -192,  -192,  -192,  -192,  -192,
+    -192,  -192,  -192,  -192,  -192,  -192,  -192,  -192,  -192,  -192,
+    -192,  -192,  -192,  -192,  -192,  -192,  -192,  -192,  -192,  -192,
+    -192,  -192,  -192,  -192,  -192,  -192,     0,  -192,  -192,  -192,
+       0,   191,  -192,  -192,     0,     0,  -192,  -192,  -192,     0,
+    -192,  -192,  -192,  -192,     0,  -192,     0,  -192,  -192,  -192,
+    -192,  -192,  -220,   233,     0,  -220,     6,     0,     7,  -220,
+       9,     0,    10,  -220,    12,    13,    14,  -220,    16,     0,
+      17,    18,    19,  -220,    20,    21,    22,    23,  -220,    24,
+      25,    26,  -220,  -220,  -220,  -220,  -220,  -220,  -220,    34,
+    -220,    36,    37,    38,  -220,    40,   234,  -220,    42,    43,
+    -220,    45,    46,     0,    47,  -220,    48,    49,  -220,    51,
+      52,    53,    54,  -220,    56,    57,    58,  -220,    59,  -220,
+    -220,  -220,    61,    62,    63,    64,  -220,  -220,  -220,  -220,
+    -220,  -220,  -220,  -220,  -220,  -220,  -220,  -220,  -220,  -220,
+    -220,  -220,  -220,  -220,  -220,  -220,  -220,  -220,  -220,  -220,
+    -220,  -220,  -220,  -220,  -220,  -220,  -220,     0,  -220,  -220,
+    -220,     0,  -220,  -220,  -220,     0,     0,  -220,  -220,  -220,
+       0,  -220,  -220,  -220,  -220,     0,  -220,     0,  -220,  -220,
+    -220,   250,  -220,   150,     0,     0,     6,     0,     7,     8,
+       9,     0,    10,     0,    12,    13,    14,     0,    16,     0,
+      17,    18,    19,     0,    20,    21,    22,    23,     0,    24,
+      25,    26,    27,    28,    29,    30,    31,    32,     0,    34,
+       0,    36,    37,    38,     0,    40,     0,     0,    42,    43,
+     151,    45,    46,     0,    47,     0,    48,    49,   152,    51,
+      52,    53,    54,   153,    56,    57,    58,  -210,    59,  -210,
+       0,  -210,    61,    62,    63,    64,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,  -209,  -209,     0,   281,   150,  -209,     0,     6,
-       0,     7,     8,     9,     0,    10,     0,    12,    13,    14,
-       0,    16,     0,    17,    18,    19,     0,    20,    21,    22,
-      23,     0,    24,    25,    26,    27,    28,    29,    30,    31,
-      32,     0,    34,     0,    36,    37,    38,     0,    40,     0,
-       0,    42,    43,     0,    45,    46,     0,    47,     0,    48,
-      49,   151,    51,    52,    53,    54,   152,    56,    57,    58,
-    -207,    59,  -207,     0,  -207,    61,    62,    63,    64,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,   232,     0,     0,     6,     0,     7,
-       0,     9,     0,    10,     0,    12,    13,    14,     0,    16,
-       0,    17,    18,    19,     0,    20,    21,    22,    23,     0,
-      24,    25,    26,     0,     0,     0,  -207,   279,     0,     0,
-      34,  -207,    36,    37,    38,     0,    40,   233,     0,    42,
-      43,     0,    45,    46,     0,    47,     0,    48,    49,     0,
-      51,    52,    53,    54,     0,    56,    57,    58,     0,    59,
-       0,     0,     0,    61,    62,    63,    64,   232,     0,     0,
-       6,     0,     7,     0,     9,     0,    10,     0,    12,    13,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,  -210,  -210,     0,   282,   150,  -210,     0,
+       6,     0,     7,     8,     9,     0,    10,     0,    12,    13,
       14,     0,    16,     0,    17,    18,    19,     0,    20,    21,
-      22,    23,     0,    24,    25,    26,     0,     0,     0,     0,
-       0,   242,     0,    34,     0,    36,    37,    38,     0,    40,
-     233,     0,    42,    43,     0,    45,    46,     0,    47,     0,
-      48,    49,     0,    51,    52,    53,    54,     0,    56,    57,
-      58,     0,    59,     0,     0,     0,    61,    62,    63,    64,
-       0,     0,     0,     0,     0,     0,    -2,     4,     0,     5,
-       6,     0,     7,     8,     9,     0,    10,    11,    12,    13,
-      14,    15,    16,     0,    17,    18,    19,     0,    20,    21,
-      22,    23,   240,    24,    25,    26,    27,    28,    29,    30,
-      31,    32,    33,    34,    35,    36,    37,    38,    39,    40,
-       0,    41,    42,    43,    44,    45,    46,     0,    47,     0,
-      48,    49,    50,    51,    52,    53,    54,    55,    56,    57,
-      58,     0,    59,     0,    60,     0,    61,    62,    63,    64,
-       0,     0,     0,     0,     0,     0,    65,     0,     0,     0,
+      22,    23,     0,    24,    25,    26,    27,    28,    29,    30,
+      31,    32,     0,    34,     0,    36,    37,    38,     0,    40,
+       0,     0,    42,    43,   151,    45,    46,     0,    47,     0,
+      48,    49,   152,    51,    52,    53,    54,   153,    56,    57,
+      58,  -208,    59,  -208,     0,  -208,    61,    62,    63,    64,
+       0,     0,     0,     0,     0,     0,     0,    88,     0,     0,
+      89,     0,     0,     0,     0,    92,    93,    94,     0,     0,
+       0,   103,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,   106,     0,     0,     0,   107,     0,     0,
+       0,     0,   110,     0,     0,   113,   114,  -208,   280,   118,
+     119,   120,  -208,   121,   122,     0,     0,     0,   129,   130,
+     233,   132,     0,     6,     0,     7,     0,     9,     0,    10,
+       0,    12,    13,    14,     0,    16,     0,    17,    18,    19,
+       0,    20,    21,    22,    23,     0,    24,    25,    26,     0,
+       0,     0,     0,     0,     0,     0,    34,     0,    36,    37,
+      38,     0,    40,   234,     0,    42,    43,     0,    45,    46,
+       0,    47,     0,    48,    49,     0,    51,    52,    53,    54,
+     212,    56,    57,    58,     0,    59,     0,     0,     0,    61,
+      62,    63,    64,   233,     0,     0,     6,     0,     7,     0,
+       9,     0,    10,     0,    12,    13,    14,     0,    16,     0,
+      17,    18,    19,     0,    20,    21,    22,    23,     0,    24,
+      25,    26,     0,     0,     0,     0,     0,   243,     0,    34,
+       0,    36,    37,    38,     0,    40,   234,     0,    42,    43,
+       0,    45,    46,     0,    47,     0,    48,    49,     0,    51,
+      52,    53,    54,     0,    56,    57,    58,     0,    59,     0,
+       0,     0,    61,    62,    63,    64,     0,     0,     0,     0,
+       0,     0,    -2,     4,     0,     5,     6,     0,     7,     8,
+       9,     0,    10,    11,    12,    13,    14,    15,    16,     0,
+      17,    18,    19,     0,    20,    21,    22,    23,   241,    24,
+      25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
+      35,    36,    37,    38,    39,    40,     0,    41,    42,    43,
+      44,    45,    46,     0,    47,     0,    48,    49,    50,    51,
+      52,    53,    54,    55,    56,    57,    58,     0,    59,     0,
+      60,     0,    61,    62,    63,    64,     0,     0,     0,     0,
+       0,     0,    65,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,   189,    66,    67,     6,     0,
-       7,     0,     9,     0,    10,     0,    12,    13,    14,     0,
-      16,     0,    17,    18,    19,     0,    20,    21,    22,    23,
-       0,    24,    25,    26,     0,     0,     0,     0,     0,     0,
-       0,    34,     0,    36,    37,    38,     0,    40,     0,     0,
-      42,    43,     0,    45,    46,     0,     0,     0,    48,    49,
-       0,    51,    52,    53,    54,     0,    56,    57,    58,     0,
-      59,     0,     0,     0,    61,    62,    63,    64,     0,     0,
+       0,   190,    66,    67,     6,     0,     7,     0,     9,     0,
+      10,     0,    12,    13,    14,     0,    16,     0,    17,    18,
+      19,     0,    20,    21,    22,    23,     0,    24,    25,    26,
+       0,     0,     0,     0,     0,     0,     0,    34,     0,    36,
+      37,    38,     0,    40,     0,     0,    42,    43,     0,    45,
+      46,     0,     0,     0,    48,    49,     0,    51,    52,    53,
+      54,     0,    56,    57,    58,     0,    59,     0,     0,     0,
+      61,    62,    63,    64,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,   223,   224,
-     225,   226,   227,   228,   232,     0,     0,     6,     0,     7,
-       0,     9,     0,    10,     0,    12,    13,    14,     0,    16,
-       0,    17,    18,    19,     0,    20,    21,    22,    23,     0,
-      24,    25,    26,     0,     0,     0,     0,     0,     0,     0,
-      34,     0,    36,    37,    38,     0,    40,   233,     0,    42,
-      43,     0,    45,    46,     0,    47,     0,    48,    49,     0,
-      51,    52,    53,    54,     0,    56,    57,    58,     0,    59,
-       0,     0,     0,    61,    62,    63,    64,     6,     0,     7,
-       0,     9,     0,    10,     0,    12,    13,     0,     0,    16,
-     234,     0,    18,    19,     0,    20,     0,     0,     0,     0,
-      24,    25,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,    36,    37,    38,     0,    40,     0,     0,    42,
-       0,     0,    45,     0,     0,     0,   143,     0,    49,     0,
-      51,    52,    53,    54,     0,    56,    57,     0,     0,    59,
-       0,     0,     0,    61,    62,     0,    64,     0,     6,   144,
-       7,     0,     9,     0,    10,     0,    12,    13,    14,     0,
-      16,     0,    17,    18,    19,     0,    20,    21,    22,    23,
-       0,    24,    25,    26,    27,    28,    29,    30,    31,    32,
-       0,    34,     0,    36,    37,    38,     0,    40,     0,     0,
-      42,    43,     0,    45,    46,     0,    47,     0,    48,    49,
-       0,    51,    52,    53,    54,     0,    56,    57,    58,     0,
-      59,     0,     0,     0,    61,    62,    63,    64,     6,     0,
-       7,     0,     9,     0,    10,     0,    12,    13,     0,     0,
-      16,     0,     0,    18,    19,     0,    20,     0,     0,     0,
-       0,    24,    25,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,    36,    37,    38,     0,    40,     0,     0,
-      42,     0,     0,    45,     0,     0,     0,     0,     0,    49,
-       0,    51,    52,    53,    54,     0,    56,    57,     0,     0,
-      59,     0,     0,     0,    61,    62,     0,    64
+       0,     0,     0,     0,   224,   225,   226,   227,   228,   229,
+     233,     0,     0,     6,     0,     7,     0,     9,     0,    10,
+       0,    12,    13,    14,     0,    16,     0,    17,    18,    19,
+       0,    20,    21,    22,    23,     0,    24,    25,    26,     0,
+       0,     0,     0,     0,     0,     0,    34,     0,    36,    37,
+      38,     0,    40,   234,     0,    42,    43,     0,    45,    46,
+       0,    47,     0,    48,    49,     0,    51,    52,    53,    54,
+       0,    56,    57,    58,     0,    59,     0,     0,     0,    61,
+      62,    63,    64,     6,     0,     7,     0,     9,     0,    10,
+       0,    12,    13,     0,     0,    16,   235,     0,    18,    19,
+       0,    20,     0,     0,     0,     0,    24,    25,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,    36,    37,
+      38,     0,    40,     0,     0,    42,     0,     0,    45,     0,
+       0,     0,   143,     0,    49,     0,    51,    52,    53,    54,
+       0,    56,    57,     0,     0,    59,     0,     0,     0,    61,
+      62,     0,    64,     0,     6,   144,     7,     0,     9,     0,
+      10,     0,    12,    13,    14,     0,    16,     0,    17,    18,
+      19,     0,    20,    21,    22,    23,     0,    24,    25,    26,
+      27,    28,    29,    30,    31,    32,     0,    34,     0,    36,
+      37,    38,     0,    40,     0,     0,    42,    43,     0,    45,
+      46,     0,    47,     0,    48,    49,     0,    51,    52,    53,
+      54,     0,    56,    57,    58,     0,    59,     0,     0,     0,
+      61,    62,    63,    64,     6,     0,     7,     0,     9,     0,
+      10,     0,    12,    13,     0,     0,    16,     0,     0,    18,
+      19,     0,    20,     0,     0,     0,     0,    24,    25,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,    36,
+      37,    38,     0,    40,     0,     0,    42,     0,     0,    45,
+       0,     0,     0,     0,     0,    49,     0,    51,    52,    53,
+      54,     0,    56,    57,     0,     0,    59,     0,     0,     0,
+      61,    62,     0,    64
   };
 
   const short
@@ -2552,38 +2568,25 @@ namespace html2text {
       87,    67,    69,    69,   119,    25,   117,   115,    89,   127,
       74,   128,    99,   114,   130,    52,    89,    82,    90,    91,
      109,    90,    91,    81,    96,   104,   122,    96,    90,    91,
-     172,    99,     2,   105,    96,    89,   105,    89,    90,    10,
-     112,    85,    13,   105,    89,    89,   116,    18,    19,    20,
-     105,   187,   272,    24,   121,   121,   282,    -1,    -1,    -1,
-     126,    -1,    -1,    -1,    -1,    36,    -1,    -1,   140,    40,
-     157,    -1,    -1,    -1,    45,    -1,    -1,    48,    49,    -1,
-      -1,    52,    53,    54,    -1,    56,    57,    -1,    -1,    -1,
-      61,    62,    -1,    64,    -1,   167,    -1,    -1,   167,    -1,
-      -1,    -1,    -1,    -1,    -1,   192,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,   186,    -1,   188,   186,    -1,   188,
-      -1,    -1,    -1,    -1,    -1,    -1,   262,   263,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   233,
-      -1,   277,   278,    -1,    -1,    -1,   233,    -1,   220,    -1,
-     237,   220,   123,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-     254,   255,    -1,    -1,    -1,    -1,    -1,   254,   255,    -1,
+     173,    99,     2,   105,    96,    89,   105,    89,    90,   116,
+     112,    85,   273,   105,    89,    89,   283,    -1,    -1,    -1,
+     105,    -1,   188,    -1,   121,   121,    -1,    -1,    -1,    -1,
+     126,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   140,    -1,
+      -1,   158,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,   266,   267,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,   168,    -1,    -1,   168,
+      -1,    -1,    -1,    -1,    -1,    -1,   193,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,   187,    -1,   189,   187,    -1,
+     189,    -1,    -1,    -1,    -1,    -1,    -1,   263,   264,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,   274,   275,    -1,   274,   275,    -1,    -1,    -1,
-      -1,    -1,   274,   275,     0,     1,    -1,     3,     4,    -1,
-       6,     7,     8,    -1,    10,    11,    12,    13,    14,    15,
-      16,    -1,    18,    19,    20,    21,    22,    23,    24,    25,
-      26,    27,    28,    29,    30,    31,    32,    33,    34,    35,
-      36,    37,    38,    39,    40,    41,    42,    43,    44,    45,
-      46,    47,    48,    49,    50,    -1,    52,    53,    54,    55,
-      56,    57,    58,    59,    60,    61,    62,    63,    64,    65,
-      66,    67,    68,    69,    70,    71,    72,    73,    74,    75,
-      76,    77,    78,    79,    80,    81,    82,    83,    84,    85,
-      86,    87,    88,    89,    90,    91,    92,    93,    94,    95,
-      96,    97,    98,    99,   100,   101,   102,   103,   104,    -1,
-     106,   107,   108,    -1,   110,   111,   112,    -1,    -1,   115,
-     116,   117,    -1,   119,   120,   121,   122,    -1,   124,    -1,
-     126,   127,   128,   129,   130,     0,     1,    -1,     3,     4,
+     234,    -1,   278,   279,    -1,    -1,    -1,   234,    -1,   221,
+      -1,   238,   221,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,   255,   256,    -1,    -1,    -1,    -1,    -1,   255,   256,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,   267,   268,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,   275,   276,    -1,   275,   276,    -1,    -1,
+      -1,    -1,    -1,   275,   276,     0,     1,    -1,     3,     4,
       -1,     6,     7,     8,    -1,    10,    11,    12,    13,    14,
       15,    16,    -1,    18,    19,    20,    21,    22,    23,    24,
       25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
@@ -2675,91 +2678,109 @@ namespace html2text {
       99,   100,   101,   102,   103,   104,    -1,   106,   107,   108,
       -1,   110,   111,   112,    -1,    -1,   115,   116,   117,    -1,
      119,   120,   121,   122,    -1,   124,    -1,   126,   127,   128,
-     129,   130,     1,    -1,    -1,     4,    -1,     6,     7,     8,
-      -1,    10,    -1,    12,    13,    14,    -1,    16,    -1,    18,
-      19,    20,    -1,    22,    23,    24,    25,    -1,    27,    28,
-      29,    30,    31,    32,    33,    34,    35,    -1,    37,    -1,
-      39,    40,    41,    -1,    43,    -1,    -1,    46,    47,    -1,
-      49,    50,    -1,    52,    -1,    54,    55,    56,    57,    58,
-      59,    60,    61,    62,    63,    64,    65,    66,    67,    -1,
-      69,    70,    71,    72,    73,    -1,    -1,    -1,    -1,    -1,
+     129,   130,     0,     1,    -1,     3,     4,    -1,     6,     7,
+       8,    -1,    10,    11,    12,    13,    14,    15,    16,    -1,
+      18,    19,    20,    21,    22,    23,    24,    25,    26,    27,
+      28,    29,    30,    31,    32,    33,    34,    35,    36,    37,
+      38,    39,    40,    41,    42,    43,    44,    45,    46,    47,
+      48,    49,    50,    -1,    52,    53,    54,    55,    56,    57,
+      58,    59,    60,    61,    62,    63,    64,    65,    66,    67,
+      68,    69,    70,    71,    72,    73,    74,    75,    76,    77,
+      78,    79,    80,    81,    82,    83,    84,    85,    86,    87,
+      88,    89,    90,    91,    92,    93,    94,    95,    96,    97,
+      98,    99,   100,   101,   102,   103,   104,    -1,   106,   107,
+     108,    -1,   110,   111,   112,    -1,    -1,   115,   116,   117,
+      -1,   119,   120,   121,   122,    -1,   124,    -1,   126,   127,
+     128,   129,   130,     1,    -1,    -1,     4,    -1,     6,     7,
+       8,    -1,    10,    -1,    12,    13,    14,    -1,    16,    -1,
+      18,    19,    20,    -1,    22,    23,    24,    25,    -1,    27,
+      28,    29,    30,    31,    32,    33,    34,    35,    -1,    37,
+      -1,    39,    40,    41,    -1,    43,    -1,    -1,    46,    47,
+      48,    49,    50,    -1,    52,    -1,    54,    55,    56,    57,
+      58,    59,    60,    61,    62,    63,    64,    65,    66,    67,
+      -1,    69,    70,    71,    72,    73,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,   121,   122,    -1,   124,     1,   126,    -1,     4,
-      -1,     6,     7,     8,    -1,    10,    -1,    12,    13,    14,
-      -1,    16,    -1,    18,    19,    20,    -1,    22,    23,    24,
-      25,    -1,    27,    28,    29,    30,    31,    32,    33,    34,
-      35,    -1,    37,    -1,    39,    40,    41,    -1,    43,    -1,
-      -1,    46,    47,    -1,    49,    50,    -1,    52,    -1,    54,
-      55,    56,    57,    58,    59,    60,    61,    62,    63,    64,
-      65,    66,    67,    -1,    69,    70,    71,    72,    73,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,     1,    -1,    -1,     4,    -1,     6,
-      -1,     8,    -1,    10,    -1,    12,    13,    14,    -1,    16,
-      -1,    18,    19,    20,    -1,    22,    23,    24,    25,    -1,
-      27,    28,    29,    -1,    -1,    -1,   121,   122,    -1,    -1,
-      37,   126,    39,    40,    41,    -1,    43,    44,    -1,    46,
-      47,    -1,    49,    50,    -1,    52,    -1,    54,    55,    -1,
-      57,    58,    59,    60,    -1,    62,    63,    64,    -1,    66,
-      -1,    -1,    -1,    70,    71,    72,    73,     1,    -1,    -1,
-       4,    -1,     6,    -1,     8,    -1,    10,    -1,    12,    13,
+      -1,    -1,    -1,   121,   122,    -1,   124,     1,   126,    -1,
+       4,    -1,     6,     7,     8,    -1,    10,    -1,    12,    13,
       14,    -1,    16,    -1,    18,    19,    20,    -1,    22,    23,
-      24,    25,    -1,    27,    28,    29,    -1,    -1,    -1,    -1,
-      -1,   108,    -1,    37,    -1,    39,    40,    41,    -1,    43,
-      44,    -1,    46,    47,    -1,    49,    50,    -1,    52,    -1,
-      54,    55,    -1,    57,    58,    59,    60,    -1,    62,    63,
-      64,    -1,    66,    -1,    -1,    -1,    70,    71,    72,    73,
-      -1,    -1,    -1,    -1,    -1,    -1,     0,     1,    -1,     3,
-       4,    -1,     6,     7,     8,    -1,    10,    11,    12,    13,
-      14,    15,    16,    -1,    18,    19,    20,    -1,    22,    23,
-      24,    25,   106,    27,    28,    29,    30,    31,    32,    33,
-      34,    35,    36,    37,    38,    39,    40,    41,    42,    43,
-      -1,    45,    46,    47,    48,    49,    50,    -1,    52,    -1,
+      24,    25,    -1,    27,    28,    29,    30,    31,    32,    33,
+      34,    35,    -1,    37,    -1,    39,    40,    41,    -1,    43,
+      -1,    -1,    46,    47,    48,    49,    50,    -1,    52,    -1,
       54,    55,    56,    57,    58,    59,    60,    61,    62,    63,
-      64,    -1,    66,    -1,    68,    -1,    70,    71,    72,    73,
-      -1,    -1,    -1,    -1,    -1,    -1,    80,    -1,    -1,    -1,
+      64,    65,    66,    67,    -1,    69,    70,    71,    72,    73,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    10,    -1,    -1,
+      13,    -1,    -1,    -1,    -1,    18,    19,    20,    -1,    -1,
+      -1,    24,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    36,    -1,    -1,    -1,    40,    -1,    -1,
+      -1,    -1,    45,    -1,    -1,    48,    49,   121,   122,    52,
+      53,    54,   126,    56,    57,    -1,    -1,    -1,    61,    62,
+       1,    64,    -1,     4,    -1,     6,    -1,     8,    -1,    10,
+      -1,    12,    13,    14,    -1,    16,    -1,    18,    19,    20,
+      -1,    22,    23,    24,    25,    -1,    27,    28,    29,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    37,    -1,    39,    40,
+      41,    -1,    43,    44,    -1,    46,    47,    -1,    49,    50,
+      -1,    52,    -1,    54,    55,    -1,    57,    58,    59,    60,
+     123,    62,    63,    64,    -1,    66,    -1,    -1,    -1,    70,
+      71,    72,    73,     1,    -1,    -1,     4,    -1,     6,    -1,
+       8,    -1,    10,    -1,    12,    13,    14,    -1,    16,    -1,
+      18,    19,    20,    -1,    22,    23,    24,    25,    -1,    27,
+      28,    29,    -1,    -1,    -1,    -1,    -1,   108,    -1,    37,
+      -1,    39,    40,    41,    -1,    43,    44,    -1,    46,    47,
+      -1,    49,    50,    -1,    52,    -1,    54,    55,    -1,    57,
+      58,    59,    60,    -1,    62,    63,    64,    -1,    66,    -1,
+      -1,    -1,    70,    71,    72,    73,    -1,    -1,    -1,    -1,
+      -1,    -1,     0,     1,    -1,     3,     4,    -1,     6,     7,
+       8,    -1,    10,    11,    12,    13,    14,    15,    16,    -1,
+      18,    19,    20,    -1,    22,    23,    24,    25,   106,    27,
+      28,    29,    30,    31,    32,    33,    34,    35,    36,    37,
+      38,    39,    40,    41,    42,    43,    -1,    45,    46,    47,
+      48,    49,    50,    -1,    52,    -1,    54,    55,    56,    57,
+      58,    59,    60,    61,    62,    63,    64,    -1,    66,    -1,
+      68,    -1,    70,    71,    72,    73,    -1,    -1,    -1,    -1,
+      -1,    -1,    80,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,     1,   100,   101,     4,    -1,
-       6,    -1,     8,    -1,    10,    -1,    12,    13,    14,    -1,
-      16,    -1,    18,    19,    20,    -1,    22,    23,    24,    25,
-      -1,    27,    28,    29,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    37,    -1,    39,    40,    41,    -1,    43,    -1,    -1,
-      46,    47,    -1,    49,    50,    -1,    -1,    -1,    54,    55,
-      -1,    57,    58,    59,    60,    -1,    62,    63,    64,    -1,
-      66,    -1,    -1,    -1,    70,    71,    72,    73,    -1,    -1,
+      -1,     1,   100,   101,     4,    -1,     6,    -1,     8,    -1,
+      10,    -1,    12,    13,    14,    -1,    16,    -1,    18,    19,
+      20,    -1,    22,    23,    24,    25,    -1,    27,    28,    29,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    37,    -1,    39,
+      40,    41,    -1,    43,    -1,    -1,    46,    47,    -1,    49,
+      50,    -1,    -1,    -1,    54,    55,    -1,    57,    58,    59,
+      60,    -1,    62,    63,    64,    -1,    66,    -1,    -1,    -1,
+      70,    71,    72,    73,    -1,    -1,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    94,    95,
-      96,    97,    98,    99,     1,    -1,    -1,     4,    -1,     6,
-      -1,     8,    -1,    10,    -1,    12,    13,    14,    -1,    16,
-      -1,    18,    19,    20,    -1,    22,    23,    24,    25,    -1,
-      27,    28,    29,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      37,    -1,    39,    40,    41,    -1,    43,    44,    -1,    46,
-      47,    -1,    49,    50,    -1,    52,    -1,    54,    55,    -1,
-      57,    58,    59,    60,    -1,    62,    63,    64,    -1,    66,
-      -1,    -1,    -1,    70,    71,    72,    73,     4,    -1,     6,
-      -1,     8,    -1,    10,    -1,    12,    13,    -1,    -1,    16,
-      87,    -1,    19,    20,    -1,    22,    -1,    -1,    -1,    -1,
-      27,    28,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    39,    40,    41,    -1,    43,    -1,    -1,    46,
-      -1,    -1,    49,    -1,    -1,    -1,    53,    -1,    55,    -1,
-      57,    58,    59,    60,    -1,    62,    63,    -1,    -1,    66,
-      -1,    -1,    -1,    70,    71,    -1,    73,    -1,     4,    76,
-       6,    -1,     8,    -1,    10,    -1,    12,    13,    14,    -1,
-      16,    -1,    18,    19,    20,    -1,    22,    23,    24,    25,
-      -1,    27,    28,    29,    30,    31,    32,    33,    34,    35,
-      -1,    37,    -1,    39,    40,    41,    -1,    43,    -1,    -1,
-      46,    47,    -1,    49,    50,    -1,    52,    -1,    54,    55,
-      -1,    57,    58,    59,    60,    -1,    62,    63,    64,    -1,
-      66,    -1,    -1,    -1,    70,    71,    72,    73,     4,    -1,
-       6,    -1,     8,    -1,    10,    -1,    12,    13,    -1,    -1,
-      16,    -1,    -1,    19,    20,    -1,    22,    -1,    -1,    -1,
-      -1,    27,    28,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    39,    40,    41,    -1,    43,    -1,    -1,
-      46,    -1,    -1,    49,    -1,    -1,    -1,    -1,    -1,    55,
-      -1,    57,    58,    59,    60,    -1,    62,    63,    -1,    -1,
-      66,    -1,    -1,    -1,    70,    71,    -1,    73
+      -1,    -1,    -1,    -1,    94,    95,    96,    97,    98,    99,
+       1,    -1,    -1,     4,    -1,     6,    -1,     8,    -1,    10,
+      -1,    12,    13,    14,    -1,    16,    -1,    18,    19,    20,
+      -1,    22,    23,    24,    25,    -1,    27,    28,    29,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    37,    -1,    39,    40,
+      41,    -1,    43,    44,    -1,    46,    47,    -1,    49,    50,
+      -1,    52,    -1,    54,    55,    -1,    57,    58,    59,    60,
+      -1,    62,    63,    64,    -1,    66,    -1,    -1,    -1,    70,
+      71,    72,    73,     4,    -1,     6,    -1,     8,    -1,    10,
+      -1,    12,    13,    -1,    -1,    16,    87,    -1,    19,    20,
+      -1,    22,    -1,    -1,    -1,    -1,    27,    28,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    39,    40,
+      41,    -1,    43,    -1,    -1,    46,    -1,    -1,    49,    -1,
+      -1,    -1,    53,    -1,    55,    -1,    57,    58,    59,    60,
+      -1,    62,    63,    -1,    -1,    66,    -1,    -1,    -1,    70,
+      71,    -1,    73,    -1,     4,    76,     6,    -1,     8,    -1,
+      10,    -1,    12,    13,    14,    -1,    16,    -1,    18,    19,
+      20,    -1,    22,    23,    24,    25,    -1,    27,    28,    29,
+      30,    31,    32,    33,    34,    35,    -1,    37,    -1,    39,
+      40,    41,    -1,    43,    -1,    -1,    46,    47,    -1,    49,
+      50,    -1,    52,    -1,    54,    55,    -1,    57,    58,    59,
+      60,    -1,    62,    63,    64,    -1,    66,    -1,    -1,    -1,
+      70,    71,    72,    73,     4,    -1,     6,    -1,     8,    -1,
+      10,    -1,    12,    13,    -1,    -1,    16,    -1,    -1,    19,
+      20,    -1,    22,    -1,    -1,    -1,    -1,    27,    28,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    39,
+      40,    41,    -1,    43,    -1,    -1,    46,    -1,    -1,    49,
+      -1,    -1,    -1,    -1,    -1,    55,    -1,    57,    58,    59,
+      60,    -1,    62,    63,    -1,    -1,    66,    -1,    -1,    -1,
+      70,    71,    -1,    73
   };
 
   const unsigned char
@@ -2780,20 +2801,20 @@ namespace html2text {
      172,   172,   172,    17,   154,   171,   134,   134,   170,   172,
      172,   142,   172,     1,   209,   159,   209,   209,   209,   209,
      138,   173,    75,    53,    76,   159,    77,   177,    78,   179,
-       1,    56,    61,    79,   136,   137,   157,   158,   178,    82,
-     180,    83,   181,    84,   182,    86,   183,   145,    88,   184,
-       1,   152,   209,    91,   186,    92,   187,    93,   188,   102,
-     189,   103,   190,     1,     9,   105,   145,   107,   145,     1,
-     110,   139,   158,   193,   111,   194,   112,   195,   134,   114,
-     167,   115,   196,   116,   197,   117,   198,   119,   199,   120,
-     200,   172,   155,   123,   125,   203,   127,   205,   128,   206,
-     145,   130,   208,    94,    95,    96,    97,    98,    99,   169,
-      74,   176,     1,    44,    87,   137,   146,   158,   147,   148,
-     106,   209,   108,   109,   192,    81,     1,    69,   121,   129,
-     207,   173,    89,   185,    21,    26,    89,   149,   150,   156,
-     104,   191,   173,   173,     1,    41,    65,    67,   126,   204,
-      85,   209,    90,   209,   135,   135,    52,   175,   175,   122,
-     201,   124,   202,   209,   209,   201
+       1,    48,    56,    61,    79,   136,   137,   157,   158,   178,
+      82,   180,    83,   181,    84,   182,    86,   183,   145,    88,
+     184,     1,   152,   209,    91,   186,    92,   187,    93,   188,
+     102,   189,   103,   190,     1,     9,   105,   145,   107,   145,
+       1,   110,   139,   158,   193,   111,   194,   112,   195,   134,
+     114,   167,   115,   196,   116,   197,   117,   198,   119,   199,
+     120,   200,   172,   155,   123,   125,   203,   127,   205,   128,
+     206,   145,   130,   208,    94,    95,    96,    97,    98,    99,
+     169,    74,   176,     1,    44,    87,   137,   146,   158,   147,
+     148,   106,   209,   108,   109,   192,    81,     1,    69,   121,
+     129,   207,   173,    89,   185,    21,    26,    89,   149,   150,
+     156,   104,   191,   173,   173,     1,    41,    65,    67,   126,
+     204,    85,   209,    90,   209,   135,   135,    52,   175,   175,
+     122,   201,   124,   202,   209,   209,   201
   };
 
   const unsigned char
@@ -2802,26 +2823,26 @@ namespace html2text {
        0,   131,   132,   133,   133,   133,   133,   133,   133,   133,
      133,   133,   133,   133,   133,   133,   133,   133,   133,   133,
      133,   133,   133,   134,   135,   135,   135,   135,   135,   135,
-     135,   135,   136,   137,   137,   138,   138,   138,   138,   139,
-     139,   139,   139,   139,   139,   139,   139,   139,   141,   140,
-     142,   140,   143,   140,   144,   140,   145,   145,   145,   146,
-     146,   146,   147,   147,   148,   148,   148,   148,   149,   149,
-     150,   150,   151,   151,   151,   152,   152,   152,   153,   154,
-     155,   155,   155,   156,   156,   156,   156,   156,   157,   158,
-     158,   159,   159,   159,   159,   159,   159,   160,   160,   160,
-     160,   160,   160,   160,   160,   160,   161,   161,   161,   161,
-     161,   161,   161,   161,   162,   162,   162,   162,   162,   162,
-     162,   163,   163,   163,   164,   164,   164,   165,   165,   165,
-     166,   166,   167,   168,   168,   168,   168,   168,   168,   169,
-     169,   169,   169,   169,   169,   170,   170,   171,   171,   172,
-     172,   173,   173,   174,   174,   175,   175,   176,   176,   177,
-     177,   178,   178,   179,   179,   180,   180,   181,   181,   182,
-     182,   183,   183,   184,   184,   185,   185,   186,   186,   187,
-     187,   188,   188,   189,   189,   190,   190,   191,   191,   192,
-     192,   193,   193,   194,   194,   195,   195,   196,   196,   197,
-     197,   198,   198,   199,   199,   200,   200,   201,   201,   202,
-     202,   203,   203,   204,   204,   205,   205,   206,   206,   207,
-     207,   208,   208,   209,   209
+     135,   135,   135,   136,   137,   137,   138,   138,   138,   138,
+     139,   139,   139,   139,   139,   139,   139,   139,   139,   141,
+     140,   142,   140,   143,   140,   144,   140,   145,   145,   145,
+     146,   146,   146,   147,   147,   148,   148,   148,   148,   149,
+     149,   150,   150,   151,   151,   151,   152,   152,   152,   153,
+     154,   155,   155,   155,   156,   156,   156,   156,   156,   157,
+     158,   158,   159,   159,   159,   159,   159,   159,   160,   160,
+     160,   160,   160,   160,   160,   160,   160,   161,   161,   161,
+     161,   161,   161,   161,   161,   162,   162,   162,   162,   162,
+     162,   162,   163,   163,   163,   164,   164,   164,   165,   165,
+     165,   166,   166,   167,   168,   168,   168,   168,   168,   168,
+     169,   169,   169,   169,   169,   169,   170,   170,   171,   171,
+     172,   172,   173,   173,   174,   174,   175,   175,   176,   176,
+     177,   177,   178,   178,   179,   179,   180,   180,   181,   181,
+     182,   182,   183,   183,   184,   184,   185,   185,   186,   186,
+     187,   187,   188,   188,   189,   189,   190,   190,   191,   191,
+     192,   192,   193,   193,   194,   194,   195,   195,   196,   196,
+     197,   197,   198,   198,   199,   199,   200,   200,   201,   201,
+     202,   202,   203,   203,   204,   204,   205,   205,   206,   206,
+     207,   207,   208,   208,   209,   209
   };
 
   const signed char
@@ -2830,26 +2851,26 @@ namespace html2text {
        0,     2,     1,     0,     2,     2,     2,     2,     2,     2,
        4,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     1,     0,     2,     2,     2,     2,     2,
-       2,     2,     3,     1,     3,     0,     2,     2,     2,     1,
-       1,     1,     3,     3,     3,     3,     1,     4,     0,     4,
-       0,     4,     0,     4,     0,     4,     0,     2,     2,     3,
-       1,     1,     5,     5,     0,     1,     2,     2,     3,     5,
-       3,     5,     1,     2,     2,     1,     1,     1,     3,     3,
-       0,     2,     4,     0,     2,     4,     5,     2,     3,     1,
-       2,     2,     2,     2,     2,     2,     4,     3,     3,     3,
+       2,     2,     2,     3,     1,     3,     0,     2,     2,     2,
+       1,     1,     1,     3,     3,     3,     3,     1,     4,     0,
+       4,     0,     4,     0,     4,     0,     4,     0,     2,     2,
+       3,     1,     1,     5,     5,     0,     1,     2,     2,     3,
+       5,     3,     5,     1,     2,     2,     1,     1,     1,     3,
+       3,     0,     2,     4,     0,     2,     4,     5,     2,     3,
+       1,     2,     2,     2,     2,     2,     2,     4,     3,     3,
        3,     3,     3,     3,     3,     3,     3,     3,     3,     3,
-       3,     3,     3,     3,     4,     1,     3,     3,     1,     1,
-       3,     0,     2,     2,     0,     2,     2,     1,     3,     3,
-       1,     2,     3,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     0,     1,     0,     1,     0,
-       1,     0,     1,     0,     1,     0,     1,     0,     1,     0,
-       1,     0,     1,     0,     1,     0,     1,     0,     1,     0,
-       1,     0,     1,     0,     1,     0,     1,     0,     1,     0,
-       1,     0,     1,     0,     1,     0,     1,     0,     1,     0,
-       1,     0,     1,     0,     1,     0,     1,     0,     1,     0,
-       1,     0,     1,     0,     1,     0,     1,     0,     1,     0,
-       1,     0,     1,     0,     1,     0,     1,     0,     1,     0,
-       1,     0,     1,     0,     1
+       3,     3,     3,     3,     3,     4,     1,     3,     3,     1,
+       1,     3,     0,     2,     2,     0,     2,     2,     1,     3,
+       3,     1,     2,     3,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     0,     1,     0,     1,
+       0,     1,     0,     1,     0,     1,     0,     1,     0,     1,
+       0,     1,     0,     1,     0,     1,     0,     1,     0,     1,
+       0,     1,     0,     1,     0,     1,     0,     1,     0,     1,
+       0,     1,     0,     1,     0,     1,     0,     1,     0,     1,
+       0,     1,     0,     1,     0,     1,     0,     1,     0,     1,
+       0,     1,     0,     1,     0,     1,     0,     1,     0,     1,
+       0,     1,     0,     1,     0,     1,     0,     1,     0,     1,
+       0,     1,     0,     1,     0,     1
   };
 
 
@@ -2901,27 +2922,27 @@ namespace html2text {
   {
        0,   273,   273,   304,   308,   311,   314,   318,   321,   325,
      328,   332,   335,   338,   343,   346,   354,   362,   366,   369,
-     374,   377,   380,   386,   394,   397,   400,   408,   416,   421,
-     424,   427,   433,   444,   447,   456,   459,   462,   467,   473,
-     476,   479,   482,   488,   494,   500,   506,   511,   521,   521,
-     528,   528,   535,   535,   542,   542,   552,   555,   558,   565,
-     571,   576,   586,   592,   602,   605,   608,   612,   619,   624,
-     633,   638,   647,   651,   654,   660,   663,   666,   672,   680,
-     688,   691,   694,   703,   706,   709,   715,   722,   729,   739,
-     743,   749,   750,   751,   752,   753,   754,   763,   764,   765,
-     766,   767,   768,   769,   770,   771,   775,   776,   777,   778,
-     779,   780,   781,   782,   789,   808,   851,   859,   865,   870,
-     875,   884,   887,   891,   900,   903,   906,   913,   918,   924,
-     933,   937,   943,   953,   954,   955,   956,   957,   958,   962,
-     963,   964,   965,   966,   967,   972,   972,   973,   973,   974,
-     974,   975,   975,   977,   977,   978,   978,   980,   980,   981,
-     981,   982,   982,   983,   983,   984,   984,   985,   985,   986,
-     986,   987,   987,   988,   988,   989,   989,   990,   990,   991,
-     991,   992,   992,   993,   993,   994,   994,   995,   995,   996,
-     996,   997,   997,   998,   998,   999,   999,  1000,  1000,  1001,
-    1001,  1002,  1002,  1003,  1003,  1004,  1004,  1005,  1005,  1006,
-    1006,  1007,  1007,  1008,  1008,  1009,  1009,  1010,  1010,  1011,
-    1011,  1012,  1012,  1014,  1014
+     374,   377,   380,   386,   394,   397,   400,   408,   416,   422,
+     427,   430,   433,   439,   450,   453,   462,   465,   468,   473,
+     479,   482,   485,   488,   494,   500,   506,   512,   517,   527,
+     527,   534,   534,   541,   541,   548,   548,   558,   561,   564,
+     571,   577,   582,   592,   598,   608,   611,   614,   618,   625,
+     630,   639,   644,   653,   657,   660,   666,   669,   672,   678,
+     686,   694,   697,   700,   709,   712,   715,   721,   728,   735,
+     745,   749,   755,   756,   757,   758,   759,   760,   769,   770,
+     771,   772,   773,   774,   775,   776,   777,   781,   782,   783,
+     784,   785,   786,   787,   788,   795,   814,   857,   865,   871,
+     876,   881,   890,   893,   897,   906,   909,   912,   919,   924,
+     930,   939,   943,   949,   959,   960,   961,   962,   963,   964,
+     968,   969,   970,   971,   972,   973,   978,   978,   979,   979,
+     980,   980,   981,   981,   983,   983,   984,   984,   986,   986,
+     987,   987,   988,   988,   989,   989,   990,   990,   991,   991,
+     992,   992,   993,   993,   994,   994,   995,   995,   996,   996,
+     997,   997,   998,   998,   999,   999,  1000,  1000,  1001,  1001,
+    1002,  1002,  1003,  1003,  1004,  1004,  1005,  1005,  1006,  1006,
+    1007,  1007,  1008,  1008,  1009,  1009,  1010,  1010,  1011,  1011,
+    1012,  1012,  1013,  1013,  1014,  1014,  1015,  1015,  1016,  1016,
+    1017,  1017,  1018,  1018,  1020,  1020
   };
 
   // Print the state stack on the debug stream.
@@ -3014,9 +3035,9 @@ namespace html2text {
 
 #line 40 "HTMLParser.yy"
 } // html2text
-#line 3018 "HTMLParser.tab.cc"
+#line 3039 "HTMLParser.tab.cc"
 
-#line 1016 "HTMLParser.yy"
+#line 1022 "HTMLParser.yy"
  /* } */
 
 void

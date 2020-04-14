@@ -827,7 +827,7 @@ namespace html2text {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 2177,     ///< Last index in yytable_.
+      yylast_ = 2223,     ///< Last index in yytable_.
       yynnts_ = 79,  ///< Number of nonterminal symbols.
       yyfinal_ = 3, ///< Termination state number.
       yyntokens_ = 131  ///< Number of tokens.
