@@ -1,10 +1,6 @@
-.\" This documentation was last modified by
-.\" Martin Bayer <mbayer@zedat.fu-berlin.de>
-.\" on Wed Jan 14 14:18:24 CET 2004
+.\" manpage for html2text
 .\"
-.\" Comments and suggestions are welcome.
-.\"
-.TH html2text 1 2020\-04\-05
+.TH html2text 1 2020\-04\-14
 .SH NAME
 html2text \- an advanced HTML\-to\-text converter
 .SH SYNOPSIS
@@ -40,6 +36,12 @@ html2text \- an advanced HTML\-to\-text converter
 ] [
 .B \-nobs
 ] [
+.B \-from_encoding
+.I encoding
+] [
+.B \-to_encoding
+.I encoding
+] [
 .B \-ascii
 ] [
 .IR input-url " ..."
@@ -48,17 +50,12 @@ html2text \- an advanced HTML\-to\-text converter
 .B html2text
 reads HTML documents from the
 .IR input-url s,
-formats each of them into a stream of plain text characters,
+formats each of them into a stream of UTF-8 encoded characters,
 and writes the result to standard output (or into
 .IR output-file ,
 if the
 .B -o
 command line option is used).
-.P
-Documents that are specified by a URL (\fBRFC 1738\fR) that begins with
-"http:" are retrieved with the Hypertext Transfer Protocol
-(\fBRFC 1945\fR). URLs that begin with "file:" and URLs that do not
-contain a colon specify local files. All other URLs are invalid.
 .P
 If no
 .IR input-url s
@@ -101,11 +98,28 @@ manual page.
 By default,
 .B html2text
 uses
-.B ISO 8859\-1
-for the output. Specifying this option, plain
+.B UTF-8
+for its output. Specifying this option, plain
 .B ASCII
-is used instead. To find out how non\-ASCII characters are rendered, refer to
-the file "ascii.substitutes".
+is used instead. Non\-ASCII characters are rendered via iconv's
+transliteration feature.  As such this option is an alias for
+.B -to_encoding
+.IR ASCII//TRANSLIT .
+.TP
+.BI "\-from_encoding " encoding
+Sets the encoding of the input file or stream to the given encoding.  By
+default,
+.B html2text
+uses ISO-8859-1 encoding for reading.  You probably always want to
+override this default using this option.  See 
+.B iconv -l
+for a list of supported encodings.
+.TP
+.BI "\-to_encoding " encoding
+Use the given encoding while writing output, instead of UTF-8.  The same
+set of encodings as for the
+.B \-from_encoding
+option can be used.
 .TP
 .B \-check
 This option is for diagnostic purposes: The HTML document is only parsed and

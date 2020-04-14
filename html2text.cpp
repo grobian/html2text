@@ -57,7 +57,7 @@ Usage:\n\
   html2text [ -unparse | -check ] [ -debug-scanner ] [ -debug-parser ] \\\n\
      [ -rcfile <file> ] [ -style ( compact | pretty ) ] [ -width <w> ] \\\n\
      [ -links ] [ -from_encoding ] [ -to_encoding ] \\\n\
-     [ -o <file> ] [ -nobs ] [ -ascii ] [ -utf8 ] [ <input-url> ] ...\n\
+     [ -o <file> ] [ -nobs ] [ -ascii ] [ <input-url> ] ...\n\
 Formats HTML document(s) read from <input-url> or STDIN and generates ASCII\n\
 text.\n\
   -help          Print this text and exit\n\
@@ -74,11 +74,9 @@ text.\n\
   -from_encoding Treat input encoded as given encoding\n\
   -to_encoding   Output using given encoding\n\
   -o <file>      Redirect output into <file>\n\
-  -nobs          Do not use backspaces for boldface and underlining\n\
-  -ascii         Use plain ASCII for output instead of ISO-8859-1\n\
-                 alias for: -to_encoding ascii\n\
-  -utf8          Assume both terminal and input stream are in UTF-8 mode\n\
-                 alias for: -from_encoding utf-8 -to_encoding utf-8\n\
+  -nobs          Do not render boldface and underlining (using backspaces)\n\
+  -ascii         Use plain ASCII for output instead of UTF-8\n\
+                 alias for: -to_encoding ASCII//TRANSLIT \n\
 ";
 
 int
@@ -173,11 +171,13 @@ main(int argc, char **argv)
 		exit(1);
 	}
 
-	/* historical defaults */
+	/* historical default */
 	if (from_encoding == NULL)
 		from_encoding = "ISO-8859-1";
+
+	/* this is probably the output we want on 99% of all terminals */
 	if (to_encoding == NULL)
-		to_encoding = "ISO-8859-1";
+		to_encoding = "UTF-8";
 
 	const char *const *input_urls;
 	int number_of_input_urls;
