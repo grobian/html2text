@@ -139,7 +139,15 @@ main(int argc, char **argv)
 		} else if (!strcmp(arg, "-links")) {
 			enable_links = true;
 		} else if (!strcmp(arg, "-width")) {
-			width = atoi(argv[++i]);
+			int nwidth = atoi(argv[++i]);
+			if (nwidth > 10) {
+				width = nwidth;
+			} else {
+				std::cerr
+					<< "width '" << nwidth << "' invalid, must be >10"
+					<< std::endl;
+				exit(1);
+			}
 		} else if (!strcmp(arg, "-o")) {
 			output_file_name = argv[++i];
 		} else if (!strcmp(arg, "-nobs")) {
