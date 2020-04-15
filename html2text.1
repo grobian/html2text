@@ -1,6 +1,6 @@
 .\" manpage for html2text
 .\"
-.TH html2text 1 2020\-04\-14
+.TH html2text 1 2020\-04\-15
 .SH NAME
 html2text \- an advanced HTML\-to\-text converter
 .SH SYNOPSIS
@@ -20,13 +20,6 @@ html2text \- an advanced HTML\-to\-text converter
 ] [
 .B \-rcfile
 .I path
-] [
-.B \-style
-(
-.B compact
-|
-.B pretty
-)
 ] [
 .B \-width
 .I width
@@ -169,16 +162,6 @@ is an alternate way to specify the standard output.
 Attempt to read the file specified in
 .I path
 as RC file.
-.TP
-.BR \-style " ( " compact " | " pretty " )"
-Style
-.B pretty
-changes some of the default values of the formatting parameters documented in
-.BR html2textrc (5).
-To find out which and how the formatting parameter defaults are changed, check
-the file "pretty.style". If this option is omitted, style
-.B compact
-is assumed as default.
 .TP
 .B \-links
 Tags all external links with a number between brackets

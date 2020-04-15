@@ -55,9 +55,9 @@ Usage:\n\
   html2text -help\n\
   html2text -version\n\
   html2text [ -unparse | -check ] [ -debug-scanner ] [ -debug-parser ] \\\n\
-     [ -rcfile <file> ] [ -style ( compact | pretty ) ] [ -width <w> ] \\\n\
-     [ -links ] [ -from_encoding ] [ -to_encoding ] \\\n\
-     [ -o <file> ] [ -nobs ] [ -ascii ] [ <input-url> ] ...\n\
+     [ -rcfile <file> ] [ -width <w> ] [ -nobs ] [ -links ]\\\n\
+     [ -from_encoding ] [ -to_encoding ] [ -ascii ]\\\n\
+     [ -o <file> ] [ <input-url> ] ...\n\
 Formats HTML document(s) read from <input-url> or STDIN and generates ASCII\n\
 text.\n\
   -help          Print this text and exit\n\
@@ -67,16 +67,14 @@ text.\n\
   -debug-scanner Report parsed tokens on STDERR (debugging)\n\
   -debug-parser  Report parser activity on STDERR (debugging)\n\
   -rcfile <file> Read <file> instead of \"$HOME/.html2textrc\"\n\
-  -style compact Create a \"compact\" output format (default)\n\
-  -style pretty  Insert some vertical space for nicer output\n\
   -width <w>     Optimize for screen widths other than 79\n\
+  -nobs          Do not render boldface and underlining (using backspaces)\n\
   -links         Generate reference list with link targets\n\
   -from_encoding Treat input encoded as given encoding\n\
   -to_encoding   Output using given encoding\n\
-  -o <file>      Redirect output into <file>\n\
-  -nobs          Do not render boldface and underlining (using backspaces)\n\
   -ascii         Use plain ASCII for output instead of UTF-8\n\
                  alias for: -to_encoding ASCII//TRANSLIT \n\
+  -o <file>      Redirect output into <file>\n\
 ";
 
 int
@@ -112,7 +110,6 @@ main(int argc, char **argv)
 	bool debug_parser = false;
 	const char *home = getenv("HOME");
 	const char *rcfile = NULL;
-	const char *style = "compact";
 	int width = 79;
 	const char *output_file_name = "-";
 	bool use_backspaces = true;
@@ -136,8 +133,6 @@ main(int argc, char **argv)
 			debug_parser = true;
 		} else if (!strcmp(arg, "-rcfile")) {
 			extarg = &rcfile;
-		} else if (!strcmp(arg, "-style")) {
-			extarg = &style;
 		} else if (!strcmp(arg, "-links")) {
 			enable_links = true;
 		} else if (!strcmp(arg, "-width")) {
@@ -212,89 +207,6 @@ main(int argc, char **argv)
 	} else {
 		input_urls = argv + i;
 		number_of_input_urls = argc - i;
-	}
-
-	/*
-	 * Set up formatting: First, set some formatting properties depending on
-	 * the "-style" command line option.
-	 */
-	if (!strcmp(style, "compact")) {
-		;
-	} else if (!strcmp(style, "pretty")) {
-		/*
-		 * The "pretty" style was kindly supplied by diligent user Rolf
-		 * Niepraschk.
-		 */
-		static const struct {
-			const char *key;
-			const char *value;
-		}
-		properties[] = {
-			{ "OL.TYPE", "1" },
-			{ "OL.vspace.before", "1" },
-			{ "OL.vspace.after", "1" },
-			{ "OL.indents", "5" },
-			{ "UL.vspace.before", "1" },
-			{ "UL.vspace.after", "1" },
-			{ "UL.indents", "2" },
-			{ "DL.vspace.before", "1" },
-			{ "DL.vspace.after", "1" },
-			{ "DT.vspace.before", "1" },
-			{ "DIR.vspace.before", "1" },
-			{ "DIR.indents", "2" },
-			{ "MENU.vspace.before", "1" },
-			{ "MENU.vspace.after", "1" },
-			{ "DT.indent", "2" },
-			{ "DD.indent", "6" },
-			{ "HR.marker", "-" },
-			{ "H1.prefix", "" },
-			{ "H2.prefix", "" },
-			{ "H3.prefix", "" },
-			{ "H4.prefix", "" },
-			{ "H5.prefix", "" },
-			{ "H6.prefix", "" },
-			{ "H1.suffix", "" },
-			{ "H2.suffix", "" },
-			{ "H3.suffix", "" },
-			{ "H4.suffix", "" },
-			{ "H5.suffix", "" },
-			{ "H6.suffix", "" },
-			{ "H1.vspace.before", "2" },
-			{ "H2.vspace.before", "1" },
-			{ "H3.vspace.before", "1" },
-			{ "H4.vspace.before", "1" },
-			{ "H5.vspace.before", "1" },
-			{ "H6.vspace.before", "1" },
-			{ "H1.vspace.after", "1" },
-			{ "H2.vspace.after", "1" },
-			{ "H3.vspace.after", "1" },
-			{ "H4.vspace.after", "1" },
-			{ "H5.vspace.after", "1" },
-			{ "H6.vspace.after", "1" },
-			{ "TABLE.vspace.before", "1" },
-			{ "TABLE.vspace.after", "1" },
-			{ "CODE.vspace.before", "0" },
-			{ "CODE.vspace.after", "0" },
-			{ "BLOCKQUOTE.vspace.before", "1" },
-			{ "BLOCKQUOTE.vspace.after", "1" },
-			{ "PRE.vspace.before", "1" },
-			{ "PRE.vspace.after", "1" },
-			{ "PRE.indent.left", "2" },
-			{ "IMG.replace.noalt", "" },
-			{ "IMG.alt.prefix", " " },
-			{ "IMG.alt.suffix", " " },
-			{ 0, 0 }
-		}, *p;
-		for (p = properties; p->key; ++p) {
-			Formatting::setProperty(p->key, p->value);
-		}
-	} else {
-		std::cerr
-			<< "Unknown style \""
-			<< style
-			<< "\" specified -- try \"-help\"."
-			<< std::endl;
-		::exit(1);
 	}
 
 	{

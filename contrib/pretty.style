@@ -1,5 +1,4 @@
-
-/* these are the defaults uses in '-style pretty' mode */
+# The "pretty" style was kindly supplied by diligent user Rolf Niepraschk
 
 OL.TYPE = 1
 OL.vspace.before = 1
@@ -52,5 +51,5 @@ PRE.vspace.before = 1
 PRE.vspace.after = 1
 PRE.indent.left = 2
 IMG.replace.noalt =
-IMG.alt.prefix = \ 
-IMG.alt.suffix = \ 
+IMG.alt.prefix =
+IMG.alt.suffix =
