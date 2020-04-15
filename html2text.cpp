@@ -178,6 +178,7 @@ main(int argc, char **argv)
 					exit(1);
 				}
 			}
+			extarg = NULL;
 		}
 	}
 	if (i > argc) {
