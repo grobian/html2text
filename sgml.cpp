@@ -388,6 +388,26 @@ replace_sgml_entities(string *s)
 				}
 				s->replace(beg, j - beg, mkutf(x));
 				j = beg + 1;
+			} else if (c == 'x' || c == 'X') {  /* HTML Hex Entity */
+				int x = 0;
+				int v;
+				for (; j < l; j++) {
+					c = tolower(s->at(j));
+					if (c == ';') {
+						j++;
+						break;
+					}
+					if (isdigit(c)) {
+						v = c - '0';
+					} else if (c >= 'a' && c <= 'f') {
+						v = 10 + c - 'a';
+					} else {
+						break;
+					}
+					x = 16 * x + v;
+				}
+				s->replace(beg, j - beg, mkutf(x));
+				j = beg + 1;
 			}
 		} else if (isalpha(c)) {
 			/*
