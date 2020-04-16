@@ -44,6 +44,7 @@
 #include <string>
 #define HTMLParser_token html2text::HTMLParser::token
 #include "html.h"
+#include "istr.h"
 class HTMLDriver;
 }
 
@@ -68,7 +69,7 @@ class HTMLDriver;
   Element                            *element;
   list<auto_ptr<Element>>            *element_list;
   PCData                             *pcdata;
-  string                             *strinG;
+  istr                               *strinG;
   list<TagAttribute>                 *tag_attributes;
   int                                inT;
   list<auto_ptr<TableRow>>           *table_rows;
@@ -799,8 +800,8 @@ special:
     a->texts.reset($3);
     $$ = a;
 
-	string href = get_attribute(a->attributes.get(), "HREF", "");
-	if (drv.enable_links && !href.empty() && href.at(0) != '#') {
+	istr href = get_attribute(a->attributes.get(), "HREF", "");
+	if (drv.enable_links && !href.empty() && href[0] != '#') {
         ListNormalItem *lni = new ListNormalItem;
         PCData *d = new PCData;
         d->text = href;
@@ -814,8 +815,8 @@ special:
   | IMG {
 	auto_ptr<list<TagAttribute>> attr;
 	attr.reset($1);
-	string src = get_attribute(attr.get(), "SRC", "");
-	string alt = get_attribute(attr.get(), "ALT", "");
+	istr src = get_attribute(attr.get(), "SRC", "");
+	istr alt = get_attribute(attr.get(), "ALT", "");
 	/* when ALT is empty, and SRC is what seems like an URL, replace it
 	 * with a link */
 	if (drv.enable_links &&

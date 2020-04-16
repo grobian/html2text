@@ -59,6 +59,7 @@
 
 #include "Area.h"
 #include "iconvstream.h"
+#include "istr.h"
 
 /* ------------------------------------------------------------------------- */
 
@@ -66,13 +67,12 @@ using std::string;
 using std::pair;
 using std::list;
 
-typedef pair<string, string> TagAttribute;
+typedef pair<string, istr> TagAttribute;
 
-string get_attribute(
+istr get_attribute(
 	const list<TagAttribute> *, const char *name, const char *dflt
 	);
-// neue Methode fuer leere Attribute - Johannes Geiger
-string get_attribute(
+istr get_attribute(
 	const list<TagAttribute> *, const char *name, bool *exists
 	);
 int get_attribute(
@@ -126,7 +126,7 @@ struct Element {
 /* ------------------------------------------------------------------------- */
 
 struct PCData : public Element {
-	string text;
+	istr text;
 
 	/*virtual*/ PCData *to_PCData()
 	{

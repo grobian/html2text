@@ -184,7 +184,7 @@ create_lcs(
 						- (*number_of_columns_return - 1) * (column_spacing + 0),
 						Area::LEFT // Yields better results than "p->halign"!
 						));
-				p->width = tmp.get() ? tmp->utf_width() : 0;
+				p->width = tmp.get() ? tmp->width() : 0;
 			}
 			p->minimized = false;
 
@@ -310,7 +310,8 @@ narrow_table(
 	/*
 	 * Attempt to narrow the "widest_column" by one character.
 	 */
-	const Area::size_type old_column_width = column_widths_in_out[widest_column];
+	const Area::size_type old_column_width =
+		column_widths_in_out[widest_column];
 	list<auto_ptr<LogicalCell> >::iterator i;
 	Area::size_type new_column_width = 0;
 	for (i = lcs_in_out->begin(); i != lcs_in_out->end(); ++i) {
@@ -327,7 +328,7 @@ narrow_table(
 					left_of_column + old_column_width - 1,
 					Area::LEFT // Yields better results than "lc.halign"!
 					));
-			w = tmp->utf_width();
+			w = tmp->width();
 			if (w >= left_of_column + old_column_width)
 				lc.minimized = true;
 		}

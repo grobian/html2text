@@ -736,7 +736,7 @@ Paragraph::format(Area::size_type w, int halign) const
 Line *
 Image::line_format() const
 {
-// new image handling - Johannes Geiger
+	// new image handling - Johannes Geiger
 	static const char *repl_all =
 		Formatting::getString("IMG.replace.all");
 	static const char *repl_noalt =
@@ -752,11 +752,13 @@ Image::line_format() const
 
 	{
 		bool ex;
-		string alt(get_attribute(attributes.get(), "ALT", &ex));
+		istr alt(get_attribute(attributes.get(), "ALT", &ex));
 		if (ex) {
 			if (!alt.empty()) {
 				replace_sgml_entities(&alt);
-				return new Line(alt_prefix + alt + alt_suffix);
+				alt >>= alt_prefix;
+				alt <<= alt_suffix;
+				return new Line(alt);
 			} else {
 				return NULL;
 			}
@@ -768,9 +770,9 @@ Image::line_format() const
 	}
 
 	{
-		string src(get_attribute(attributes.get(), "SRC", ""));
+		istr src(get_attribute(attributes.get(), "SRC", ""));
 		if (!src.empty())
-			return new Line('[' + src + ']');
+			return new Line((src >>= '[') <<= ']');
 	}
 
 	return new Line("[Image]");
@@ -795,15 +797,15 @@ Applet::format(Area::size_type w, int /*halign*/) const
 	}
 
 	{
-		string alt(get_attribute(attributes.get(), "ALT", ""));
+		istr alt(get_attribute(attributes.get(), "ALT", ""));
 		if (!alt.empty())
-			return new Area("[Java Applet: " + alt + ']');
+			return new Area((alt >>= "[Java Applet: ") <<= ']');
 	}
 
 	{
-		string code(get_attribute(attributes.get(), "CODE", ""));
+		istr code(get_attribute(attributes.get(), "CODE", ""));
 		if (!code.empty())
-			return new Area("[Java Applet " + code + ']');
+			return new Area((code >>= "[Java Applet ") <<= ']');
 	}
 
 	return new Area("[Java Applet]");
@@ -819,15 +821,15 @@ Applet::line_format() const
 	}
 
 	{
-		string alt(get_attribute(attributes.get(), "ALT", ""));
+		istr alt(get_attribute(attributes.get(), "ALT", ""));
 		if (!alt.empty())
-			return new Line("[Java Applet: " + alt + ']');
+			return new Line((alt >>= "[Java Applet: ") <<= ']');
 	}
 
 	{
-		string code(get_attribute(attributes.get(), "CODE", ""));
+		istr code(get_attribute(attributes.get(), "CODE", ""));
 		if (!code.empty())
-			return new Line("[Java Applet " + code + ']');
+			return new Line((code >>= "[Java Applet ") <<= ']');
 	}
 
 	return new Line("[Java Applet]");
@@ -907,12 +909,12 @@ Form::format(Area::size_type w, int halign) const
 Line *
 Input::line_format() const
 {
-	string type = get_attribute(attributes.get(), "TYPE", "TEXT");
-	string name = get_attribute(attributes.get(), "NAME", "");
-	string value = get_attribute(attributes.get(), "VALUE", "");
+	string type = get_attribute(attributes.get(), "TYPE", "TEXT").c_str();
+	string name = get_attribute(attributes.get(), "NAME", "").c_str();
+	string value = get_attribute(attributes.get(), "VALUE", "").c_str();
 	bool checked = get_attribute(attributes.get(), "CHECKED", "0") != "0";
 	int size = get_attribute(attributes.get(), "SIZE", -1);
-	string src = get_attribute(attributes.get(), "SRC", "");
+	string src = get_attribute(attributes.get(), "SRC", "").c_str();
 
 	string res;
 	if (cmp_nocase(type, "TEXT") == 0) {
@@ -920,10 +922,10 @@ Input::line_format() const
 			size = 20;
 		if (value.empty())
 			value = name;
-//  if ((int) value.length() > size) { value.erase(size); } else
+//		if ((int) value.length() > size) { value.erase(size); } else
 		if ((int) value.length() < size)
 			value.append(size - value.length(), ' ');
-		res = '[' + value + ']';
+		res = '[' + value.c_str() + ']';
 	} else if (cmp_nocase(type, "PASSWORD") == 0) {
 		if (size == -1)
 			size = 20;
@@ -1138,15 +1140,17 @@ Font2::line_format() const
 }
 
 static char
-get_link_cell_attributes(const string &href)
+get_link_cell_attributes(const istr &href)
 {
-	if (href.at(0) == '#') {
+	if (href[0] == '#') {
 		static const char internal_link_attributes =
-			Formatting::getAttributes("A.attributes.internal_link", Cell::UNDERLINE);
+			Formatting::getAttributes("A.attributes.internal_link",
+					Cell::UNDERLINE);
 		return internal_link_attributes;
 	} else {
 		static const char external_link_attributes =
-			Formatting::getAttributes("A.attributes.external_link", Cell::UNDERLINE);
+			Formatting::getAttributes("A.attributes.external_link",
+					Cell::UNDERLINE);
 		return external_link_attributes;
 	}
 }
@@ -1159,7 +1163,7 @@ Anchor::line_format() const
 	if (!res.get())
 		return 0;
 
-	string href(get_attribute(attributes.get(), "HREF", ""));
+	istr href(get_attribute(attributes.get(), "HREF", ""));
 	if (!href.empty()) {
 		res->add_attribute(get_link_cell_attributes(href));
 		if (refnum > 0) {
@@ -1178,7 +1182,7 @@ Anchor::format(Area::size_type w, int halign) const
 	if (!res.get())
 		return 0;
 
-	string href(get_attribute(attributes.get(), "HREF", ""));
+	istr href(get_attribute(attributes.get(), "HREF", ""));
 	if (!href.empty()) {
 		res->add_attribute(get_link_cell_attributes(href));
 		if (refnum > 0) {
@@ -1269,32 +1273,32 @@ make_up(const Line &line, Area::size_type w, int halign)
 		}
 
 		Line::size_type to = from + 1;
-		int to_from;
-
-		Line::size_type last_to = from;
-		int last_utf_len = 0;
-
 		Line::size_type lbp = (Line::size_type) -1; // "Last break position".
 
-		/*
-		 * Determine the line break position.
-		 */
+		/* Determine the line break position. */
 		while (to < line.length()) {
-			if (line[to].character == '\n') {
+			if (line[to].character == '\n')
 				break;
-			}
-			char c1 = line[to].character, c2 = line[to - 1].character;
-			if (c1 == ' ' || c1 == '(' || c1 == '[' || c1 == '{' || (
+			char c1 = line[to].character;
+			char c2 = line[to - 1].character;
+			if (
+					c1 == ' ' ||
+					c1 == '(' ||
+					c1 == '[' ||
+					c1 == '{' ||
 					(
-						c2 == '-' ||
-						c2 == '/' ||
-						c2 == ':'
-					) &&
-					c1 != ',' &&
-					c1 != '.' &&
-					c1 != ';' &&
-					c1 != ':'
-					)) {
+						(
+							c2 == '-' ||
+							c2 == '/' ||
+							c2 == ':'
+						) &&
+							c1 != ',' &&
+							c1 != '.' &&
+							c1 != ';' &&
+							c1 != ':'
+					)
+			   )
+			{
 				lbp = to++;
 				while (to < line.length() && line[to].character == ' ')
 					to++;
@@ -1302,41 +1306,27 @@ make_up(const Line &line, Area::size_type w, int halign)
 				to++;
 			}
 
-			/*
-			 * Since utf_length(a,b) gets length of [a,b)
-			 * utf_length(a,b) = utf_length(a,c) + urf_length(c,b)
-			 * Cache last_utf_len to avoid quadratic runtime
-			 */
-			int utf_len = last_utf_len + line.utf_length(last_to, to);
-			if (utf_len > w && lbp != (Area::size_type) -1)
+			if (to - from > w && lbp != (Area::size_type) -1)
 			{
 				to = lbp;
 				break;
 			}
-
-			last_to = to;
-			last_utf_len = utf_len;
 		}
 
-		to_from = line.utf_length(from, to);
-		/*
-		 * Copy the "from...to" range from the "line" to the bottom of the "res"
-		 * Area.
-		 */
+		/* Copy the "from...to" range from the "line" to the bottom of
+		 * the "res" Area. */
 		Area::size_type x = 0;
 		Area::size_type len = to - from;
-		if (halign == Area::LEFT || to_from >= w) {
+		if (halign == Area::LEFT || len >= w) {
 			;
 		} else if (halign == Area::CENTER) {
-			x += (w - to_from) / 2;
+			x += (w - len) / 2;
 		} else if (halign == Area::RIGHT) {
-			x += w - to_from;
+			x += w - len;
 		}
 		res->insert(line.cells() + from, len, x, res->height());
 
-		/*
-		 * Determine the beginnning of the next line.
-		 */
+		/* Determine the beginnning of the next line. */
 		if (to == line.length())
 			break;
 

@@ -41,6 +41,7 @@
 #include <sys/types.h>
 #include <string>
 #include "iconvstream.h"
+#include "istr.h"
 
 #ifdef BOOL_DEFINITION
 BOOL_DEFINITION
@@ -52,7 +53,7 @@ using std::string;
 /* ------------------------------------------------------------------------- */
 
 struct Cell {
-	char character;
+	int character;
 	char attribute;
 
 	enum {
@@ -75,6 +76,7 @@ class Line {
 		Line(size_type l = 0);
 		Line(const char *);
 		Line(const string &);
+		Line(const istr &);
 		~Line();
 
 		size_type length() const
@@ -98,8 +100,6 @@ class Line {
 		{
 			return cells_;
 		}
-
-		unsigned int utf_length(size_type f, size_type t) const;
 
 		void resize(size_type l);
 		void enlarge(size_type l)
@@ -160,6 +160,7 @@ class Area {
 		Area(const char *);
 		Area(const string &);
 		Area(const Line &);
+		Area(const istr &);
 		~Area();
 
 		size_type width() const
@@ -181,8 +182,6 @@ class Area {
 		}
 		const Area &operator>>=(size_type rs);
 		const Area &operator>>=(const char *prefix);
-
-		unsigned int utf_width();
 
 		void resize(size_type w, size_type h);
 		void enlarge(size_type w, size_type h);

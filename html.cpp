@@ -82,7 +82,7 @@ static iconvstream &operator<<(iconvstream& os,
 		const list<TagAttribute> &al(*a);
 		list<TagAttribute>::const_iterator i;
 		for (i = al.begin(); i != al.end(); ++i) {
-			os << " " << (*i).first << "=\"" << (*i).second << "\"";
+			os << " " << (*i).first << "=\"" << (*i).second.c_str() << "\"";
 		}
 	}
 	return os;
@@ -556,7 +556,7 @@ Caption::unparse(iconvstream& os, ostream_manipulator separator) const
 
 /* ------------------------------------------------------------------------- */
 
-string
+istr
 get_attribute(
 	const list<TagAttribute> *as,
 	const char               *name,
@@ -567,15 +567,15 @@ get_attribute(
 		list<TagAttribute>::const_iterator i;
 		for (i = as->begin(); i != as->end(); ++i) {
 			if (cmp_nocase((*i).first, name) == 0)
-				return string((*i).second);
+				return (*i).second;
 		}
 	}
-	return string(dflt);
+	return istr(dflt);
 }
 
 // *exists is set to false if attribute *name does not exist - Johannes Geiger
 
-string
+istr
 get_attribute(
 	const list<TagAttribute> *as,
 	const char               *name,
@@ -587,11 +587,11 @@ get_attribute(
 		list<TagAttribute>::const_iterator i;
 		for (i = as->begin(); i != as->end(); ++i) {
 			if (cmp_nocase((*i).first, name) == 0)
-				return string((*i).second);
+				return (*i).second;
 		}
 	}
 	*exists = false;
-	return string("");
+	return istr("");
 }
 
 
@@ -632,7 +632,7 @@ get_attribute(
 				va_list va;
 				va_start(va, v1);
 				for (;;) {
-					if (cmp_nocase(s, (*i).second) == 0)
+					if (cmp_nocase(s, (*i).second.c_str()) == 0)
 						break;
 					s = va_arg(va, const char *);
 					if (!s) {

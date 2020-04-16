@@ -39,6 +39,7 @@
 
 #include "html.h"
 #include "sgml.h"
+#include "istr.h"
 
 #ifndef nelems
 #define nelems(array) (sizeof(array) / sizeof((array)[0]))
@@ -316,37 +317,34 @@ entities[] = {
 
 /* ------------------------------------------------------------------------- */
 
-char ubuf[4];
-
-char *mkutf(unsigned long x)
+int mkutf8(unsigned long x)
 {
-	memset(ubuf, 0, 4);
-	if (x < 128)
-		ubuf[0] = x;
-	else if (x < 0x800) {
-		ubuf[0] = (0xc0 | ((x >> 6) & 0x1f));
-		ubuf[1] = (0x80 | (x & 0x3f));
+	int ret = 0;
+	if (x < 128) {
+		ret =            x        & 0xFF;
+	} else if (x < 0x800) {
+		ret =  (0xC0 | ((x >>  6) & 0x1F))
+			| ((0x80 | ( x        & 0x3F)) <<  8);
 	} else {
-		ubuf[0] = (0xe0 | ((x >> 12) & 0x0f));
-		ubuf[1] = (0x80 | ((x >> 6) & 0x3f));
-		ubuf[2] = (0x80 | (x & 0x3f));
+		ret =  (0xE0 | ((x >> 12) & 0x0F))
+			| ((0x80 | ((x >>  6) & 0x3F)) <<  8)
+			| ((0x80 | ( x        & 0x3F)) << 16);
 	}
-	return ubuf;
+	return ret;
 }
 
 void
-replace_sgml_entities(string *s)
+replace_sgml_entities(istr *s)
 {
 	string::size_type j = 0;
 
 	for (;;) {
 		string::size_type l = s->length();
+		char c;
 
-		/*
-		 * Skip characters before ampersand.
-		 */
-		while (j < l && s->at(j) != '&')
-			++j;
+		/* Skip characters before ampersand. */
+		while (j < l && (*s)[j] != '&')
+			j++;
 
 		if (j >= l)
 			break;
@@ -355,44 +353,38 @@ replace_sgml_entities(string *s)
 		 * So we have an ampersand...
 		 */
 
-		/*
-		 * Don't process the last three characters; an SGML entity wouldn't fit
-		 * in anyway!
-		 */
+		/* Don't process the last three characters; an SGML entity
+		 * wouldn't fit in anyway! */
 		if (j + 3 >= l)
-			break;                  // Watch out! Unsigned arithmetics!
+			break;
 
 		string::size_type beg = j++; // Skip the ampersand;
 
-		/*
-		 * Look at the next character.
-		 */
-		char c = s->at(j++);
+		/* Look at the next character. */
+		c = (*s)[j++];
 		if (c == '#') {
-			/*
-			 * Decode entities like "&#233;".
-			 * Some authors forget the ";", but we tolerate this.
-			 */
-			c = s->at(j++);
+			/* Decode entities like "&#233;".
+			 * Some authors forget the ";", but we tolerate this. */
+			c = (*s)[j++];
 			if (isdigit(c)) {
 				int x = c - '0';
-				for (; j < l; ++j) {
-					c = s->at(j);
+				for (; j < l; j++) {
+					c = (*s)[j];
 					if (c == ';') {
-						++j;
+						j++;
 						break;
 					}
 					if (!isdigit(c))
 						break;
 					x = 10 * x + c - '0';
 				}
-				s->replace(beg, j - beg, mkutf(x));
+				s->replace(beg, j - beg, mkutf8(x));
 				j = beg + 1;
 			} else if (c == 'x' || c == 'X') {  /* HTML Hex Entity */
 				int x = 0;
 				int v;
 				for (; j < l; j++) {
-					c = tolower(s->at(j));
+					c = tolower((*s)[j]);
 					if (c == ';') {
 						j++;
 						break;
@@ -406,19 +398,17 @@ replace_sgml_entities(string *s)
 					}
 					x = 16 * x + v;
 				}
-				s->replace(beg, j - beg, mkutf(x));
+				s->replace(beg, j - beg, mkutf8(x));
 				j = beg + 1;
 			}
 		} else if (isalpha(c)) {
-			/*
-			 * Decode entities like "&nbsp;".
-			 * Some authors forget the ";", but we tolerate this.
-			 */
+			/* Decode entities like "&nbsp;".
+			 * Some authors forget the ";", but we tolerate this. */
 			char name[8];
 			name[0] = c;
 			size_t i = 1;
 			for (; j < l; ++j) {
-				c = s->at(j);
+				c = (*s)[j];
 				if (c == ';') {
 					++j;
 					break;
@@ -435,7 +425,7 @@ replace_sgml_entities(string *s)
 					(int (*)(const void *, const void *))strcmp);
 			if (entity != NULL) {
 				if (entity->unicode)
-					s->replace(beg, j - beg, mkutf(entity->unicode));
+					s->replace(beg, j - beg, mkutf8(entity->unicode));
 				j = beg + 1;
 			}
 		} else {

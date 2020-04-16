@@ -45,6 +45,7 @@
 #include "HTMLParser.tab.hh"
 #include "sgml.h"
 #include "cmp_nocase.h"
+#include "istr.h"
 
 #ifndef nelems
 #define nelems(array) (sizeof(array) / sizeof((array)[0]))
@@ -106,14 +107,13 @@ int HTMLControl::htmlparser_yylex(
 		if (token == HTMLParser_token::PRE) {
 			literal_mode = true;
 
-			/*
-			 * Swallow '\n' immediately following "<PRE>".
-			 */
-			if (next_token == EOF) {
+			if (next_token == EOF)
 				next_token = yylex2(&next_token_value, &next_token_tag_type);
-			}
 			if (next_token == HTMLParser_token::PCDATA) {
-				string &s(*next_token_value.strinG);
+				/*
+				 * Swallow '\n' immediately following "<PRE>".
+				 */
+				istr &s(*next_token_value.strinG);
 				if (!s.empty() && s[0] == '\n')
 					s.erase(0, 1);
 			}
@@ -135,7 +135,7 @@ int HTMLControl::htmlparser_yylex(
 			 * Erase " '\n' { ' ' } " immediately before "</PRE>".
 			 */
 			if (next_token == HTMLParser_token::END_PRE) {
-				string &s(*value_return->strinG);
+				istr &s(*value_return->strinG);
 				string::size_type x = s.length();
 				while (x > 0 && s[x - 1] == ' ')
 					--x;
@@ -150,7 +150,7 @@ int HTMLControl::htmlparser_yylex(
 					next_token_tag_type == BLOCK_END_TAG ||
 					next_token_tag_type == BLOCK_START_TAG
 					)) {
-				string &s(*value_return->strinG);
+				istr &s(*value_return->strinG);
 				string::size_type x = s.length();
 				while (x > 0 && isspace(s[x - 1]))
 					--x;
@@ -161,8 +161,8 @@ int HTMLControl::htmlparser_yylex(
 			 * Collate sequences of whitespace, if not in "literal mode".
 			 */
 			if (!literal_mode) {
-				string &s(*value_return->strinG);
-//      bool   whitespace_only = true;
+				istr &s(*value_return->strinG);
+//				bool whitespace_only = true;
 				for (string::size_type x = 0; x < s.length(); ++x) {
 					if (isspace(s[x])) {
 						string::size_type y;
@@ -170,7 +170,7 @@ int HTMLControl::htmlparser_yylex(
 							;
 						s.replace(x, y - x, " ");
 					} else {
-//          whitespace_only = false;
+//						whitespace_only = false;
 					}
 				}
 				if (s.empty()) {
@@ -199,7 +199,7 @@ int HTMLControl::htmlparser_yylex(
 				next_token = yylex2(&next_token_value, &next_token_tag_type);
 			}
 			if (next_token == HTMLParser_token::PCDATA) {
-				string &s(*next_token_value.strinG);
+				istr &s(*next_token_value.strinG);
 				string::size_type x;
 				for (x = 0; x < s.length() && isspace(s[x]); ++x)
 					;
@@ -509,7 +509,7 @@ HTMLControl::yylex2(html2text::HTMLParser::semantic_type *value_return,
 						list<TagAttribute>::const_iterator j;
 						for (j = ta.begin(); j != ta.end(); ++j) {
 							std::cerr << " " << (*j).first <<
-								"=\"" << (*j).second << "\"";
+								"=\"" << (*j).second.c_str() << "\"";
 						}
 					}
 					std::cerr << ">\"" << std::endl;
@@ -563,7 +563,7 @@ HTMLControl::yylex2(html2text::HTMLParser::semantic_type *value_return,
 
 		if (c == '\n' || (unsigned char) c >= (unsigned char) ' ') {
 			// Same as in line 402
-			string *s = value_return->strinG = new string;
+			istr *s = value_return->strinG = new istr;
 
 			while (c != EOF) {
 				/*
@@ -578,18 +578,12 @@ HTMLControl::yylex2(html2text::HTMLParser::semantic_type *value_return,
 					}
 				}
 
-				*s += c & 0xFF;
-				if ((c >> 7) & 1) {
-					unsigned int d = c;
-					unsigned char point = 1;
-					while ((c >> (7 - point++)) & 1) {
-						d >>= 8;
-						*s += d & 0xFF;
-					};
-				}
+				*s += c;
 				c = get_char();
 			}
 
+			/* need to do this here, because space calculations want to
+			 * know the final form of the data */
 			replace_sgml_entities(s); // Replace "&auml;" and consorts.
 
 			/*
@@ -601,7 +595,8 @@ HTMLControl::yylex2(html2text::HTMLParser::semantic_type *value_return,
 			}
 
 			if (debug_scanner)
-				std::cerr << "Scanned PCDATA \"" << *s << "\"" << std::endl;
+				std::cerr << "Scanned PCDATA \"" << s->c_str() << "\""
+					<< std::endl;
 
 			return HTMLParser_token::PCDATA;
 		}

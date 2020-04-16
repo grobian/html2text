@@ -50,14 +50,16 @@
 
 /* ------------------------------------------------------------------------- */
 
-Line::Line(size_type l) : length_(l), cells_(malloc_array(Cell, l))
+Line::Line(size_type l):
+	length_(l),
+	cells_(malloc_array(Cell, l))
 {
 	Cell *p, *end = cells_ + l;
 	for (p = cells_; p != end; p++)
 		p->clear();
 }
 
-Line::Line(const char *p) :
+Line::Line(const char *p):
 	length_(strlen(p)),
 	cells_(malloc_array(Cell, length_))
 {
@@ -69,7 +71,7 @@ Line::Line(const char *p) :
 	}
 }
 
-Line::Line(const string &s) :
+Line::Line(const string &s):
 	length_(s.length()),
 	cells_(malloc_array(Cell, length_))
 {
@@ -82,31 +84,24 @@ Line::Line(const string &s) :
 	}
 }
 
+Line::Line(const istr &s):
+	length_(s.length()),
+	cells_(malloc_array(Cell, length_))
+{
+	Cell *q = cells_;
+	for (int i = 0; i < length_; i++) {
+		q->character = s[i];
+		q->attribute = Cell::NONE;
+		q++;
+	}
+}
+
 Line::~Line()
 {
 	free(cells_);
 }
 
 /* ------------------------------------------------------------------------- */
-
-/*           utf_length() and utf_width()
- *
- *     Very simplified algorithm of calculating length of UTF-8
- *   string. No check for errors. Counting only ASCII bytes and
- *   leading bytes of UTF-8 multibyte sequences. All bytes like
- *   10xxxxxx are dropped.    --YS
- */
-
-unsigned int
-Line::utf_length(size_type f, size_type t) const
-{
-	size_type m = (t < length_ ? t : length_);
-	size_type r = m - f;
-	for (int i = f; i < m; i++)
-		if ((cells_[i].character & 0xc0) == 0x80)
-			r--;
-	return r;
-}
 
 void
 Line::resize(size_type l)
@@ -254,6 +249,20 @@ Area::Area(const Line &l) :
 	copy_array(l.cells_, cells_[0], Cell, width_);
 }
 
+Area::Area(const istr &s):
+	width_(s.length()),
+	height_(1),
+	cells_(malloc_array(Cell *, 1))
+{
+	cells_[0] = malloc_array(Cell, width_);
+	Cell *q = cells_[0];
+	for (string::size_type i = 0; i < s.length(); ++i) {
+		q->character = s[i];
+		q->attribute = Cell::NONE;
+		q++;
+	}
+}
+
 Area::~Area()
 {
 	for (size_type y = 0; y < height(); y++)
@@ -299,25 +308,6 @@ Area::operator>>=(const char *prefix)
 		}
 	}
 	return *this;
-}
-
-unsigned int
-Area::utf_width()
-{
-	size_type r = width_;
-	r = 0;
-	for (size_type yy = 0; yy < height_; yy++) {
-		size_type r1 = 0;
-		for (int i = width_ - 1; i >= 0; i--) {
-			if (!r1 && isspace(cells_[yy][i].character))
-				continue;
-			if ((cells_[yy][i].character & 0xc0) != 0x80)
-				r1++;
-		}
-		if (r < r1)
-			r = r1;
-	}
-	return r;
 }
 
 void
@@ -534,12 +524,22 @@ operator<<(iconvstream& os, const Area &a)
 			end--;
 
 		for (const Cell *p = cell; p != end; p++) {
-			char c = p->character;
+			int c = p->character;
 			char a = p->attribute;
+			char u[5] = {0, 0, 0, 0, 0};
 
-			/* do not underline utf-8 continuation sequences */
-			if (a == Cell::NONE || (c & 0xC0) == 0x80) {
-				os << c;
+			u[0] = c & 0xFF;
+			if ((c >> 7) & 1) {
+				unsigned int d = c;
+				unsigned char point = 1;
+				while ((c >> (7 - point++)) & 1) {
+					d >>= 8;
+					u[point - 1] = d & 0xFF;
+				};
+			}
+
+			if (a == Cell::NONE) {
+				os << u;
 			} else {
 				if (Area::use_backspaces) {
 					/*
@@ -564,9 +564,9 @@ operator<<(iconvstream& os, const Area &a)
 						os << '_' << backspace;
 					if ((a & Cell::BOLD     ) && c != ' ')
 						os << c << backspace;
-					os << c;
+					os << u;
 				} else {
-					os << (c == ' ' && (a & Cell::UNDERLINE) ? '_' : c);
+					os << (c == ' ' && (a & Cell::UNDERLINE) ? "_" : u);
 				}
 			}
 		}

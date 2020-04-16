@@ -213,7 +213,7 @@ iconvstream::write(const char *inp, size_t len)
 							wutf8buflen--;
 							break;
 						case EINVAL:
-							/* he only valid problem should be the end
+							/* the only valid problem should be the end
 							 * of the input being truncated */
 							if (inplen < 4 && len != 0) {
 								/* shift this so a next attempt can
