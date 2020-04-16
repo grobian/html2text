@@ -31,6 +31,7 @@
 /***************************************************************************/
 
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -41,10 +42,28 @@
 
 /* ------------------------------------------------------------------------- */
 
+static void *malloc_error(size_t size) {
+	void *ret = malloc(size);
+	if (ret == NULL) {
+		perror("html2text: error");
+		abort();
+	}
+	return ret;
+}
+
+static void *realloc_error(void *ptr, size_t size) {
+	void *ret = realloc(ptr, size);
+	if (ret == NULL) {
+		perror("html2text: error");
+		abort();
+	}
+	return ret;
+}
+
 #define malloc_array(type, size) \
-	((type *) malloc(sizeof(type) * (size)))
+	((type *) malloc_error(sizeof(type) * (size)))
 #define realloc_array(array, type, size) \
-	((array) = (type *) realloc((array), sizeof(type) * (size)))
+	((array) = (type *) realloc_error((array), sizeof(type) * (size)))
 #define copy_array(from, to, type, count) \
 	((void) memcpy((to), (from), (count) * sizeof(type)))
 
