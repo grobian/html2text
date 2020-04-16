@@ -32,9 +32,10 @@ BISON  = bison
 YFLAGS =
 
 INSTALLER = install
-BINDIR    = /usr/local/bin
-MANDIR    = /usr/local/man
-DOCDIR    = /usr/share/doc/html2text
+PREFIX    = /usr/local
+BINDIR    = $(PREFIX)/bin
+MANDIR    = $(PREFIX)/man
+DOCDIR    = $(PREFIX)/share/doc/html2text
 
 CXX                 = @CXX@
 BOOL_DEFINITION     = @BOOL_DEFINITION@
@@ -46,29 +47,33 @@ LIBSTDCXX_INCLUDES  = @LIBSTDCXX_INCLUDES@
 LIBSTDCXX_LIBS      = @LIBSTDCXX_LIBS@
 AUTO_PTR_BROKEN     = @AUTO_PTR_BROKEN@
 MAKEDEPEND_INCLUDES = @MAKEDEPEND_INCLUDES@
+CXXFLAGS            = -g -O2   # automake like
 
-DEBUG=-O2 -g
+INCLUDES    = $(LIBSTDCXX_INCLUDES)
+DEFINES     = -DVERSION=$(VERSION) \
+			  $(SYS_POLL_MISSING) \
+			  $(BOOL_DEFINITION) \
+			  $(EXPLICIT) \
+			  $(AUTO_PTR_BROKEN) \
+			  $(NULL)
 
-INCLUDES  = $(LIBSTDCXX_INCLUDES)
-DEFINES   = -DVERSION=$(VERSION) $(SYS_POLL_MISSING) $(BOOL_DEFINITION) $(EXPLICIT) $(AUTO_PTR_BROKEN)
-CPPFLAGS  = $(INCLUDES) $(DEFINES)
-CXXFLAGS  = $(CPPFLAGS) $(DEBUG)
-LDFLAGS   = $(DEBUG)
-LOADLIBES = $(LIBSTDCXX_LIBS) $(SOCKET_LIBRARIES) $(ICONV_LIBRARIES)
+MYCPPFLAGS  = $(CPPFLAGS) $(INCLUDES) $(DEFINES)
+MYCXXFLAGS  = $(CXXFLAGS)
+MYLIBS      = $(LIBSTDCXX_LIBS) $(SOCKET_LIBRARIES) $(ICONV_LIBRARIES)
 
-.SUFFIXES : .cpp .o
+.SUFFIXES: .cpp .o
 
-default : all
+default: all
 
-.cpp.o :
-	$(CXX) -c $(CXXFLAGS) $*.cpp
+.cpp.o:
+	$(CXX) -c $(MYCPPFLAGS) $(MYCXXFLAGS) $*.cpp
 
 HTMLParser.o: HTMLParser.tab.cc HTMLParser.tab.hh
-	$(CXX) -c $(CXXFLAGS) -o HTMLParser.o HTMLParser.tab.cc
+	$(CXX) -c  $(MYCPPFLAGS) $(MYCXXFLAGS) -o HTMLParser.o HTMLParser.tab.cc
 
 # -----------------------------------------------------------------------------
 
-all : html2text
+all: html2text
 	@echo ;
 	@echo 'Compilation completed. You may now move "html2text", "html2text.1"';
 	@echo 'and "html2textrc.5" to their installation directories (e.g.';
@@ -90,40 +95,42 @@ OBJS = \
 	   iconvstream.o \
 	   $(NULL)
 
-html2text : $(OBJS) $(LIBSTDCXX_LIBS)
-	$(CXX) $(LDFLAGS) $(OBJS) $(LOADLIBES) $(LDLIBS) -o $@
+html2text: $(OBJS) $(LIBSTDCXX_LIBS)
+	$(CXX) $(MYLDFLAGS) $(OBJS) $(MYLIBS) -o $@
 
 # -----------------------------------------------------------------------------
 
 # Since bison isn't always installed, HTMLParser.tab.hh and
 # HTMLParser.tab.cc are only built when 'make bison-local' is issued.
 
-bison-local :
+bison-local:
 	$(BISON) $(YFLAGS) -d HTMLParser.yy
 
 # -----------------------------------------------------------------------------
 
 # This is mostly thought for RPM builts and users that don't read the documentation.
 
-install :
-	$(INSTALLER) -s -m 755 html2text $(BINDIR);
-	$(INSTALLER) -m 644 html2text.1.gz $(MANDIR)/man1;
-	$(INSTALLER) -m 644 html2textrc.5.gz $(MANDIR)/man5;
-	$(INSTALLER) -d -m 755 $(DOCDIR);
-	$(INSTALLER) -p -m 644 CHANGES COPYING CREDITS KNOWN_BUGS README RELEASE_NOTES TODO $(DOCDIR)
+install:
+	$(INSTALLER) -s -m 755 html2text $(DESTDIR)$(BINDIR);
+	$(INSTALLER) -m 644 html2text.1.gz $(DESTDIR)$(MANDIR)/man1;
+	$(INSTALLER) -m 644 html2textrc.5.gz $(DESTDIR)$(MANDIR)/man5;
+	$(INSTALLER) -d -m 755 $(DESTDIR)$(DOCDIR);
+	$(INSTALLER) -p -m 644 \
+		CHANGES COPYING CREDITS KNOWN_BUGS README RELEASE_NOTES TODO \
+		$(DESTDIR)$(DOCDIR)
 
 # -----------------------------------------------------------------------------
 
-clean : local-clean
-local-clean :
+clean: local-clean
+local-clean:
 	rm -f *.o *~ core html2text;
 
-clobber : local-clobber
-local-clobber : local-clean
+clobber: local-clobber
+local-clobber: local-clean
 	rm -f html2text
 
-depend : local-depend
-local-depend : HTMLParser.tab.hh
+depend: local-depend
+local-depend: HTMLParser.tab.hh
 	@>Dependencies
 	makedepend -f Dependencies $(CPPFLAGS) $(MAKEDEPEND_INCLUDES) *.cpp
 	@rm -f Dependencies.bak
