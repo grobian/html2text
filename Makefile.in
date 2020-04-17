@@ -111,12 +111,15 @@ bison-local:
 # This is mostly thought for RPM builts and users that don't read the documentation.
 
 install:
+	$(INSTALLER) -d -m 755 $(DESTDIR)$(BINDIR);
 	$(INSTALLER) -s -m 755 html2text $(DESTDIR)$(BINDIR);
+	$(INSTALLER) -d -m 755 $(DESTDIR)$(MANDIR);
 	$(INSTALLER) -m 644 html2text.1.gz $(DESTDIR)$(MANDIR)/man1;
 	$(INSTALLER) -m 644 html2textrc.5.gz $(DESTDIR)$(MANDIR)/man5;
 	$(INSTALLER) -d -m 755 $(DESTDIR)$(DOCDIR);
 	$(INSTALLER) -p -m 644 \
-		CHANGES COPYING CREDITS KNOWN_BUGS README RELEASE_NOTES TODO \
+		CHANGES COPYING CREDITS KNOWN_BUGS \
+		README.md README-1.3.2a RELEASE_NOTES TODO \
 		$(DESTDIR)$(DOCDIR)
 
 # -----------------------------------------------------------------------------
