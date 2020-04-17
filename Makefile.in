@@ -96,7 +96,7 @@ OBJS = \
 	   $(NULL)
 
 html2text: $(OBJS) $(LIBSTDCXX_LIBS)
-	$(CXX) $(MYLDFLAGS) $(OBJS) $(MYLIBS) -o $@
+	$(CXX) $(LDFLAGS) $(OBJS) $(MYLIBS) -o $@
 
 # -----------------------------------------------------------------------------
 
