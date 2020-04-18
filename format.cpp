@@ -925,7 +925,7 @@ Input::line_format() const
 //		if ((int) value.length() > size) { value.erase(size); } else
 		if ((int) value.length() < size)
 			value.append(size - value.length(), ' ');
-		res = '[' + value.c_str() + ']';
+		res = '[' + string(value.c_str()) + ']';
 	} else if (cmp_nocase(type, "PASSWORD") == 0) {
 		if (size == -1)
 			size = 20;
