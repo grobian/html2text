@@ -401,9 +401,14 @@ HTMLControl::yylex2(html2text::HTMLParser::semantic_type *value_return,
 				tag_name += c;
 				for (;;) {
 					c = get_char();
-					if (!isalnum(c) && c != '-' && c != '_' && c != ':')
+					/* ID and NAME tokens must begin with a letter
+					 * ([A-Za-z]) -- isalpha tested before -- and may be
+					 * followed by any number of letters, digits
+					 * ([0-9]), hyphens ("-"), underscores ("_"), colons
+					 * (":"), and periods (".") */
+					if (!isalnum(c) &&
+							c != '-' && c != '_' && c != ':' && c != '.')
 						break;
-					// Tolerate colons in tags for MS-Word's sake - Arno
 					tag_name += c;
 				}
 
@@ -420,15 +425,15 @@ HTMLControl::yylex2(html2text::HTMLParser::semantic_type *value_return,
 					while (isalpha(c) || c == '_') {
 						TagAttribute attribute;
 
-						/*
-						 * Scan attribute name.
-						 */
+						/* Scan attribute name, see the ID and NAME rule
+						 * mentioned above */
 						attribute.first = c;
 						for (;;) {
 							c = get_char();
-							if (!isalnum(c) && c != '-' && c != '_' && c != ':')
+							if (!isalnum(c) &&
+									c != '-' && c != '_' &&
+									c != ':' && c != '.')
 								break;
-							// Same as in line 352 - Arno
 							attribute.first += c;
 						}
 
