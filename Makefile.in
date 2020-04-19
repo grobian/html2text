@@ -108,6 +108,25 @@ bison-local:
 
 # -----------------------------------------------------------------------------
 
+TESTS= \
+	   ascii=ordered-list \
+	   iso-8859-1=dot-in-tag-name \
+	   iso-8859-1=hex-entities \
+	   iso-8859-1=large-table-gt-no-html-end-tag \
+	   utf-8=blockquote-reply \
+	   utf-8=bold-utf-8-chars-and-zwnj \
+	   utf-8=linked-links-and-email-addresses \
+	   utf-8=meta-in-blockquote \
+	   utf-8=table-with-border \
+	   utf-8=tag-with-colon-attribute \
+	   utf-8=unicode-hex-references \
+	   $(NULL)
+
+check:
+	@cd tests && ./runtest.sh $(TESTS)
+
+# -----------------------------------------------------------------------------
+
 # This is mostly thought for RPM builts and users that don't read the documentation.
 
 install:
