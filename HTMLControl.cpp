@@ -467,9 +467,7 @@ HTMLControl::yylex2(html2text::HTMLParser::semantic_type *value_return,
 								}
 								c = get_char(); // Get next after closing quote
 							} else {
-								while (c != '>' &&
-										(unsigned char)c > (unsigned char)' ')
-								{
+								while (c != '>' && c > ' ') {
 									// This is for non-ACSII chars - Arno
 									if (c == EOF)
 										return HTMLParser_token::SCAN_ERROR;
@@ -481,6 +479,15 @@ HTMLControl::yylex2(html2text::HTMLParser::semantic_type *value_return,
 
 							while (isspace(c))
 								c = get_char();    // Skip WS after attr value
+						} else {
+							/* if we get something malformed like
+							 * att:"bla" (colon iso =), ensure we eat
+							 * away the garbage until space or closing
+							 * tag */
+							while (!isspace(c) && c != '>')
+								c = get_char();
+							while (isspace(c))
+								c = get_char();
 						}
 
 						/*
