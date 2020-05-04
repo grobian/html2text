@@ -62,6 +62,7 @@ MYCXXFLAGS  = $(CXXFLAGS)
 MYLIBS      = $(LIBSTDCXX_LIBS) $(SOCKET_LIBRARIES) $(ICONV_LIBRARIES)
 
 .SUFFIXES: .cpp .o
+.PHONY: default all bison-local check install clean clobber depend
 
 default: all
 
