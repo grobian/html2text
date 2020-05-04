@@ -132,7 +132,7 @@ check:
 
 install:
 	$(INSTALLER) -d -m 755 $(DESTDIR)$(BINDIR);
-	$(INSTALLER) -s -m 755 html2text $(DESTDIR)$(BINDIR);
+	$(INSTALLER) -m 755 html2text $(DESTDIR)$(BINDIR);
 	$(INSTALLER) -d -m 755 $(DESTDIR)$(MANDIR);
 	$(INSTALLER) -m 644 html2text.1 $(DESTDIR)$(MANDIR)/man1;
 	$(INSTALLER) -m 644 html2textrc.5 $(DESTDIR)$(MANDIR)/man5;
