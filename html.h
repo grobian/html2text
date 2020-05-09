@@ -87,6 +87,8 @@ int get_attribute(
 	const char *s1, int v1, ... /* ... NULL */
 	);
 
+istr get_style_attr(istr *style, const char *name, const char *dflt);
+
 /* ------------------------------------------------------------------------- */
 
 typedef char ostream_manipulator;

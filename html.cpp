@@ -693,3 +693,45 @@ get_attribute(
 
 /* ------------------------------------------------------------------------- */
 
+istr
+get_style_attr(istr *style, const char *name, const char *dflt)
+{
+	bool iskey = true;
+	size_t keystart = 0;
+	size_t valstart = 0;
+	size_t t;
+
+	if (style != NULL) {
+		for (size_t i = 0; i < style->length(); i++) {
+			switch ((*style)[i]) {
+				case ':':
+					/* keystart:i = key */
+					for (t = i - 1; (*style)[t] == ' '; t--)
+						;
+					t++;
+					iskey = false;
+					valstart = i + 1;
+					break;
+				case ';':
+					/* end of value */
+					if (style->compare(keystart, t - keystart, name) == 0) {
+						for (t = i - 1; (*style)[t] == ' '; t--)
+							;
+						t++;
+						return style->slice(valstart, t - valstart);
+					}
+					keystart = i + 1;
+					iskey = true;
+					break;
+				case ' ':
+					if (keystart == i)
+						keystart++;
+					if (valstart == i)
+						valstart++;
+					break;
+			}
+		}
+	}
+
+	return istr(dflt);
+}

@@ -74,13 +74,32 @@ class istr {
 			elems.insert(elems.begin() + pos, i);
 			return *this;
 		}
+		istr slice(size_t pos = 0, size_t len = string::npos)
+		{
+			istr ret = istr();
+
+			if (len == string::npos)
+				len = elems.size();
+			/* we assume pos within range here (should throw out_of_range) */
+			if (pos + len >= elems.size())
+				len = elems.size() - pos;
+
+			for (len += pos; pos < len; pos++)
+				ret += elems[pos];
+
+			return ret;
+		}
 		int compare(size_t pos, size_t len, const char *s) const
 		{
 			int ret;
-			for (size_t i = 0;
-					i < len && (ret = s[i] - elems[pos + i]) == 0;
-					i++)
-				;
+			int elm;
+
+			for (size_t i = 0; i < len; i++) {
+				elm = (pos + i) < elems.size() ? elems[pos + i] : 0;
+				if ((ret = s[i] - elm) != 0)
+					break;
+			}
+
 			return ret;
 		}
 		istr &operator+=(const int inp)

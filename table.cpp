@@ -42,6 +42,7 @@
 
 #ident "$Id: table.C,v 1.15 1999/11/12 18:57:35 arno Exp $"
 
+#include <iostream>
 #include "html.h"
 #include "auto_aptr.h"
 #include "format.h"
@@ -123,20 +124,40 @@ create_lcs(
 
 		const TableRow &row(**ri);
 
+		istr style = get_attribute(row.attributes.get(), "STYLE", "");
+
 		int row_halign = get_attribute(
-				row.attributes.get(), "ALIGN", Area::LEFT,
+				row.attributes.get(), "ALIGN", -1,
 				"LEFT", Area::LEFT,
 				"CENTER", Area::CENTER,
 				"RIGHT", Area::RIGHT,
 				NULL
 				);
+		if (row_halign == -1) {
+			istr align = get_style_attr(&style, "text-align", "");
+			if (align.compare(0, 7, "center") == 0)
+				row_halign = Area::CENTER;
+			else if (align.compare(0, 6, "right") == 0)
+				row_halign = Area::RIGHT;
+			else
+				row_halign = Area::LEFT;
+		}
 		int row_valign = get_attribute(
-				row.attributes.get(), "VALIGN", Area::MIDDLE,
-				"TOP", Area::LEFT,
+				row.attributes.get(), "VALIGN", -1,
+				"TOP", Area::TOP,
 				"MIDDLE", Area::MIDDLE,
 				"BOTTOM", Area::BOTTOM,
 				NULL
 				);
+		if (row_valign == -1) {
+			istr align = get_style_attr(&style, "vertical-align", "");
+			if (align.compare(0, 4, "top") == 0)
+				row_valign = Area::TOP;
+			else if (align.compare(0, 7, "bottom") == 0)
+				row_valign = Area::BOTTOM;
+			else
+				row_valign = Area::MIDDLE;
+		}
 
 		const list<auto_ptr<TableCell> >           &cl(*row.cells);
 		list<auto_ptr<TableCell> >::const_iterator ci;
@@ -156,26 +177,48 @@ create_lcs(
 				p->w = 1;
 			if (p->h < 1)
 				p->h = 1;
-			if (x + p->w > *number_of_columns_return) {
+			if (x + p->w > *number_of_columns_return)
 				*number_of_columns_return = x + p->w;
-			}
-			if (y + p->h > *number_of_rows_return) {
+			if (y + p->h > *number_of_rows_return)
 				*number_of_rows_return = y + p->h;
-			}
+			istr style = get_attribute(cell.attributes.get(), "STYLE", "");
+
 			p->halign = get_attribute(
-					cell.attributes.get(), "ALIGN", row_halign,
+					cell.attributes.get(), "ALIGN", -1,
 					"LEFT", Area::LEFT,
 					"CENTER", Area::CENTER,
 					"RIGHT", Area::RIGHT,
 					NULL
 					);
+			if (p->halign == -1) {
+				istr align = get_style_attr(&style, "text-align", "");
+				if (align.compare(0, 7, "center") == 0)
+					p->halign = Area::CENTER;
+				else if (align.compare(0, 6, "right") == 0)
+					p->halign = Area::RIGHT;
+				else if (align.compare(0, 5, "left") == 0)
+					p->halign = Area::LEFT;
+				else
+					p->halign = row_halign;
+			}
 			p->valign = get_attribute(
-					cell.attributes.get(), "VALIGN", row_valign,
+					cell.attributes.get(), "VALIGN", -1,
 					"TOP", Area::TOP,
 					"MIDDLE", Area::MIDDLE,
 					"BOTTOM", Area::BOTTOM,
 					NULL
 					);
+			if (p->valign == -1) {
+				istr align = get_style_attr(&style, "vertical-align", "");
+				if (align.compare(0, 4, "top") == 0)
+					p->valign = Area::TOP;
+				else if (align.compare(0, 7, "bottom") == 0)
+					p->valign = Area::BOTTOM;
+				else if (align.compare(0, 7, "middle") == 0)
+					p->valign = Area::MIDDLE;
+				else
+					p->valign = row_valign;
+			}
 			{
 				auto_ptr<Area> tmp(cell.format(
 						w
@@ -410,13 +453,26 @@ compute_row_heights(
 Area *
 Table::format(Area::size_type w, int halign) const
 {
-	halign = get_attribute(
-			attributes.get(), "ALIGN", halign,
+	int ahalign = get_attribute(
+			attributes.get(), "ALIGN", -1,
 			"LEFT", Area::LEFT,
 			"CENTER", Area::CENTER,
 			"RIGHT", Area::RIGHT,
 			NULL
 			);
+	if (ahalign == -1) {
+		istr style = get_attribute(attributes.get(), "STYLE", "");
+		istr align = get_style_attr(&style, "text-align", "");
+
+		if (align.compare(0, 5, "left") == 0)
+			ahalign = Area::LEFT;
+		else if (align.compare(0, 7, "center") == 0)
+			ahalign = Area::CENTER;
+		else if (align.compare(0, 6, "right") == 0)
+			ahalign = Area::RIGHT;
+	}
+	if (ahalign != -1)
+		halign = ahalign;
 
 	// <TABLE>          => default => no border
 	// <TABLE BORDER>   => ""      => draw border
