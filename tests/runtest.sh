@@ -32,6 +32,13 @@ for t in "${TESTS[@]}" ; do
 		continue
 	fi
 
+	run_h2t() {
+		${H2T} "$@"
+		local ret=$?
+		[[ ${ret} -ne 0 ]] && echo "html2text return code ${ret}"
+		return ${ret}
+	}
+
 	inpenc=${t%=*}
 	firstvariant=
 	for variant in "${VARIANTS[@]}" ; do
@@ -39,9 +46,10 @@ for t in "${TESTS[@]}" ; do
 		vargs=${variant#*:}
 		[[ -n ${TEST_VERBOSE} ]] && \
 			echo ${H2T} -from_encoding ${inpenc} ${vargs} ${t}.html
-		${H2T} -from_encoding ${inpenc} ${vargs} ${t}.html \
-			| diff -Nu ${t}.${vname}.out - | ${MODE}
-		if [[ $? -ne 0 ]] ; then
+		run_h2t -from_encoding ${inpenc} ${vargs} ${t}.html \
+			| diff -Nu --label ${t}.${vname}.out --label ${t}.${vname}.out \
+				${t}.${vname}.out - | ${MODE}
+		if [[ ${PIPESTATUS[1]} -ne 0 ]] ; then
 			echo "test ${t} variant ${vname}: FAIL"
 			: $((fails++))
 		else
@@ -60,9 +68,8 @@ for t in "${TESTS[@]}" ; do
 			fi
 		fi
 		[[ -z ${firstvariant} ]] && firstvariant=${vname}
-
-		: $((tsts++))
 	done
+	: $((tsts++))
 done
 
 echo "${tsts} tests, ${sucs} success, ${fails} failures"
