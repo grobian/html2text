@@ -817,12 +817,8 @@ special:
 	attr.reset($1);
 	istr src = get_attribute(attr.get(), "SRC", "");
 	istr alt = get_attribute(attr.get(), "ALT", "");
-	/* when ALT is empty, and SRC is what seems like an URL, replace it
-	 * with a link */
-	if (drv.enable_links &&
-		!src.empty() && src.compare(0, 4, "http") == 0 &&
-		alt.empty())
-	{
+	/* when ALT is empty, and we have SRC, replace it with a link */
+	if (drv.enable_links && !src.empty() && alt.empty()) {
 		PCData *d = new PCData;
 		string nothing = "";
         d->text = nothing;
