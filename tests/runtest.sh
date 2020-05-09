@@ -12,12 +12,15 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License in the file COPYING for more details.
 
-H2T=../html2text
+H2T="../html2text -rcfile .html2textrc"
+MODE=cat
 TESTS=( "$@" )
 VARIANTS=(
 	default:""
 	links:"-links"
 )
+
+[[ ${TEST_APPROVE} -ge 1 ]] && MODE=patch
 
 fails=0
 sucs=0
@@ -30,17 +33,33 @@ for t in "${TESTS[@]}" ; do
 	fi
 
 	inpenc=${t%=*}
+	firstvariant=
 	for variant in "${VARIANTS[@]}" ; do
 		vname=${variant%:*}
 		vargs=${variant#*:}
+		[[ -n ${TEST_VERBOSE} ]] && \
+			echo ${H2T} -from_encoding ${inpenc} ${vargs} ${t}.html
 		${H2T} -from_encoding ${inpenc} ${vargs} ${t}.html \
-			| diff -Nu ${t}.${vname}.out -
+			| diff -Nu ${t}.${vname}.out - | ${MODE}
 		if [[ $? -ne 0 ]] ; then
 			echo "test ${t} variant ${vname}: FAIL"
 			: $((fails++))
 		else
 			: $((sucs++))
 		fi
+
+		if [[ ${TEST_APPROVE} -ge 1 && -n ${firstvariant} ]] ; then
+			# combine outputs if they are the same linking to the first
+			# variant only
+			[[ -n ${TEST_VERBOSE} ]] && \
+				echo cmp -s ${t}.${firstvariant}.out ${t}.${vname}.out
+			if cmp -s ${t}.${firstvariant}.out ${t}.${vname}.out ; then
+				rm ${TEST_VERBOSE+-v} -f ${t}.${vname}.out
+				ln ${TEST_VERBOSE+-v} -s \
+					${t}.${firstvariant}.out ${t}.${vname}.out
+			fi
+		fi
+		[[ -z ${firstvariant} ]] && firstvariant=${vname}
 
 		: $((tsts++))
 	done
