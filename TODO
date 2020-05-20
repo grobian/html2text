@@ -12,7 +12,6 @@ package. I will do so with any considerable bug report as well.
 Some major development guidelines for future releases:
 
 + Become independent from bison++
-+ Improve portability to other platforms (think poll())
 
 
 # ----------------------------------------------------------------------------

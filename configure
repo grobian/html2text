@@ -52,46 +52,6 @@ fi;
 $echo "use \"$CXX\"";
 
 #
-# $SYS_POLL_MISSING
-#
-
-$echo 'Checking <sys/poll.h>... \c';
-SYS_POLL_MISSING=unknown;
-cat <<EOF >$tmp_file.C;
-#ifdef SYS_POLL_MISSING /* { */
-struct pollfd { int fd; short events; short revents; };
-extern "C" int poll(struct pollfd *ufds, unsigned int nfds, int timeout);
-#define POLLIN      0x0001
-#define POLLPRI     0x0002
-#define POLLOUT     0x0004
-#define POLLERR     0x0008
-#define POLLHUP     0x0010
-#define POLLNVAL    0x0020
-#else /* } { */
-#include <sys/poll.h>
-#endif /* } */
-int main() {
-  struct pollfd fds[3];
-  return poll(fds, 3, 700);
-}
-EOF
-for i in "" -DSYS_POLL_MISSING; do
-  if $CXX $tmp_file.C $i -o $tmp_file 2>/dev/null; then
-    SYS_POLL_MISSING="$i";
-    break;
-  fi;
-done;
-case "$SYS_POLL_MISSING" in
-unknown)
-  $echo 'Error: Could not get "poll()" to working.';
-  exit 1;;
-"")
-  $echo "OK";;
-*)
-  $echo "use \"$SYS_POLL_MISSING\"";;
-esac;
-
-#
 # $SOCKET_LIBRARIES
 #
 
@@ -303,7 +263,6 @@ fi;
 rm -f Makefile libstd/Makefile;
 cmd=sed;
 for i in \
-  SYS_POLL_MISSING \
   SOCKET_LIBRARIES \
   ICONV_LIBRARIES \
   CXX \
