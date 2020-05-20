@@ -122,6 +122,7 @@ TESTS= \
 	   utf-8=tag-with-colon-attribute \
 	   utf-8=unicode-hex-references \
 	   utf-8=cid-image-link \
+	   utf-8=ifendif \
 	   $(NULL)
 
 check:

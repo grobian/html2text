@@ -364,6 +364,21 @@ HTMLControl::yylex2(html2text::HTMLParser::semantic_type *value_return,
 					continue; // Start over
 				}
 
+				/* scan <![if .... ]> <![endif]> kind of crap */
+				if (c == '[') {
+					do {
+						c = get_char();
+						if (c == EOF)
+							return HTMLParser_token::SCAN_ERROR;
+					} while (c != ']');
+					do {
+						c = get_char();
+					} while (c != EOF && isspace(c));
+					if (c != '>')
+						return HTMLParser_token::SCAN_ERROR;
+					continue;  /* ignore this thing (start over) */
+				}
+
 				/*
 				 * Scan "<!DOCTYPE ...>" tag.
 				 */
