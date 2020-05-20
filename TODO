@@ -1,18 +1,4 @@
-## TODO - What has to be done ?                   Mon Jan 12 14:19:08 CET 2004
-## ===========================================================================
-
-Sorry, due to a lack of time that I may spend on things like this, I am not
-feeling able to work on the program by myself yet. However, if you have an
-applicable patch, please let me know, so I will be glad to insert it in this
-package. I will do so with any considerable bug report as well.
-
-
-# ----------------------------------------------------------------------------
-
-Some major development guidelines for future releases:
-
-+ Become independent from bison++
-
+deal with auto_ptr
 
 # ----------------------------------------------------------------------------
 
@@ -59,8 +45,3 @@ shared_ptr in the boost collection.
 See http://www.boost.org/libs/smart_ptr/shared_ptr.htm
 
 Philip
-
-
-# ============================================================================
-
-Martin Bayer <mbayer@zedat.fu-berlin.de>
