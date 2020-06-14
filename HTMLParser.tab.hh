@@ -1,4 +1,4 @@
-// A Bison parser, made by GNU Bison 3.5.2.
+// A Bison parser, made by GNU Bison 3.6.3.
 
 // Skeleton interface for Bison LALR(1) parsers in C++
 
@@ -38,8 +38,9 @@
 
 // C++ LALR(1) parser skeleton written by Akim Demaille.
 
-// Undocumented macros, especially those whose name start with YY_,
-// are private implementation details.  Do not rely on them.
+// DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
+// especially those whose name start with YY_ or yy_.  They are
+// private implementation details that can be changed or removed.
 
 #ifndef YY_YY_HTMLPARSER_TAB_HH_INCLUDED
 # define YY_YY_HTMLPARSER_TAB_HH_INCLUDED
@@ -52,7 +53,7 @@
 #include "istr.h"
 class HTMLDriver;
 
-#line 56 "HTMLParser.tab.hh"
+#line 57 "HTMLParser.tab.hh"
 
 
 # include <cstdlib> // std::abort
@@ -182,7 +183,7 @@ class HTMLDriver;
 
 #line 40 "HTMLParser.yy"
 namespace html2text {
-#line 186 "HTMLParser.tab.hh"
+#line 187 "HTMLParser.tab.hh"
 
 
 
@@ -220,7 +221,7 @@ namespace html2text {
   Address                            *address;
   list<auto_ptr<list<TagAttribute>>> *tag_attributes_list;
 
-#line 224 "HTMLParser.tab.hh"
+#line 225 "HTMLParser.tab.hh"
 
     };
 #else
@@ -241,159 +242,384 @@ namespace html2text {
       ~syntax_error () YY_NOEXCEPT YY_NOTHROW;
     };
 
-    /// Tokens.
+    /// Token kinds.
     struct token
     {
-      enum yytokentype
+      enum token_kind_type
       {
-        END = 0,
-        DOCTYPE = 258,
-        PCDATA = 259,
-        SCAN_ERROR = 260,
-        A = 261,
-        ADDRESS = 262,
-        APPLET = 263,
-        AREA = 264,
-        B = 265,
-        BASE = 266,
-        BASEFONT = 267,
-        BIG = 268,
-        BLOCKQUOTE = 269,
-        BODY = 270,
-        BR = 271,
-        CAPTION = 272,
-        CENTER = 273,
-        CITE = 274,
-        CODE = 275,
-        DD = 276,
-        DFN = 277,
-        DIR = 278,
-        DIV = 279,
-        DL = 280,
-        DT = 281,
-        EM = 282,
-        FONT = 283,
-        FORM = 284,
-        H1 = 285,
-        H2 = 286,
-        H3 = 287,
-        H4 = 288,
-        H5 = 289,
-        H6 = 290,
-        HEAD = 291,
-        HR = 292,
-        HTML = 293,
-        I = 294,
-        IMG = 295,
-        INPUT = 296,
-        ISINDEX = 297,
-        KBD = 298,
-        LI = 299,
-        LINK = 300,
-        MAP = 301,
-        MENU = 302,
-        META = 303,
-        NOBR = 304,
-        OL = 305,
-        OPTION = 306,
-        P = 307,
-        PARAM = 308,
-        PRE = 309,
-        SAMP = 310,
-        SCRIPT = 311,
-        SELECT = 312,
-        SMALL = 313,
-        STRIKE = 314,
-        STRONG = 315,
-        STYLE = 316,
-        SUB = 317,
-        SUP = 318,
-        TABLE = 319,
-        TD = 320,
-        TEXTAREA = 321,
-        TH = 322,
-        TITLE = 323,
-        TR = 324,
-        TT = 325,
-        U = 326,
-        UL = 327,
-        VAR = 328,
-        END_A = 329,
-        END_ADDRESS = 330,
-        END_APPLET = 331,
-        END_B = 332,
-        END_BIG = 333,
-        END_BLOCKQUOTE = 334,
-        END_BODY = 335,
-        END_CAPTION = 336,
-        END_CENTER = 337,
-        END_CITE = 338,
-        END_CODE = 339,
-        END_DD = 340,
-        END_DFN = 341,
-        END_DIR = 342,
-        END_DIV = 343,
-        END_DL = 344,
-        END_DT = 345,
-        END_EM = 346,
-        END_FONT = 347,
-        END_FORM = 348,
-        END_H1 = 349,
-        END_H2 = 350,
-        END_H3 = 351,
-        END_H4 = 352,
-        END_H5 = 353,
-        END_H6 = 354,
-        END_HEAD = 355,
-        END_HTML = 356,
-        END_I = 357,
-        END_KBD = 358,
-        END_LI = 359,
-        END_MAP = 360,
-        END_MENU = 361,
-        END_NOBR = 362,
-        END_OL = 363,
-        END_OPTION = 364,
-        END_P = 365,
-        END_PRE = 366,
-        END_SAMP = 367,
-        END_SCRIPT = 368,
-        END_SELECT = 369,
-        END_SMALL = 370,
-        END_STRIKE = 371,
-        END_STRONG = 372,
-        END_STYLE = 373,
-        END_SUB = 374,
-        END_SUP = 375,
-        END_TABLE = 376,
-        END_TD = 377,
-        END_TEXTAREA = 378,
-        END_TH = 379,
-        END_TITLE = 380,
-        END_TR = 381,
-        END_TT = 382,
-        END_U = 383,
-        END_UL = 384,
-        END_VAR = 385
+        YYEMPTY = -2,
+    END = 0,                       // "end of file"
+    YYerror = 256,                 // error
+    YYUNDEF = 257,                 // "invalid token"
+    DOCTYPE = 258,                 // DOCTYPE
+    PCDATA = 259,                  // PCDATA
+    SCAN_ERROR = 260,              // SCAN_ERROR
+    A = 261,                       // A
+    ADDRESS = 262,                 // ADDRESS
+    APPLET = 263,                  // APPLET
+    AREA = 264,                    // AREA
+    B = 265,                       // B
+    BASE = 266,                    // BASE
+    BASEFONT = 267,                // BASEFONT
+    BIG = 268,                     // BIG
+    BLOCKQUOTE = 269,              // BLOCKQUOTE
+    BODY = 270,                    // BODY
+    BR = 271,                      // BR
+    CAPTION = 272,                 // CAPTION
+    CENTER = 273,                  // CENTER
+    CITE = 274,                    // CITE
+    CODE = 275,                    // CODE
+    DD = 276,                      // DD
+    DFN = 277,                     // DFN
+    DIR = 278,                     // DIR
+    DIV = 279,                     // DIV
+    DL = 280,                      // DL
+    DT = 281,                      // DT
+    EM = 282,                      // EM
+    FONT = 283,                    // FONT
+    FORM = 284,                    // FORM
+    H1 = 285,                      // H1
+    H2 = 286,                      // H2
+    H3 = 287,                      // H3
+    H4 = 288,                      // H4
+    H5 = 289,                      // H5
+    H6 = 290,                      // H6
+    HEAD = 291,                    // HEAD
+    HR = 292,                      // HR
+    HTML = 293,                    // HTML
+    I = 294,                       // I
+    IMG = 295,                     // IMG
+    INPUT = 296,                   // INPUT
+    ISINDEX = 297,                 // ISINDEX
+    KBD = 298,                     // KBD
+    LI = 299,                      // LI
+    LINK = 300,                    // LINK
+    MAP = 301,                     // MAP
+    MENU = 302,                    // MENU
+    META = 303,                    // META
+    NOBR = 304,                    // NOBR
+    OL = 305,                      // OL
+    OPTION = 306,                  // OPTION
+    P = 307,                       // P
+    PARAM = 308,                   // PARAM
+    PRE = 309,                     // PRE
+    SAMP = 310,                    // SAMP
+    SCRIPT = 311,                  // SCRIPT
+    SELECT = 312,                  // SELECT
+    SMALL = 313,                   // SMALL
+    STRIKE = 314,                  // STRIKE
+    STRONG = 315,                  // STRONG
+    STYLE = 316,                   // STYLE
+    SUB = 317,                     // SUB
+    SUP = 318,                     // SUP
+    TABLE = 319,                   // TABLE
+    TD = 320,                      // TD
+    TEXTAREA = 321,                // TEXTAREA
+    TH = 322,                      // TH
+    TITLE = 323,                   // TITLE
+    TR = 324,                      // TR
+    TT = 325,                      // TT
+    U = 326,                       // U
+    UL = 327,                      // UL
+    VAR = 328,                     // VAR
+    END_A = 329,                   // END_A
+    END_ADDRESS = 330,             // END_ADDRESS
+    END_APPLET = 331,              // END_APPLET
+    END_B = 332,                   // END_B
+    END_BIG = 333,                 // END_BIG
+    END_BLOCKQUOTE = 334,          // END_BLOCKQUOTE
+    END_BODY = 335,                // END_BODY
+    END_CAPTION = 336,             // END_CAPTION
+    END_CENTER = 337,              // END_CENTER
+    END_CITE = 338,                // END_CITE
+    END_CODE = 339,                // END_CODE
+    END_DD = 340,                  // END_DD
+    END_DFN = 341,                 // END_DFN
+    END_DIR = 342,                 // END_DIR
+    END_DIV = 343,                 // END_DIV
+    END_DL = 344,                  // END_DL
+    END_DT = 345,                  // END_DT
+    END_EM = 346,                  // END_EM
+    END_FONT = 347,                // END_FONT
+    END_FORM = 348,                // END_FORM
+    END_H1 = 349,                  // END_H1
+    END_H2 = 350,                  // END_H2
+    END_H3 = 351,                  // END_H3
+    END_H4 = 352,                  // END_H4
+    END_H5 = 353,                  // END_H5
+    END_H6 = 354,                  // END_H6
+    END_HEAD = 355,                // END_HEAD
+    END_HTML = 356,                // END_HTML
+    END_I = 357,                   // END_I
+    END_KBD = 358,                 // END_KBD
+    END_LI = 359,                  // END_LI
+    END_MAP = 360,                 // END_MAP
+    END_MENU = 361,                // END_MENU
+    END_NOBR = 362,                // END_NOBR
+    END_OL = 363,                  // END_OL
+    END_OPTION = 364,              // END_OPTION
+    END_P = 365,                   // END_P
+    END_PRE = 366,                 // END_PRE
+    END_SAMP = 367,                // END_SAMP
+    END_SCRIPT = 368,              // END_SCRIPT
+    END_SELECT = 369,              // END_SELECT
+    END_SMALL = 370,               // END_SMALL
+    END_STRIKE = 371,              // END_STRIKE
+    END_STRONG = 372,              // END_STRONG
+    END_STYLE = 373,               // END_STYLE
+    END_SUB = 374,                 // END_SUB
+    END_SUP = 375,                 // END_SUP
+    END_TABLE = 376,               // END_TABLE
+    END_TD = 377,                  // END_TD
+    END_TEXTAREA = 378,            // END_TEXTAREA
+    END_TH = 379,                  // END_TH
+    END_TITLE = 380,               // END_TITLE
+    END_TR = 381,                  // END_TR
+    END_TT = 382,                  // END_TT
+    END_U = 383,                   // END_U
+    END_UL = 384,                  // END_UL
+    END_VAR = 385                  // END_VAR
+      };
+      /// Backward compatibility alias (Bison 3.6).
+      typedef token_kind_type yytokentype;
+    };
+
+    /// Token kind, as returned by yylex.
+    typedef token::yytokentype token_kind_type;
+
+    /// Backward compatibility alias (Bison 3.6).
+    typedef token_kind_type token_type;
+
+    /// Symbol kinds.
+    struct symbol_kind
+    {
+      enum symbol_kind_type
+      {
+        YYNTOKENS = 131, ///< Number of tokens.
+        S_YYEMPTY = -2,
+        S_YYEOF = 0,                             // "end of file"
+        S_YYerror = 1,                           // error
+        S_YYUNDEF = 2,                           // "invalid token"
+        S_DOCTYPE = 3,                           // DOCTYPE
+        S_PCDATA = 4,                            // PCDATA
+        S_SCAN_ERROR = 5,                        // SCAN_ERROR
+        S_A = 6,                                 // A
+        S_ADDRESS = 7,                           // ADDRESS
+        S_APPLET = 8,                            // APPLET
+        S_AREA = 9,                              // AREA
+        S_B = 10,                                // B
+        S_BASE = 11,                             // BASE
+        S_BASEFONT = 12,                         // BASEFONT
+        S_BIG = 13,                              // BIG
+        S_BLOCKQUOTE = 14,                       // BLOCKQUOTE
+        S_BODY = 15,                             // BODY
+        S_BR = 16,                               // BR
+        S_CAPTION = 17,                          // CAPTION
+        S_CENTER = 18,                           // CENTER
+        S_CITE = 19,                             // CITE
+        S_CODE = 20,                             // CODE
+        S_DD = 21,                               // DD
+        S_DFN = 22,                              // DFN
+        S_DIR = 23,                              // DIR
+        S_DIV = 24,                              // DIV
+        S_DL = 25,                               // DL
+        S_DT = 26,                               // DT
+        S_EM = 27,                               // EM
+        S_FONT = 28,                             // FONT
+        S_FORM = 29,                             // FORM
+        S_H1 = 30,                               // H1
+        S_H2 = 31,                               // H2
+        S_H3 = 32,                               // H3
+        S_H4 = 33,                               // H4
+        S_H5 = 34,                               // H5
+        S_H6 = 35,                               // H6
+        S_HEAD = 36,                             // HEAD
+        S_HR = 37,                               // HR
+        S_HTML = 38,                             // HTML
+        S_I = 39,                                // I
+        S_IMG = 40,                              // IMG
+        S_INPUT = 41,                            // INPUT
+        S_ISINDEX = 42,                          // ISINDEX
+        S_KBD = 43,                              // KBD
+        S_LI = 44,                               // LI
+        S_LINK = 45,                             // LINK
+        S_MAP = 46,                              // MAP
+        S_MENU = 47,                             // MENU
+        S_META = 48,                             // META
+        S_NOBR = 49,                             // NOBR
+        S_OL = 50,                               // OL
+        S_OPTION = 51,                           // OPTION
+        S_P = 52,                                // P
+        S_PARAM = 53,                            // PARAM
+        S_PRE = 54,                              // PRE
+        S_SAMP = 55,                             // SAMP
+        S_SCRIPT = 56,                           // SCRIPT
+        S_SELECT = 57,                           // SELECT
+        S_SMALL = 58,                            // SMALL
+        S_STRIKE = 59,                           // STRIKE
+        S_STRONG = 60,                           // STRONG
+        S_STYLE = 61,                            // STYLE
+        S_SUB = 62,                              // SUB
+        S_SUP = 63,                              // SUP
+        S_TABLE = 64,                            // TABLE
+        S_TD = 65,                               // TD
+        S_TEXTAREA = 66,                         // TEXTAREA
+        S_TH = 67,                               // TH
+        S_TITLE = 68,                            // TITLE
+        S_TR = 69,                               // TR
+        S_TT = 70,                               // TT
+        S_U = 71,                                // U
+        S_UL = 72,                               // UL
+        S_VAR = 73,                              // VAR
+        S_END_A = 74,                            // END_A
+        S_END_ADDRESS = 75,                      // END_ADDRESS
+        S_END_APPLET = 76,                       // END_APPLET
+        S_END_B = 77,                            // END_B
+        S_END_BIG = 78,                          // END_BIG
+        S_END_BLOCKQUOTE = 79,                   // END_BLOCKQUOTE
+        S_END_BODY = 80,                         // END_BODY
+        S_END_CAPTION = 81,                      // END_CAPTION
+        S_END_CENTER = 82,                       // END_CENTER
+        S_END_CITE = 83,                         // END_CITE
+        S_END_CODE = 84,                         // END_CODE
+        S_END_DD = 85,                           // END_DD
+        S_END_DFN = 86,                          // END_DFN
+        S_END_DIR = 87,                          // END_DIR
+        S_END_DIV = 88,                          // END_DIV
+        S_END_DL = 89,                           // END_DL
+        S_END_DT = 90,                           // END_DT
+        S_END_EM = 91,                           // END_EM
+        S_END_FONT = 92,                         // END_FONT
+        S_END_FORM = 93,                         // END_FORM
+        S_END_H1 = 94,                           // END_H1
+        S_END_H2 = 95,                           // END_H2
+        S_END_H3 = 96,                           // END_H3
+        S_END_H4 = 97,                           // END_H4
+        S_END_H5 = 98,                           // END_H5
+        S_END_H6 = 99,                           // END_H6
+        S_END_HEAD = 100,                        // END_HEAD
+        S_END_HTML = 101,                        // END_HTML
+        S_END_I = 102,                           // END_I
+        S_END_KBD = 103,                         // END_KBD
+        S_END_LI = 104,                          // END_LI
+        S_END_MAP = 105,                         // END_MAP
+        S_END_MENU = 106,                        // END_MENU
+        S_END_NOBR = 107,                        // END_NOBR
+        S_END_OL = 108,                          // END_OL
+        S_END_OPTION = 109,                      // END_OPTION
+        S_END_P = 110,                           // END_P
+        S_END_PRE = 111,                         // END_PRE
+        S_END_SAMP = 112,                        // END_SAMP
+        S_END_SCRIPT = 113,                      // END_SCRIPT
+        S_END_SELECT = 114,                      // END_SELECT
+        S_END_SMALL = 115,                       // END_SMALL
+        S_END_STRIKE = 116,                      // END_STRIKE
+        S_END_STRONG = 117,                      // END_STRONG
+        S_END_STYLE = 118,                       // END_STYLE
+        S_END_SUB = 119,                         // END_SUB
+        S_END_SUP = 120,                         // END_SUP
+        S_END_TABLE = 121,                       // END_TABLE
+        S_END_TD = 122,                          // END_TD
+        S_END_TEXTAREA = 123,                    // END_TEXTAREA
+        S_END_TH = 124,                          // END_TH
+        S_END_TITLE = 125,                       // END_TITLE
+        S_END_TR = 126,                          // END_TR
+        S_END_TT = 127,                          // END_TT
+        S_END_U = 128,                           // END_U
+        S_END_UL = 129,                          // END_UL
+        S_END_VAR = 130,                         // END_VAR
+        S_YYACCEPT = 131,                        // $accept
+        S_document = 132,                        // document
+        S_document_ = 133,                       // document_
+        S_pcdata = 134,                          // pcdata
+        S_body_content = 135,                    // body_content
+        S_heading = 136,                         // heading
+        S_block = 137,                           // block
+        S_paragraph_content = 138,               // paragraph_content
+        S_block_except_p = 139,                  // block_except_p
+        S_list = 140,                            // list
+        S_141_1 = 141,                           // $@1
+        S_142_2 = 142,                           // $@2
+        S_143_3 = 143,                           // $@3
+        S_144_4 = 144,                           // $@4
+        S_list_content = 145,                    // list_content
+        S_list_item = 146,                       // list_item
+        S_definition_list = 147,                 // definition_list
+        S_definition_list_content = 148,         // definition_list_content
+        S_term_name = 149,                       // term_name
+        S_term_definition = 150,                 // term_definition
+        S_flow = 151,                            // flow
+        S_flow_ = 152,                           // flow_
+        S_preformatted = 153,                    // preformatted
+        S_caption = 154,                         // caption
+        S_table_rows = 155,                      // table_rows
+        S_table_cells = 156,                     // table_cells
+        S_address = 157,                         // address
+        S_texts = 158,                           // texts
+        S_text = 159,                            // text
+        S_font = 160,                            // font
+        S_phrase = 161,                          // phrase
+        S_special = 162,                         // special
+        S_applet_content = 163,                  // applet_content
+        S_map_content = 164,                     // map_content
+        S_form = 165,                            // form
+        S_select_content = 166,                  // select_content
+        S_option = 167,                          // option
+        S_HX = 168,                              // HX
+        S_END_HX = 169,                          // END_HX
+        S_opt_pcdata = 170,                      // opt_pcdata
+        S_opt_caption = 171,                     // opt_caption
+        S_opt_texts = 172,                       // opt_texts
+        S_opt_flow = 173,                        // opt_flow
+        S_opt_LI = 174,                          // opt_LI
+        S_opt_P = 175,                           // opt_P
+        S_opt_END_A = 176,                       // opt_END_A
+        S_opt_END_B = 177,                       // opt_END_B
+        S_opt_END_BLOCKQUOTE = 178,              // opt_END_BLOCKQUOTE
+        S_opt_END_BIG = 179,                     // opt_END_BIG
+        S_opt_END_CENTER = 180,                  // opt_END_CENTER
+        S_opt_END_CITE = 181,                    // opt_END_CITE
+        S_opt_END_CODE = 182,                    // opt_END_CODE
+        S_opt_END_DFN = 183,                     // opt_END_DFN
+        S_opt_END_DIV = 184,                     // opt_END_DIV
+        S_opt_END_DL = 185,                      // opt_END_DL
+        S_opt_END_EM = 186,                      // opt_END_EM
+        S_opt_END_FONT = 187,                    // opt_END_FONT
+        S_opt_END_FORM = 188,                    // opt_END_FORM
+        S_opt_END_I = 189,                       // opt_END_I
+        S_opt_END_KBD = 190,                     // opt_END_KBD
+        S_opt_END_LI = 191,                      // opt_END_LI
+        S_opt_END_OPTION = 192,                  // opt_END_OPTION
+        S_opt_END_P = 193,                       // opt_END_P
+        S_opt_END_PRE = 194,                     // opt_END_PRE
+        S_opt_END_SAMP = 195,                    // opt_END_SAMP
+        S_opt_END_SMALL = 196,                   // opt_END_SMALL
+        S_opt_END_STRIKE = 197,                  // opt_END_STRIKE
+        S_opt_END_STRONG = 198,                  // opt_END_STRONG
+        S_opt_END_SUB = 199,                     // opt_END_SUB
+        S_opt_END_SUP = 200,                     // opt_END_SUP
+        S_opt_END_TD = 201,                      // opt_END_TD
+        S_opt_END_TH = 202,                      // opt_END_TH
+        S_opt_END_TITLE = 203,                   // opt_END_TITLE
+        S_opt_END_TR = 204,                      // opt_END_TR
+        S_opt_END_TT = 205,                      // opt_END_TT
+        S_opt_END_U = 206,                       // opt_END_U
+        S_opt_END_UL = 207,                      // opt_END_UL
+        S_opt_END_VAR = 208,                     // opt_END_VAR
+        S_opt_error = 209                        // opt_error
       };
     };
 
-    /// (External) token type, as returned by yylex.
-    typedef token::yytokentype token_type;
+    /// (Internal) symbol kind.
+    typedef symbol_kind::symbol_kind_type symbol_kind_type;
 
-    /// Symbol type: an internal symbol number.
-    typedef int symbol_number_type;
-
-    /// The symbol type number to denote an empty symbol.
-    enum { empty_symbol = -2 };
-
-    /// Internal symbol number for tokens (subsumed by symbol_number_type).
-    typedef unsigned char token_number_type;
+    /// The number of tokens.
+    static const symbol_kind_type YYNTOKENS = symbol_kind::YYNTOKENS;
 
     /// A complete symbol.
     ///
-    /// Expects its Base type to provide access to the symbol type
-    /// via type_get ().
+    /// Expects its Base type to provide access to the symbol kind
+    /// via kind ().
     ///
     /// Provide access to semantic value.
     template <typename Base>
@@ -409,7 +635,10 @@ namespace html2text {
 
 #if 201103L <= YY_CPLUSPLUS
       /// Move constructor.
-      basic_symbol (basic_symbol&& that);
+      basic_symbol (basic_symbol&& that)
+        : Base (std::move (that))
+        , value (std::move (that.value))
+      {}
 #endif
 
       /// Copy constructor.
@@ -433,6 +662,15 @@ namespace html2text {
         Base::clear ();
       }
 
+      /// The user-facing name of this symbol.
+      std::string name () const YY_NOEXCEPT
+      {
+        return HTMLParser::symbol_name (this->kind ());
+      }
+
+      /// Backward compatibility (Bison 3.6).
+      symbol_kind_type type_get () const YY_NOEXCEPT;
+
       /// Whether empty.
       bool empty () const YY_NOEXCEPT;
 
@@ -450,48 +688,60 @@ namespace html2text {
     };
 
     /// Type access provider for token (enum) based symbols.
-    struct by_type
+    struct by_kind
     {
       /// Default constructor.
-      by_type ();
+      by_kind ();
 
 #if 201103L <= YY_CPLUSPLUS
       /// Move constructor.
-      by_type (by_type&& that);
+      by_kind (by_kind&& that);
 #endif
 
       /// Copy constructor.
-      by_type (const by_type& that);
+      by_kind (const by_kind& that);
 
-      /// The symbol type as needed by the constructor.
-      typedef token_type kind_type;
+      /// The symbol kind as needed by the constructor.
+      typedef token_kind_type kind_type;
 
       /// Constructor from (external) token numbers.
-      by_type (kind_type t);
+      by_kind (kind_type t);
 
       /// Record that this symbol is empty.
       void clear ();
 
-      /// Steal the symbol type from \a that.
-      void move (by_type& that);
+      /// Steal the symbol kind from \a that.
+      void move (by_kind& that);
 
       /// The (internal) type number (corresponding to \a type).
       /// \a empty when empty.
-      symbol_number_type type_get () const YY_NOEXCEPT;
+      symbol_kind_type kind () const YY_NOEXCEPT;
 
-      /// The symbol type.
-      /// \a empty_symbol when empty.
-      /// An int, not token_number_type, to be able to store empty_symbol.
-      int type;
+      /// Backward compatibility (Bison 3.6).
+      symbol_kind_type type_get () const YY_NOEXCEPT;
+
+      /// The symbol kind.
+      /// \a S_YYEMPTY when empty.
+      symbol_kind_type kind_;
     };
 
+    /// Backward compatibility for a private implementation detail (Bison 3.6).
+    typedef by_kind by_type;
+
     /// "External" symbols: returned by the scanner.
-    struct symbol_type : basic_symbol<by_type>
+    struct symbol_type : basic_symbol<by_kind>
     {};
 
     /// Build a parser object.
     HTMLParser (HTMLDriver &drv_yyarg);
     virtual ~HTMLParser ();
+
+#if 201103L <= YY_CPLUSPLUS
+    /// Non copyable.
+    HTMLParser (const HTMLParser&) = delete;
+    /// Non copyable.
+    HTMLParser& operator= (const HTMLParser&) = delete;
+#endif
 
     /// Parse.  An alias for parse ().
     /// \returns  0 iff parsing succeeded.
@@ -522,22 +772,47 @@ namespace html2text {
     /// Report a syntax error.
     void error (const syntax_error& err);
 
+    /// The user-facing name of the symbol whose (internal) number is
+    /// YYSYMBOL.  No bounds checking.
+    static std::string symbol_name (symbol_kind_type yysymbol);
 
+
+
+    class context
+    {
+    public:
+      context (const HTMLParser& yyparser, const symbol_type& yyla);
+      const symbol_type& lookahead () const { return yyla_; }
+      symbol_kind_type token () const { return yyla_.kind (); }
+      /// Put in YYARG at most YYARGN of the expected tokens, and return the
+      /// number of tokens stored in YYARG.  If YYARG is null, return the
+      /// number of expected tokens (guaranteed to be less than YYNTOKENS).
+      int expected_tokens (symbol_kind_type yyarg[], int yyargn) const;
+
+    private:
+      const HTMLParser& yyparser_;
+      const symbol_type& yyla_;
+    };
 
   private:
-    /// This class is not copyable.
+#if YY_CPLUSPLUS < 201103L
+    /// Non copyable.
     HTMLParser (const HTMLParser&);
+    /// Non copyable.
     HTMLParser& operator= (const HTMLParser&);
+#endif
+
 
     /// Stored state numbers (used for stacks).
     typedef short state_type;
 
-    /// Generate an error message.
-    /// \param yystate   the state where the error occurred.
-    /// \param yyla      the lookahead token.
-    virtual std::string yysyntax_error_ (state_type yystate,
-                                         const symbol_type& yyla) const;
+    /// The arguments of the error message.
+    int yy_syntax_error_arguments_ (const context& yyctx,
+                                    symbol_kind_type yyarg[], int yyargn) const;
 
+    /// Generate an error message.
+    /// \param yyctx     the context in which the error occurred.
+    virtual std::string yysyntax_error_ (const context& yyctx) const;
     /// Compute post-reduction state.
     /// \param yystate   the current state
     /// \param yysym     the nonterminal to push on the stack
@@ -554,10 +829,17 @@ namespace html2text {
     static const short yypact_ninf_;
     static const short yytable_ninf_;
 
-    /// Convert a scanner token number \a t to a symbol number.
-    /// In theory \a t should be a token_type, but character literals
+    /// Convert a scanner token kind \a t to a symbol kind.
+    /// In theory \a t should be a token_kind_type, but character literals
     /// are valid, yet not members of the token_type enum.
-    static token_number_type yytranslate_ (int t);
+    static symbol_kind_type yytranslate_ (int t);
+
+    /// Convert the symbol name \a n to a form suitable for a diagnostic.
+    static std::string yytnamerr_ (const char *yystr);
+
+    /// For a symbol, its name in clear.
+    static const char* const yytname_[];
+
 
     // Tables.
     // YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
@@ -593,26 +875,20 @@ namespace html2text {
     static const signed char yyr2_[];
 
 
-    /// Convert the symbol name \a n to a form suitable for a diagnostic.
-    static std::string yytnamerr_ (const char *n);
-
-
-    /// For a symbol, its name in clear.
-    static const char* const yytname_[];
 #if YYDEBUG
     // YYRLINE[YYN] -- Source line where rule number YYN was defined.
     static const short yyrline_[];
     /// Report on the debug stream that the rule \a r is going to be reduced.
-    virtual void yy_reduce_print_ (int r);
+    virtual void yy_reduce_print_ (int r) const;
     /// Print the state stack on the debug stream.
-    virtual void yystack_print_ ();
+    virtual void yy_stack_print_ () const;
 
     /// Debugging level.
     int yydebug_;
     /// Debug stream.
     std::ostream* yycdebug_;
 
-    /// \brief Display a symbol type, value and location.
+    /// \brief Display a symbol kind, value and location.
     /// \param yyo    The output stream.
     /// \param yysym  The symbol.
     template <typename Base>
@@ -633,7 +909,7 @@ namespace html2text {
       /// Default constructor.
       by_state () YY_NOEXCEPT;
 
-      /// The symbol type as needed by the constructor.
+      /// The symbol kind as needed by the constructor.
       typedef state_type kind_type;
 
       /// Constructor.
@@ -645,12 +921,12 @@ namespace html2text {
       /// Record that this symbol is empty.
       void clear () YY_NOEXCEPT;
 
-      /// Steal the symbol type from \a that.
+      /// Steal the symbol kind from \a that.
       void move (by_state& that);
 
-      /// The (internal) type number (corresponding to \a state).
-      /// \a empty_symbol when empty.
-      symbol_number_type type_get () const YY_NOEXCEPT;
+      /// The symbol kind (corresponding to \a state).
+      /// \a S_YYEMPTY when empty.
+      symbol_kind_type kind () const YY_NOEXCEPT;
 
       /// The state number used to denote an empty symbol.
       /// We use the initial state, as it does not have a value.
@@ -689,14 +965,21 @@ namespace html2text {
     {
     public:
       // Hide our reversed order.
-      typedef typename S::reverse_iterator iterator;
-      typedef typename S::const_reverse_iterator const_iterator;
+      typedef typename S::iterator iterator;
+      typedef typename S::const_iterator const_iterator;
       typedef typename S::size_type size_type;
       typedef typename std::ptrdiff_t index_type;
 
       stack (size_type n = 200)
         : seq_ (n)
       {}
+
+#if 201103L <= YY_CPLUSPLUS
+      /// Non copyable.
+      stack (const stack&) = delete;
+      /// Non copyable.
+      stack& operator= (const stack&) = delete;
+#endif
 
       /// Random access.
       ///
@@ -748,24 +1031,18 @@ namespace html2text {
         return index_type (seq_.size ());
       }
 
-      std::ptrdiff_t
-      ssize () const YY_NOEXCEPT
-      {
-        return std::ptrdiff_t (size ());
-      }
-
       /// Iterator on top of the stack (going downwards).
       const_iterator
       begin () const YY_NOEXCEPT
       {
-        return seq_.rbegin ();
+        return seq_.begin ();
       }
 
       /// Bottom of the stack.
       const_iterator
       end () const YY_NOEXCEPT
       {
-        return seq_.rend ();
+        return seq_.end ();
       }
 
       /// Present a slice of the top of a stack.
@@ -789,8 +1066,12 @@ namespace html2text {
       };
 
     private:
+#if YY_CPLUSPLUS < 201103L
+      /// Non copyable.
       stack (const stack&);
+      /// Non copyable.
       stack& operator= (const stack&);
+#endif
       /// The wrapped container.
       S seq_;
     };
@@ -820,29 +1101,24 @@ namespace html2text {
     /// Pop \a n symbols from the stack.
     void yypop_ (int n = 1);
 
-    /// Some specific tokens.
-    static const token_number_type yy_error_token_ = 1;
-    static const token_number_type yy_undef_token_ = 2;
-
     /// Constants.
     enum
     {
-      yyeof_ = 0,
       yylast_ = 2223,     ///< Last index in yytable_.
       yynnts_ = 79,  ///< Number of nonterminal symbols.
-      yyfinal_ = 3, ///< Termination state number.
-      yyntokens_ = 131  ///< Number of tokens.
+      yyfinal_ = 3 ///< Termination state number.
     };
 
 
     // User arguments.
     HTMLDriver &drv;
+
   };
 
 
 #line 40 "HTMLParser.yy"
 } // html2text
-#line 846 "HTMLParser.tab.hh"
+#line 1122 "HTMLParser.tab.hh"
 
 
 
