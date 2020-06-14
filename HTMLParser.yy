@@ -798,6 +798,7 @@ special:
     Anchor *a = new Anchor;
     a->attributes.reset($1);
     a->texts.reset($3);
+    a->refnum = 0;
     $$ = a;
 
 	istr href = get_attribute(a->attributes.get(), "HREF", "");
@@ -834,6 +835,7 @@ special:
 		Anchor *a = new Anchor;
 		a->attributes = attr;
 		a->texts.reset(data);
+		a->refnum = 0;
 
         ListNormalItem *lni = new ListNormalItem;
 		d = new PCData;
