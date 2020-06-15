@@ -101,18 +101,14 @@ int HTMLControl::htmlparser_yylex(
 			next_token = EOF;
 		}
 
-		/*
-		 * Switch on/off "literal mode" on "<PRE>" and "</PRE>".
-		 */
+		/* Switch on/off "literal mode" on "<PRE>" and "</PRE>" */
 		if (token == HTMLParser_token::PRE) {
 			literal_mode = true;
 
 			if (next_token == EOF)
 				next_token = yylex2(&next_token_value, &next_token_tag_type);
 			if (next_token == HTMLParser_token::PCDATA) {
-				/*
-				 * Swallow '\n' immediately following "<PRE>".
-				 */
+				/* Swallow '\n' immediately following "<PRE>" */
 				istr &s(*next_token_value.strinG);
 				if (!s.empty() && s[0] == '\n')
 					s.erase(0, 1);
@@ -123,17 +119,12 @@ int HTMLControl::htmlparser_yylex(
 			literal_mode = false;
 
 		if (token == HTMLParser_token::PCDATA) {
-			/*
-			 * In order to post-process the PCDATA token, we need to
-			 * look ahead one token...
-			 */
-			if (next_token == EOF) {
+			/* In order to post-process the PCDATA token, we need to
+			 * look ahead one token...  */
+			if (next_token == EOF)
 				next_token = yylex2(&next_token_value, &next_token_tag_type);
-			}
 
-			/*
-			 * Erase " '\n' { ' ' } " immediately before "</PRE>".
-			 */
+			/* Erase " '\n' { ' ' } " immediately before "</PRE>".  */
 			if (next_token == HTMLParser_token::END_PRE) {
 				istr &s(*value_return->strinG);
 				string::size_type x = s.length();
@@ -141,15 +132,14 @@ int HTMLControl::htmlparser_yylex(
 					--x;
 				if (x > 0 && s[x - 1] == '\n')
 					s.erase(x - 1, string::npos);
-			} else
-			/*
-			 * Erase whitespace before end tag or block start tag.
-			 */
-			if (!literal_mode && (
+			}
+			/* Erase whitespace before end tag or block start tag. */
+			else if (!literal_mode && (
 					next_token_tag_type == END_TAG ||
 					next_token_tag_type == BLOCK_END_TAG ||
 					next_token_tag_type == BLOCK_START_TAG
-					)) {
+					))
+			{
 				istr &s(*value_return->strinG);
 				string::size_type x = s.length();
 				while (x > 0 && isspace(s[x - 1]))
@@ -157,20 +147,15 @@ int HTMLControl::htmlparser_yylex(
 				s.erase(x, string::npos);
 			}
 
-			/*
-			 * Collate sequences of whitespace, if not in "literal mode".
-			 */
+			/* Collate sequences of whitespace, if not in "literal mode". */
 			if (!literal_mode) {
 				istr &s(*value_return->strinG);
-//				bool whitespace_only = true;
 				for (string::size_type x = 0; x < s.length(); ++x) {
 					if (isspace(s[x])) {
 						string::size_type y;
 						for (y = x + 1; y < s.length() && isspace(s[y]); ++y)
 							;
 						s.replace(x, y - x, " ");
-					} else {
-//						whitespace_only = false;
 					}
 				}
 				if (s.empty()) {
@@ -180,24 +165,22 @@ int HTMLControl::htmlparser_yylex(
 			}
 		}
 
-		/*
-		 * Erase whitespace after start tag or block end tag, if not in "literal
-		 * mode".
-		 */
-		if (!literal_mode && (
-				(
-					tag_type == START_TAG ||
-					tag_type == BLOCK_START_TAG ||
-					tag_type == BLOCK_END_TAG ||
-					token == HTMLParser_token::BR ||
-					token == HTMLParser_token::HR
-				) &&
-				token != HTMLParser_token::SCRIPT &&
-				token != HTMLParser_token::STYLE
-				)) {
-			if (next_token == EOF) {
+		/* Erase whitespace after start tag or block end tag, if not in
+		 * "literal mode".  */
+		if (!literal_mode &&
+				((
+				  tag_type == START_TAG ||
+				  tag_type == BLOCK_START_TAG ||
+				  tag_type == BLOCK_END_TAG ||
+				  token == HTMLParser_token::BR ||
+				  token == HTMLParser_token::HR
+				 ) &&
+				 token != HTMLParser_token::SCRIPT &&
+				 token != HTMLParser_token::STYLE
+				))
+		{
+			if (next_token == EOF)
 				next_token = yylex2(&next_token_value, &next_token_tag_type);
-			}
 			if (next_token == HTMLParser_token::PCDATA) {
 				istr &s(*next_token_value.strinG);
 				string::size_type x;
