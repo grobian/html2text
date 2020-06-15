@@ -1105,7 +1105,7 @@ namespace html2text {
     /// Constants.
     enum
     {
-      yylast_ = 2491,     ///< Last index in yytable_.
+      yylast_ = 2229,     ///< Last index in yytable_.
       yynnts_ = 80,  ///< Number of nonterminal symbols.
       yyfinal_ = 3 ///< Termination state number.
     };
