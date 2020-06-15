@@ -598,15 +598,16 @@ namespace html2text {
         S_opt_END_STRONG = 198,                  // opt_END_STRONG
         S_opt_END_SUB = 199,                     // opt_END_SUB
         S_opt_END_SUP = 200,                     // opt_END_SUP
-        S_opt_END_TD = 201,                      // opt_END_TD
-        S_opt_END_TH = 202,                      // opt_END_TH
-        S_opt_END_TITLE = 203,                   // opt_END_TITLE
-        S_opt_END_TR = 204,                      // opt_END_TR
-        S_opt_END_TT = 205,                      // opt_END_TT
-        S_opt_END_U = 206,                       // opt_END_U
-        S_opt_END_UL = 207,                      // opt_END_UL
-        S_opt_END_VAR = 208,                     // opt_END_VAR
-        S_opt_error = 209                        // opt_error
+        S_opt_END_TABLE = 201,                   // opt_END_TABLE
+        S_opt_END_TD = 202,                      // opt_END_TD
+        S_opt_END_TH = 203,                      // opt_END_TH
+        S_opt_END_TITLE = 204,                   // opt_END_TITLE
+        S_opt_END_TR = 205,                      // opt_END_TR
+        S_opt_END_TT = 206,                      // opt_END_TT
+        S_opt_END_U = 207,                       // opt_END_U
+        S_opt_END_UL = 208,                      // opt_END_UL
+        S_opt_END_VAR = 209,                     // opt_END_VAR
+        S_opt_error = 210                        // opt_error
       };
     };
 
@@ -1104,8 +1105,8 @@ namespace html2text {
     /// Constants.
     enum
     {
-      yylast_ = 2223,     ///< Last index in yytable_.
-      yynnts_ = 79,  ///< Number of nonterminal symbols.
+      yylast_ = 2491,     ///< Last index in yytable_.
+      yynnts_ = 80,  ///< Number of nonterminal symbols.
       yyfinal_ = 3 ///< Termination state number.
     };
 
@@ -1118,7 +1119,7 @@ namespace html2text {
 
 #line 40 "HTMLParser.yy"
 } // html2text
-#line 1122 "HTMLParser.tab.hh"
+#line 1123 "HTMLParser.tab.hh"
 
 
 

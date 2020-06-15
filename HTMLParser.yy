@@ -515,7 +515,7 @@ block_except_p:
     h->attributes.reset($1);
     $$ = h;
   }
-  | TABLE opt_caption table_rows END_TABLE {
+  | TABLE opt_caption table_rows opt_END_TABLE {
     Table *t = new Table;
     t->attributes.reset($1);
     t->caption.reset($2);
@@ -1007,6 +1007,7 @@ opt_END_STRIKE: /* empty */ | END_STRIKE;
 opt_END_STRONG: /* empty */ | END_STRONG;
 opt_END_SUB:    /* empty */ | END_SUB;
 opt_END_SUP:    /* empty */ | END_SUP;
+opt_END_TABLE:  END         | END_TABLE;
 opt_END_TD:     /* empty */ | END_TD;
 opt_END_TH:     /* empty */ | END_TH;
 opt_END_TITLE:  /* empty */ | END_TITLE;
