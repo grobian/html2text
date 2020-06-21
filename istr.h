@@ -19,6 +19,10 @@
 #include <memory>
 #include <cstring>
 
+/* crude temp hack until we properly use wchar, glibc isspace crashes on
+ * too large values */
+#define isspace(X) ((X) > 0 && (X) < 256 && isspace(X))
+
 class istr {
 	public:
 		istr():
