@@ -141,7 +141,7 @@ entities[] = {
 	{ "aring",    0x00E5 },
 	{ "asymp",    0x2248 },
 	{ "atilde",   0x00E3 },
-	{ "auml",     0x00E5 },
+	{ "auml",     0x00E4 },
 	{ "bdquo",    0x0022 },
 	{ "beta",     0x03B2 },
 	{ "brvbar",   0x00A6 },
