@@ -57,8 +57,8 @@ Usage:\n\
   html2text [ -unparse | -check ] [ -debug-scanner ] [ -debug-parser ] \\\n\
      [ -rcfile <file> ] [ -width <w> ] [ -nobs ] [ -links ]\\\n\
      [ -from_encoding ] [ -to_encoding ] [ -ascii ]\\\n\
-     [ -o <file> ] [ <input-url> ] ...\n\
-Formats HTML document(s) read from <input-url> or STDIN and generates ASCII\n\
+     [ -o <file> ] [ <input-file> ] ...\n\
+Formats HTML document(s) read from <input-file> or STDIN and generates ASCII\n\
 text.\n\
   -help          Print this text and exit\n\
   -version       Print program version and copyright notice\n\
@@ -198,16 +198,16 @@ main(int argc, char **argv)
 	if (to_encoding == NULL)
 		to_encoding = "UTF-8";
 
-	const char *const *input_urls;
-	int number_of_input_urls;
+	const char *const *input_files;
+	int number_of_input_files;
 
 	if (i >= argc) {
 		static const char *const x = "-";
-		input_urls = &x;
-		number_of_input_urls = 1;
+		input_files = &x;
+		number_of_input_files = 1;
 	} else {
-		input_urls = argv + i;
-		number_of_input_urls = argc - i;
+		input_files = argv + i;
+		number_of_input_files = argc - i;
 	}
 
 	{
@@ -241,24 +241,24 @@ main(int argc, char **argv)
 		exit(1);
 	}
 
-	for (i = 0; i < number_of_input_urls; ++i) {
-		const char *input_url = input_urls[i];
+	for (i = 0; i < number_of_input_files; ++i) {
+		const char *input_file = input_files[i];
 
-		if (number_of_input_urls != 1)
-			is << "###### " << input_url << " ######" << endl;
+		if (number_of_input_files != 1)
+			is << "###### " << input_file << " ######" << endl;
 
-		is.open_is(input_url, from_encoding);
+		is.open_is(input_file, from_encoding);
 		if (!is.is_open()) {
 			std::cerr
-				<< "Opening input URL \""
-				<< input_url
+				<< "Opening input file \""
+				<< input_file
 				<< "\": "
 				<< is.open_error_msg()
 				<< std::endl;
 			exit(1);
 		}
 
-		HTMLControl control(is, mode, debug_scanner, input_url);
+		HTMLControl control(is, mode, debug_scanner, input_file);
 		HTMLDriver driver(control, is, enable_links,
 				width, mode, debug_parser);
 
