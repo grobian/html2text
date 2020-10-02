@@ -147,7 +147,7 @@ install:
 
 clean: local-clean
 local-clean:
-	rm -f *.o *~ core html2text;
+	rm -f *.o *~ core html2text Dependencies Makefile;
 
 clobber: local-clobber
 local-clobber: local-clean
