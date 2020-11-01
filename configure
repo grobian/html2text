@@ -18,6 +18,13 @@
 # Sun Apr  7 12:04:48 CEST 2002
 # Tue Nov 11 21:30:26 CET 2003
 
+# mimick autoconf behaviour of accepting variable overrides on command
+# line
+for arg in "$@" ; do
+	case "${arg}" in
+		*=*)  eval "${arg}"  ;;
+	esac
+done
 
 echo=echo
 
