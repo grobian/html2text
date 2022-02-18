@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Fabian Groffen
+ * Copyright 2020-2022 Fabian Groffen
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,8 +82,10 @@ iconvstream::open_os(const char *file_name, const char *encoding)
 		return;
 	}
 
-	fd_os =
-		strcmp(file_name, "-") == 0 ? ::dup(1) : ::open(file_name, O_WRONLY);
+	fd_os = strcmp(file_name, "-") == 0 ?
+			::dup(1) :
+			::open(file_name, O_WRONLY | O_CREAT,
+				   S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 	if (fd_os == -1)
 		open_err = strerror(errno);
 
