@@ -103,8 +103,9 @@ transliteration feature.  As such this option is an alias for
 Sets the encoding of the input file or stream to the given encoding.  By
 default,
 .B html2text
-uses ISO-8859-1 encoding for reading.  You probably always want to
-override this default using this option.  See 
+tries to obtain the encoding from the input file and uses ISO-8859-1
+encoding as fallback.  You might want to override the detection or
+fallback using this option.  See 
 .B iconv -l
 for a list of supported encodings.
 .TP

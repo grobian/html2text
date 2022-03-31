@@ -190,9 +190,10 @@ main(int argc, char **argv)
 		exit(1);
 	}
 
-	/* historical default */
+	/* historical default used to be ISO-8859-1, auto is not a valid
+	 * encoding, but handled in iconvstream */
 	if (from_encoding == NULL)
-		from_encoding = "ISO-8859-1";
+		from_encoding = "auto";
 
 	/* this is probably the output we want on 99% of all terminals */
 	if (to_encoding == NULL)

@@ -28,23 +28,18 @@
 #include "iconvstream.h"
 
 void
-iconvstream::open_is(const char *file_name, const char *encoding)
+iconvstream::open_is(const char *file_name, const char *encoding_in)
 {
 	close_is();
 
-	/* we always encode to UTF-8 for internal processing */
-	iconv_handle_is = iconv_open("UTF-8", encoding);
-	if (iconv_handle_is == iconv_t(-1)) {
-		open_err = "invalid from_encoding";
-		return;
-	}
+	encoding = encoding_in;
 
 	fd_is =
 		strcmp(file_name, "-") == 0 ? ::dup(0) : ::open(file_name, O_RDONLY);
 	if (fd_is == -1)
 		open_err = strerror(errno);
 
-	readbufsze = 1024;
+	readbufsze = 1024;  /* matches w3c's req for content type declaration */
 	rutf8bufsze = readbufsze * 4;
 	readbuflen = 0;
 	rutf8buflen = 0;
@@ -52,6 +47,18 @@ iconvstream::open_is(const char *file_name, const char *encoding)
 	rutf8bufpos = 0;
 	readbuf = new unsigned char[readbufsze];
 	rutf8buf = new unsigned char[rutf8bufsze];
+
+	/* trigger charset detection, and reset the pointer afterwards,
+	 * doing this now generates an error if the charset is invalid,
+	 * which is not expected to be set during reading */
+	if (!open_err) {
+		get();
+		rutf8bufpos = 0;
+		if (open_err) {
+			close_is();
+			fd_is = -1;
+		}
+	}
 }
 
 void
@@ -116,6 +123,45 @@ iconvstream::close_os(void)
 	}
 }
 
+static const char *
+find_tokens(char *buf, size_t len, const char **tokens)
+{
+	char        *startp     = NULL;
+	char        *curp;
+	const char **curtoken   = tokens;
+	char         startfound = 0;
+
+	for (curp = buf; curp - buf < len; curp++) {
+		/* [a-zA-Z0-9/-]+ */
+		if ((*curp >= 'a' && *curp <= 'z') ||
+			(*curp >= 'A' && *curp <= 'Z') ||
+			(*curp >= '0' && *curp <= '9') ||
+			*curp == '/' || *curp == '-')
+		{
+			if (startp == NULL)
+				startp = curp;
+		}
+		else
+		{
+			if (startp != NULL) {
+				if (*curtoken == NULL) {
+					return strndup(startp, curp - startp);  /* LEAK */
+				} else if (strlen(*curtoken) == curp - startp &&
+						   strncmp(*curtoken, startp, curp - startp) == 0) {
+					startfound = 1;
+					curtoken++;
+				} else if (startfound == 1) {
+					startfound = 0;
+					curtoken   = tokens;
+				}
+			}
+			startp = NULL;
+		}
+	}
+
+	return NULL;
+}
+
 const char *
 iconvstream::open_error_msg() const
 {
@@ -133,6 +179,52 @@ iconvstream::get()
 		readbuflen = read(fd_is, readbuf + readbufpos, readbufsze - readbufpos);
 		if (readbuflen <= 0)
 			return EOF;
+
+		if (rutf8buflen == 0) {
+			/* on first read, figure out what encoding this is, unless a
+		 	 * specific override is in place */
+			if (strcmp(encoding, "auto") == 0) {
+				/* look for UTF-BOM, this should override any meta
+				 * declaration (feels like a safe way for M$ to screw
+				 * this up, but let's go with this for now)
+				 * https://www.w3.org/International/questions/qa-html-encoding-declarations#bom */
+				if (readbuflen >= 2 && memcmp(readbuf, "\ufeff", 2) == 0) {
+					encoding = "UTF-8";
+				} else {
+					const char *tokens_charset[] = {
+						"meta", "charset", NULL
+					};
+					const char *tokens_contenttype[] = {
+						"meta", "http-equiv", "content-type",
+						"content", "text/html", "charset", NULL
+					};
+					/* hunt down meta, which can be two forms
+					 * - <meta charset="utf-8"/>
+					 * - <meta http-equiv="Content-Type"
+					 *    content="text/html; charset=utf-8"/>
+					 * https://www.w3.org/International/questions/qa-html-encoding-declarations#quickanswer
+					 * now there is the correct way, which would be to
+					 * parse whatever xml, and the quick 'n' dirty way,
+					 * which is to simply do some lame-@$$ parsing */
+					encoding = find_tokens((char *)readbuf, readbuflen,
+										   tokens_charset);
+					if (encoding == NULL) {
+						encoding = find_tokens((char *)readbuf, readbuflen,
+											   tokens_contenttype);
+					}
+					/* fall back to lame historical default */
+					if (encoding == NULL)
+						encoding = "ISO-8859-1";
+				}
+			}
+
+			/* we always encode to UTF-8 for internal processing */
+			iconv_handle_is = iconv_open("UTF-8", encoding);
+			if (iconv_handle_is == iconv_t(-1)) {
+				open_err = "invalid from_encoding";
+				return 0;
+			}
+		}
 
 		readbuflen += readbufpos;
 		readbufpos = 0;

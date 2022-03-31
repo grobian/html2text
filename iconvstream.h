@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Fabian Groffen
+ * Copyright 2020-2022 Fabian Groffen
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,6 +63,7 @@ class iconvstream {
 
 	private:
 		const char *open_err;
+		const char *encoding;
 
 		int fd_is;
 		iconv_t iconv_handle_is;
