@@ -147,9 +147,12 @@ find_tokens(char *buf, size_t len, const char **tokens)
 				if (*curtoken == NULL) {
 					return strndup(startp, curp - startp);  /* LEAK */
 				} else if (strlen(*curtoken) == curp - startp &&
-						   strncmp(*curtoken, startp, curp - startp) == 0) {
-					startfound = 1;
-					curtoken++;
+						   strncasecmp(*curtoken, startp, curp - startp) == 0)
+				{
+					if (startfound != 0 || startp[-1] == '<') {
+						startfound = 1;
+						curtoken++;
+					}
 				} else if (startfound == 1) {
 					startfound = 0;
 					curtoken   = tokens;
