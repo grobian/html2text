@@ -122,6 +122,8 @@ TESTS= \
 	   utf-8=unicode-hex-references \
 	   utf-8=cid-image-link \
 	   utf-8=ifendif \
+	   auto=html4meta \
+	   auto=html5meta \
 	   $(NULL)
 
 check:
