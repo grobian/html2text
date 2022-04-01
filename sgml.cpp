@@ -49,6 +49,7 @@
 
 /*
  * Selected SGML entities, with translations to ASCII and unicode.
+ * See https://www.w3.org/TR/html4/sgml/entities.html
  */
 
 /* Straight-ASCII and extra entities partially
@@ -59,8 +60,11 @@
  * Keep this array sorted alphabetically!
  * see https://www.ams.org/STIX/table0X.html
  */
+
+static const size_t NAME_BUF_SIZE = 9;  /* length of longest name + 1 */
+
 static const struct TextToInt {
-	const char name[8];
+	const char name[NAME_BUF_SIZE];
 	unsigned long unicode;
 }
 entities[] = {
@@ -169,6 +173,8 @@ entities[] = {
 	{ "ecirc",    0x00EA },
 	{ "egrave",   0x00E8 },
 	{ "empty",    0x2205 },
+	{ "emsp",     0x2003 },
+	{ "ensp",     0x2002 },
 	{ "epsilon",  0x03B5 },
 	{ "equiv",    0x2261 },
 	{ "eta",      0x03B7 },
@@ -176,12 +182,12 @@ entities[] = {
 	{ "euml",     0x00EB },
 	{ "euro",     0x20AC },
 	{ "exist",    0x2203 },
-	{ "fnof",          0 },
+	{ "fnof",     0x0192 },
 	{ "forall",   0x2200 },
 	{ "frac12",   0x00BD },
 	{ "frac14",   0x00BC },
 	{ "frac34",   0x00BE },
-	{ "frasl",         0 },
+	{ "frasl",    0x2044 },
 	{ "gamma",    0x03B3 },
 	{ "ge",       0x2265 },
 	{ "gt",       0x003E },
@@ -212,6 +218,7 @@ entities[] = {
 	{ "lfloor",   0x230A },
 	{ "lowast",   0x204E },
 	{ "loz",      0x25CA },
+	{ "lrm",      0x200E },
 	{ "lsaquo",   0x2039 },
 	{ "lsquo",    0x2018 },
 	{ "lt",       0x003C },
@@ -235,7 +242,7 @@ entities[] = {
 	{ "ocirc",    0x00F4 },
 	{ "oelig",    0x0152 },
 	{ "ograve",   0x00F2 },
-	{ "oline",         0 },
+	{ "oline",    0x203E },
 	{ "omega",    0x03C9 },
 	{ "omicron",  0x03BF },
 	{ "oplus",    0x2295 },
@@ -271,9 +278,10 @@ entities[] = {
 	{ "reg",      0x00AE },
 	{ "rfloor",   0x230B },
 	{ "rho",      0x03C1 },
+	{ "rlm",      0x200F },
 	{ "rsaquo",   0x203A },
 	{ "rsquo",    0x2019 },
-	{ "sbquo",         0 },
+	{ "sbquo",    0x201A },
 	{ "scaron",   0x0161 },
 	{ "sdot",     0x22C5 },
 	{ "sect",     0x00A7 },
@@ -294,6 +302,8 @@ entities[] = {
 	{ "tau",      0x03C4 },
 	{ "there4",   0x2234 },
 	{ "theta",    0x03B8 },
+	{ "thetasym", 0x03D1 },
+	{ "thinsp",   0x2009 },
 	{ "thorn",    0x00FE },
 	{ "tilde",    0x02DC },
 	{ "times",    0x00D7 },
@@ -304,6 +314,7 @@ entities[] = {
 	{ "ucirc",    0x00FB },
 	{ "ugrave",   0x00F9 },
 	{ "uml",      0x00A8 },
+	{ "upsih",    0x03D2 },
 	{ "upsilon",  0x03C5 },
 	{ "uuml",     0x00FC },
 	{ "weierp",   0x2118 },
@@ -312,6 +323,7 @@ entities[] = {
 	{ "yen",      0x00A5 },
 	{ "yuml",     0x00FF },
 	{ "zeta",     0x03B6 },
+	{ "zwj",      0x200D },
 	{ "zwnj",     0x200C },
 };
 
@@ -404,7 +416,7 @@ replace_sgml_entities(istr *s)
 		} else if (isalpha(c)) {
 			/* Decode entities like "&nbsp;".
 			 * Some authors forget the ";", but we tolerate this. */
-			char name[8];
+			char name[NAME_BUF_SIZE];
 			name[0] = c;
 			size_t i = 1;
 			for (; j < l; ++j) {
