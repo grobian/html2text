@@ -124,6 +124,7 @@ TESTS= \
 	   utf-8=ifendif \
 	   auto=html4meta \
 	   auto=html5meta \
+	   auto=html4entities \
 	   $(NULL)
 
 check:
