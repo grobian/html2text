@@ -52,15 +52,15 @@ class HTMLControl {
 				int& mode_,
 				bool debug_scanner_,
 				const char *file_name_) :
+			mode(mode_),
 			current_line(1),
 			current_column(0),
+			file_name(file_name_),
 			literal_mode(false),
 			next_token(EOF),
 			debug_scanner(debug_scanner_),
 			is(is_),
-			number_of_ungotten_chars(0),
-			file_name(file_name_),
-			mode(mode_)
+			number_of_ungotten_chars(0)
 	{
 	}
 

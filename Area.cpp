@@ -108,7 +108,7 @@ Line::Line(const istr &s):
 	cells_(malloc_array(Cell, length_))
 {
 	Cell *q = cells_;
-	for (int i = 0; i < length_; i++) {
+	for (size_t i = 0; i < (size_t)length_; i++) {
 		q->character = s[i];
 		q->attribute = Cell::NONE;
 		q++;

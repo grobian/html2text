@@ -714,11 +714,13 @@ get_style_attr(istr *style, const char *name, const char *dflt)
 					break;
 				case ';':
 					/* end of value */
-					if (style->compare(keystart, t - keystart, name) == 0) {
-						for (t = i - 1; (*style)[t] == ' '; t--)
-							;
-						t++;
-						return style->slice(valstart, t - valstart);
+					if (!iskey) {
+						if (style->compare(keystart, t - keystart, name) == 0) {
+							for (t = i - 1; (*style)[t] == ' '; t--)
+								;
+							t++;
+							return style->slice(valstart, t - valstart);
+						}
 					}
 					keystart = i + 1;
 					iskey = true;

@@ -89,8 +89,8 @@ expandEscape(string *line_in_out, string::size_type *pos_in_out, istream &is)
 			++*pos_in_out;
 			return;
 		}
-		int j;
-		for (j = 0; j < tmp.size() && isspace(tmp[j]); ++j)
+		size_t j;
+		for (j = 0; j < (size_t)tmp.size() && isspace(tmp[j]); ++j)
 			;
 		line_in_out->replace(
 				*pos_in_out, string::npos,

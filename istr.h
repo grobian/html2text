@@ -38,8 +38,8 @@ class istr {
 		istr(const string &p):
 			elems({})
 		{
-			int i;
-			for (i = 0; i < p.length(); i++)
+			size_t i;
+			for (i = 0; i < (size_t)p.length(); i++)
 				elems.push_back(((int)p.at(i)) & 0xFF);
 		}
 

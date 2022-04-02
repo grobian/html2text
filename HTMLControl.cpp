@@ -658,7 +658,7 @@ HTMLControl::get_char()
 		while (c == '\r')
 			c = is.get();
 
-		if (c == EOF) {
+		if (c == (unsigned int)EOF) {
 			;
 		} else if (c == '\n') {
 			current_line++;

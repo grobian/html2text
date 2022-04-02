@@ -22,12 +22,12 @@ HTMLDriver::HTMLDriver(HTMLControl& c,
 		int& width_,
 		int& mode_,
 		bool& debug_parser) :
-	control(c),
-	os(os_),
 	enable_links(enable_links_),
+	control(c),
+	trace_parsing(debug_parser),
 	width(width_),
 	mode(mode_),
-	trace_parsing(debug_parser)
+	os(os_)
 {
 	links = new OrderedList;
 	links->items.reset(new list<auto_ptr<ListItem>>);

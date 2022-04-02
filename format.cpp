@@ -152,7 +152,7 @@ Document::format(
 {
 	static BlockFormat bf("DOCUMENT");
 
-	for (int i = 0; i < bf.vspace_before; ++i)
+	for (size_t i = 0; i < (size_t)bf.vspace_before; ++i)
 		os << endl;
 
 	body.format(
@@ -160,7 +160,7 @@ Document::format(
 			os
 			);
 
-	for (int j = 0; j < bf.vspace_after; ++j)
+	for (size_t j = 0; j < (size_t)bf.vspace_after; ++j)
 		os << endl;
 }
 
@@ -196,7 +196,7 @@ Body::format(
 {
 	static BlockFormat bf("BODY");
 
-	for (int i = 0; i < bf.vspace_before; ++i)
+	for (size_t i = 0; i < (size_t)bf.vspace_before; ++i)
 		os << endl;
 
 	::format(
@@ -205,7 +205,7 @@ Body::format(
 			os
 			);
 
-	for (int j = 0; j < bf.vspace_after; ++j)
+	for (size_t j = 0; j < (size_t)bf.vspace_after; ++j)
 		os << endl;
 }
 
@@ -1230,10 +1230,8 @@ NoBreak::line_format() const
 
 	for (Line::size_type i = 0; i < l->length(); ++i) {
 		Cell &c((*l)[i]);
-		/* we should inject nbsp UTF-8 sequence here
 		if (c.character == ' ')
-			c.character = (char)160;
-		 */
+			c.character = (0xc2 << 0) | (0xa0 << 8);  /* nbsp */
 	}
 	return l;
 }
@@ -1718,7 +1716,7 @@ ListFormat::get_indent(int nesting) const
 {
 	return
 		(!indents.get() || indents.get()->empty()) ? 6 :
-		nesting < indents->size() ? (*indents)[nesting] :
+		nesting < (int)indents->size() ? (*indents)[nesting] :
 		indents->back()
 	;
 }
@@ -1732,7 +1730,7 @@ ListFormat::get_type(
 {
 	const char *default_type = (
 		!default_types.get() || default_types->empty() ? 0 :
-		nesting < default_types->size() ?
+		nesting < (int)default_types->size() ?
 		(*default_types)[nesting].c_str() :
 		default_types->back().c_str()
 		);

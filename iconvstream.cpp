@@ -131,7 +131,7 @@ find_tokens(char *buf, size_t len, const char **tokens)
 	const char **curtoken   = tokens;
 	char         startfound = 0;
 
-	for (curp = buf; curp - buf < len; curp++) {
+	for (curp = buf; (size_t)(curp - buf) < len; curp++) {
 		/* [a-zA-Z0-9/-]+ */
 		if ((*curp >= 'a' && *curp <= 'z') ||
 			(*curp >= 'A' && *curp <= 'Z') ||
@@ -146,7 +146,7 @@ find_tokens(char *buf, size_t len, const char **tokens)
 			if (startp != NULL) {
 				if (*curtoken == NULL) {
 					return strndup(startp, curp - startp);  /* LEAK */
-				} else if (strlen(*curtoken) == curp - startp &&
+				} else if (strlen(*curtoken) == (size_t)(curp - startp) &&
 						   strncasecmp(*curtoken, startp, curp - startp) == 0)
 				{
 					if (startfound != 0 || startp[-1] == '<') {
