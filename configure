@@ -46,7 +46,7 @@ int main(int, char **) {
 }
 EOF
 CXX=${CXX-unknown}
-for i in "$CXX" "CC" "g++" "cc"; do
+for i in "$CXX" "g++" "CC" "cc"; do
   if $i -c $tmp_file.C 2>/dev/null; then
     CXX="$i";
     break;
