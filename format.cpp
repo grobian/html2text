@@ -1627,8 +1627,6 @@ Formatting::getAttributes(const char *key, char dflt)
 			res |= Cell::UNDERLINE;
 		else if (!cmp_nocase(*i, "STRIKETHROUGH"))
 			res |= Cell::STRIKETHROUGH;
-		else
-			;
 	}
 	return res;
 }

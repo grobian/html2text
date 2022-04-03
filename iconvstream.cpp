@@ -320,6 +320,7 @@ iconvstream::write(const char *inp, size_t len)
 								iconvret = 0;
 								break;
 							}
+							/* fall through */
 						case E2BIG:
 							/* output buffer is not large enough, this is
 							 * impossible since we allocate 4x */

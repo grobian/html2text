@@ -130,7 +130,7 @@ class istr {
 		}
 		istr &operator<<=(const char inp)
 		{
-			return *this <<= (((const int)inp) & 0xFF);
+			return *this <<= (((int)inp) & 0xFF);
 		}
 		istr &operator<<=(const char *inp)
 		{
