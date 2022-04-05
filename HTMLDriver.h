@@ -37,7 +37,7 @@ class HTMLDriver {
 		OrderedList *links = nullptr;
 
 		enum {
-			PRINT_AS_ASCII, UNPARSE, SYNTAX_CHECK
+			PRINT_AS_ASCII, SYNTAX_CHECK
 		};
 
 	private:

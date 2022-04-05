@@ -65,10 +65,6 @@ void HTMLDriver::process(const Document& document)
 		document.format(/*indent_left*/ 0, width, Area::LEFT, os);
 		break;
 
-	case UNPARSE:
-		document.unparse(os, endl);
-		break;
-
 	case SYNTAX_CHECK:
 		break;
 

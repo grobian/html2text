@@ -54,7 +54,7 @@ static const char *usage = "\
 Usage:\n\
   html2text -help\n\
   html2text -version\n\
-  html2text [ -unparse | -check ] [ -debug-scanner ] [ -debug-parser ] \\\n\
+  html2text [ -check ] [ -debug-scanner ] [ -debug-parser ] \\\n\
      [ -rcfile <file> ] [ -width <w> ] [ -nobs ] [ -links ]\\\n\
      [ -from_encoding ] [ -to_encoding ] [ -ascii ]\\\n\
      [ -o <file> ] [ <input-file> ] ...\n\
@@ -62,7 +62,6 @@ Formats HTML document(s) read from <input-file> or STDIN and generates ASCII\n\
 text.\n\
   -help          Print this text and exit\n\
   -version       Print program version and copyright notice\n\
-  -unparse       Generate HTML instead of ASCII output\n\
   -check         Do syntax checking only\n\
   -debug-scanner Report parsed tokens on STDERR (debugging)\n\
   -debug-parser  Report parser activity on STDERR (debugging)\n\
@@ -123,9 +122,7 @@ main(int argc, char **argv)
 	for (i = 1; i < argc && argv[i][0] == '-' && argv[i][1]; i++) {
 		const char *arg = argv[i];
 
-		if (!strcmp(arg, "-unparse")) {
-			mode = HTMLDriver::UNPARSE;
-		} else if (!strcmp(arg, "-check")) {
+		if (!strcmp(arg, "-check")) {
 			mode = HTMLDriver::SYNTAX_CHECK;
 		} else if (!strcmp(arg, "-debug-scanner")) {
 			debug_scanner = true;

@@ -95,7 +95,6 @@ typedef char ostream_manipulator;
 
 struct Element {
 	virtual ~Element();
-	virtual void unparse(iconvstream&, ostream_manipulator separator) const = 0;
 
 	/*
 	 * Attempt to line-format the element. If the element contains "Block"s,
@@ -135,7 +134,6 @@ struct PCData : public Element {
 		return this;
 	}
 
-	/*virtual*/ void unparse(iconvstream&, ostream_manipulator separator) const;
 	/*virtual*/ Line *line_format() const;
 };
 
@@ -146,7 +144,6 @@ struct Font : public Element {
 
 	Font(int a, list<auto_ptr<Element> > *t = 0) : attribute(a), texts(t)
 	{}
-	/*virtual*/ void unparse(iconvstream&, ostream_manipulator separator) const;
 	/*virtual*/ Line *line_format() const;
 	/*virtual*/ Area *format(Area::size_type w, int halign) const;
 };
@@ -158,7 +155,6 @@ struct Phrase : public Element {
 
 	Phrase(int a, list<auto_ptr<Element> > *t = 0) : attribute(a), texts(t)
 	{}
-	/*virtual*/ void unparse(iconvstream&, ostream_manipulator separator) const;
 	/*virtual*/ Line *line_format() const;
 	/*virtual*/ Area *format(Area::size_type w, int halign) const;
 };
@@ -167,7 +163,6 @@ struct Font2 : public Element {
 	auto_ptr<list<TagAttribute> >       attributes;// SIZE COLOR
 	auto_ptr<list<auto_ptr<Element> > > elements;
 
-	/*virtual*/ void unparse(iconvstream&, ostream_manipulator separator) const;
 	/*virtual*/ Line *line_format() const;
 	/*virtual*/ Area *format(Area::size_type w, int halign) const;
 };
@@ -177,7 +172,6 @@ struct Anchor : public Element {
 	auto_ptr<list<auto_ptr<Element> > > texts;
 	mutable int                         refnum;
 
-	/*virtual*/ void unparse(iconvstream&, ostream_manipulator separator) const;
 	/*virtual*/ Line *line_format() const;
 	/*virtual*/ Area *format(Area::size_type w, int halign) const;
 };
@@ -185,13 +179,11 @@ struct Anchor : public Element {
 struct BaseFont : public Element {
 	auto_ptr<list<TagAttribute> > attributes; // SIZE
 
-	/*virtual*/ void unparse(iconvstream&, ostream_manipulator separator) const;
 };
 
 struct LineBreak : public Element {
 	auto_ptr<list<TagAttribute> > attributes; // CLEAR
 
-	/*virtual*/ void unparse(iconvstream&, ostream_manipulator separator) const;
 	/*virtual*/ Line *line_format() const;
 };
 
@@ -199,14 +191,12 @@ struct Map : public Element {
 	auto_ptr<list<TagAttribute> >                   attributes;// NAME
 	auto_ptr<list<auto_ptr<list<TagAttribute> > > > areas;
 
-	/*virtual*/ void unparse(iconvstream&, ostream_manipulator separator) const;
 };
 
 struct Paragraph : public Element {
 	auto_ptr<list<TagAttribute> >       attributes;// ALIGN
 	auto_ptr<list<auto_ptr<Element> > > texts;
 
-	/*virtual*/ void unparse(iconvstream&, ostream_manipulator separator) const;
 	/*virtual*/ Area *format(Area::size_type w, int halign) const;
 };
 
@@ -215,7 +205,6 @@ struct Image : public Element {
 	// BORDER HSPACE VSPACE USEMAP
 	// ISMAP
 
-	/*virtual*/ void unparse(iconvstream&, ostream_manipulator separator) const;
 	/*virtual*/ Line *line_format() const;
 };
 
@@ -225,7 +214,6 @@ struct Applet : public Element {
 	// VSPACE
 	auto_ptr<list<auto_ptr<Element> > > content;
 
-	/*virtual*/ void unparse(iconvstream&, ostream_manipulator separator) const;
 	/*virtual*/ Line *line_format() const;
 	/*virtual*/ Area *format(Area::size_type w, int halign) const;
 };
@@ -233,14 +221,12 @@ struct Applet : public Element {
 struct Param : public Element {
 	auto_ptr<list<TagAttribute> > attributes; // NAME VALUE
 
-	/*virtual*/ void unparse(iconvstream&, ostream_manipulator separator) const;
 };
 
 struct Division : public Element {
 	auto_ptr<list<TagAttribute> >       attributes;// ALIGN
 	auto_ptr<list<auto_ptr<Element> > > body_content;
 
-	/*virtual*/ void unparse(iconvstream&, ostream_manipulator separator) const;
 	/*virtual*/ Area *format(Area::size_type w, int halign) const;
 };
 
@@ -248,7 +234,6 @@ struct Center : public Element {
 	// No attributes specified for <CENTER>!
 	auto_ptr<list<auto_ptr<Element> > > body_content;
 
-	/*virtual*/ void unparse(iconvstream&, ostream_manipulator separator) const;
 	/*virtual*/ Area *format(Area::size_type w, int halign) const;
 };
 
@@ -256,7 +241,6 @@ struct BlockQuote : public Element {
 	// No attributes specified for <BLOCKQUOTE>!
 	auto_ptr<list<auto_ptr<Element> > > content;
 
-	/*virtual*/ void unparse(iconvstream&, ostream_manipulator separator) const;
 	/*virtual*/ Area *format(Area::size_type w, int halign) const;
 };
 
@@ -264,7 +248,6 @@ struct Address : public Element {
 	// No attributes specified for <ADDRESS>!
 	auto_ptr<list<auto_ptr<Element> > > content;
 
-	/*virtual*/ void unparse(iconvstream&, ostream_manipulator separator) const;
 	/*virtual*/ Area *format(Area::size_type w, int halign) const;
 };
 
@@ -274,7 +257,6 @@ struct Form : public Element {
 	auto_ptr<list<TagAttribute> >       attributes;// ACTION METHOD ENCTYPE
 	auto_ptr<list<auto_ptr<Element> > > content;
 
-	/*virtual*/ void unparse(iconvstream&, ostream_manipulator separator) const;
 	/*virtual*/ Area *format(Area::size_type w, int halign) const;
 };
 
@@ -282,22 +264,18 @@ struct Input : public Element {
 	auto_ptr<list<TagAttribute> > attributes; // TYPE NAME VALUE CHECKED SIZE
 	// MAXLENGTH SRC ALIGN
 
-	/*virtual*/ void unparse(iconvstream&, ostream_manipulator separator) const;
 	/*virtual*/ Line *line_format() const;
 };
 
 struct Option {
 	auto_ptr<list<TagAttribute> > attributes; // SELECTED VALUE
 	auto_ptr<PCData>              pcdata;
-
-	void unparse(iconvstream&, ostream_manipulator separator) const;
 };
 
 struct Select : public Element {
 	auto_ptr<list<TagAttribute> >      attributes;// NAME SIZE MULTIPLE
 	auto_ptr<list<auto_ptr<Option> > > content;
 
-	/*virtual*/ void unparse(iconvstream&, ostream_manipulator separator) const;
 	/*virtual*/ Line *line_format() const;
 };
 
@@ -305,7 +283,6 @@ struct TextArea : public Element {
 	auto_ptr<list<TagAttribute> > attributes; // NAME ROWS COLS
 	auto_ptr<PCData>              pcdata;
 
-	/*virtual*/ void unparse(iconvstream&, ostream_manipulator separator) const;
 	/*virtual*/ Area *format(Area::size_type w, int halign) const;
 };
 
@@ -315,7 +292,6 @@ struct Preformatted : public Element {
 	auto_ptr<list<TagAttribute> >       attributes;// WIDTH
 	auto_ptr<list<auto_ptr<Element> > > texts;
 
-	/*virtual*/ void unparse(iconvstream&, ostream_manipulator separator) const;
 	/*virtual*/ Area *format(Area::size_type w, int halign) const;
 };
 
@@ -326,7 +302,6 @@ struct Body {
 
 	virtual ~Body()
 	{}
-	virtual void unparse(iconvstream&, ostream_manipulator separator) const;
 	virtual Area *format(Area::size_type w, int halign) const;
 	void format(
 		Area::size_type indent_left,
@@ -339,21 +314,15 @@ struct Body {
 struct Script {
 	auto_ptr<list<TagAttribute> > attributes; // LANGUAGE, ???
 	string text;
-
-	void unparse(iconvstream&, ostream_manipulator separator) const;
 };
 
 struct Style {
 	auto_ptr<list<TagAttribute> > attributes; // ???
 	string text;
-
-	void unparse(iconvstream&, ostream_manipulator separator) const;
 };
 
 struct Meta {
 	auto_ptr<list<TagAttribute> > attributes;    // HTTP-EQUIV NAME CONTENT
-
-	void unparse(iconvstream&, ostream_manipulator separator) const;
 };
 
 struct Head {
@@ -364,8 +333,6 @@ struct Head {
 	list<auto_ptr<Style> >        styles;
 	list<auto_ptr<Meta> >         metas;
 	auto_ptr<list<TagAttribute> > link_attributes;  // HREF REL REV TITLE
-
-	void unparse(iconvstream&, ostream_manipulator separator) const;
 };
 
 struct Document {
@@ -373,7 +340,6 @@ struct Document {
 	Head head;
 	Body body;
 
-	void unparse(iconvstream&, ostream_manipulator separator) const;
 	Area *format(Area::size_type w, int halign) const;
 	void format(
 		Area::size_type indent_left,
@@ -388,33 +354,25 @@ struct Heading : public Element {
 	auto_ptr<list<TagAttribute> >       attributes;// ALIGN
 	auto_ptr<list<auto_ptr<Element> > > content;
 
-	/*virtual*/ void unparse(iconvstream&, ostream_manipulator separator) const;
 	/*virtual*/ Area *format(Area::size_type w, int halign) const;
 };
 
 struct TableCell : public Body {
-	/*virtual*/
-	void unparse(iconvstream&, ostream_manipulator separator) const;
 };
 
 struct TableHeadingCell : public TableCell {
-	/*virtual*/
-	void unparse(iconvstream&, ostream_manipulator separator) const;
 	/*virtual*/ Area *format(Area::size_type w, int halign) const;
 };
 
 struct TableRow {
 	auto_ptr<list<TagAttribute> >         attributes;// ALIGN VALIGN
 	auto_ptr<list<auto_ptr<TableCell> > > cells;
-
-	void unparse(iconvstream&, ostream_manipulator separator) const;
 };
 
 struct Caption {
 	auto_ptr<list<TagAttribute> >       attributes;// ALIGN
 	auto_ptr<list<auto_ptr<Element> > > texts;
 
-	void unparse(iconvstream&, ostream_manipulator separator) const;
 	Area *format(Area::size_type w, int halign) const;
 };
 
@@ -424,21 +382,18 @@ struct Table : public Element {
 	auto_ptr<Caption>                    caption;
 	auto_ptr<list<auto_ptr<TableRow> > > rows;
 
-	/*virtual*/ void unparse(iconvstream&, ostream_manipulator separator) const;
 	/*virtual*/ Area *format(Area::size_type w, int halign) const;
 };
 
 struct NoBreak : public Element {
 	auto_ptr<list<auto_ptr<Element> > > content;
 
-	/*virtual*/ void unparse(iconvstream&, ostream_manipulator separator) const;
 	/*virtual*/ Line *line_format() const;
 };
 
 struct HorizontalRule : public Element {
 	auto_ptr<list<TagAttribute> > attributes; // ALIGN NOSHADE SIZE WIDTH
 
-	/*virtual*/ void unparse(iconvstream&, ostream_manipulator separator) const;
 	/*virtual*/ Area *format(Area::size_type w, int halign) const;
 };
 
@@ -447,7 +402,6 @@ struct HorizontalRule : public Element {
 struct ListItem {
 	virtual ~ListItem()
 	{}
-	virtual void unparse(iconvstream&, ostream_manipulator separator) const = 0;
 	virtual Area *format(
 		Area::size_type w,
 		int style,
@@ -460,7 +414,6 @@ struct ListNormalItem : public ListItem {
 	auto_ptr<list<TagAttribute> >       attributes;// TYPE VALUE
 	auto_ptr<list<auto_ptr<Element> > > flow;
 
-	/*virtual*/ void unparse(iconvstream&, ostream_manipulator separator) const;
 	/*virtual*/ Area *format(
 		Area::size_type w,
 		int style,
@@ -472,7 +425,6 @@ struct ListNormalItem : public ListItem {
 struct ListBlockItem : public ListItem {
 	auto_ptr<Element> block;
 
-	/*virtual*/ void unparse(iconvstream&, ostream_manipulator separator) const;
 	/*virtual*/ Area *format(
 		Area::size_type w,
 		int style,
@@ -487,7 +439,6 @@ struct OrderedList : public Element {
 	int nesting;
 	// Item indentation depends on on the list nesting level.
 
-	/*virtual*/ void unparse(iconvstream&, ostream_manipulator separator) const;
 	/*virtual*/ Area *format(Area::size_type w, int halign) const;
 };
 
@@ -496,7 +447,6 @@ struct UnorderedList : public Element {
 	auto_ptr<list<auto_ptr<ListItem> > > items;
 	int nesting;
 
-	/*virtual*/ void unparse(iconvstream&, ostream_manipulator separator) const;
 	/*virtual*/ Area *format(Area::size_type w, int halign) const;
 };
 
@@ -505,7 +455,6 @@ struct Dir : public Element {
 	auto_ptr<list<auto_ptr<ListItem> > > items;
 	int nesting;
 
-	/*virtual*/ void unparse(iconvstream&, ostream_manipulator separator) const;
 	/*virtual*/ Area *format(Area::size_type w, int halign) const;
 };
 
@@ -514,7 +463,6 @@ struct Menu : public Element {
 	auto_ptr<list<auto_ptr<ListItem> > > items;
 	int nesting;
 
-	/*virtual*/ void unparse(iconvstream&, ostream_manipulator separator) const;
 	/*virtual*/ Area *format(Area::size_type w, int halign) const;
 };
 
@@ -523,21 +471,18 @@ struct Menu : public Element {
 struct DefinitionListItem {
 	virtual ~DefinitionListItem()
 	{}
-	virtual void unparse(iconvstream&, ostream_manipulator separator) const = 0;
 	virtual Area *format(Area::size_type w, int halign) const = 0;
 };
 
 struct TermName : public DefinitionListItem {
 	auto_ptr<list<auto_ptr<Element> > > flow;
 
-	/*virtual*/ void unparse(iconvstream&, ostream_manipulator separator) const;
 	/*virtual*/ Area *format(Area::size_type w, int halign) const;
 };
 
 struct TermDefinition : public DefinitionListItem {
 	auto_ptr<list<auto_ptr<Element> > > flow;
 
-	/*virtual*/ void unparse(iconvstream&, ostream_manipulator separator) const;
 	/*virtual*/ Area *format(Area::size_type w, int halign) const;
 };
 
@@ -546,7 +491,6 @@ struct DefinitionList : public Element {
 	auto_ptr<list<auto_ptr<Element> > >            preamble;
 	auto_ptr<list<auto_ptr<DefinitionListItem> > > items;
 
-	/*virtual*/ void unparse(iconvstream&, ostream_manipulator separator) const;
 	/*virtual*/ Area *format(Area::size_type w, int halign) const;
 };
 

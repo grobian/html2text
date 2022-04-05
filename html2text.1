@@ -10,8 +10,6 @@ html2text \- an advanced HTML\-to\-text converter
 .br
 .B html2text
 [
-.B \-unparse
-|
 .B \-check
 ] [
 .B \-debug\-scanner
@@ -169,15 +167,6 @@ Tags all external links with a number between brackets
 .RI "([" num "]),"
 and produces a numbered list at the end of the document with all link
 targets.
-.TP
-.B \-unparse
-This option is for diagnostic purposes: Instead of formatting the parsed document,
-generate HTML code, that is guaranteed to be syntactically correct. If
-.B html2text
-has problems parsing a syntactically incorrect HTML document, this option
-may help you to understand what
-.B html2text
-thinks that the original HTML code means.
 .TP
 .B \-version
 Print program version and exit.
