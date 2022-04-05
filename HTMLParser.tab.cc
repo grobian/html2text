@@ -1,8 +1,8 @@
-// A Bison parser, made by GNU Bison 3.6.3.
+// A Bison parser, made by GNU Bison 3.8.2.
 
 // Skeleton implementation for Bison LALR(1) parsers in C++
 
-// Copyright (C) 2002-2015, 2018-2020 Free Software Foundation, Inc.
+// Copyright (C) 2002-2015, 2018-2021 Free Software Foundation, Inc.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 // GNU General Public License for more details.
 
 // You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 // As a special exception, you may create a larger work that contains
 // part or all of the Bison parser skeleton and distribute that work
@@ -109,7 +109,7 @@
 #else // !YYDEBUG
 
 # define YYCDEBUG if (false) std::cerr
-# define YY_SYMBOL_PRINT(Title, Symbol)  YYUSE (Symbol)
+# define YY_SYMBOL_PRINT(Title, Symbol)  YY_USE (Symbol)
 # define YY_REDUCE_PRINT(Rule)           static_cast<void> (0)
 # define YY_STACK_PRINT()                static_cast<void> (0)
 
@@ -144,9 +144,9 @@ namespace html2text {
   HTMLParser::syntax_error::~syntax_error () YY_NOEXCEPT YY_NOTHROW
   {}
 
-  /*---------------.
-  | symbol kinds.  |
-  `---------------*/
+  /*---------.
+  | symbol.  |
+  `---------*/
 
   // basic_symbol.
   template <typename Base>
@@ -164,10 +164,11 @@ namespace html2text {
   {}
 
   template <typename Base>
-  HTMLParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, YY_RVREF (semantic_type) v)
+  HTMLParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, YY_RVREF (value_type) v)
     : Base (t)
     , value (YY_MOVE (v))
   {}
+
 
   template <typename Base>
   HTMLParser::symbol_kind_type
@@ -175,6 +176,7 @@ namespace html2text {
   {
     return this->kind ();
   }
+
 
   template <typename Base>
   bool
@@ -192,28 +194,30 @@ namespace html2text {
   }
 
   // by_kind.
-  HTMLParser::by_kind::by_kind ()
+  HTMLParser::by_kind::by_kind () YY_NOEXCEPT
     : kind_ (symbol_kind::S_YYEMPTY)
   {}
 
 #if 201103L <= YY_CPLUSPLUS
-  HTMLParser::by_kind::by_kind (by_kind&& that)
+  HTMLParser::by_kind::by_kind (by_kind&& that) YY_NOEXCEPT
     : kind_ (that.kind_)
   {
     that.clear ();
   }
 #endif
 
-  HTMLParser::by_kind::by_kind (const by_kind& that)
+  HTMLParser::by_kind::by_kind (const by_kind& that) YY_NOEXCEPT
     : kind_ (that.kind_)
   {}
 
-  HTMLParser::by_kind::by_kind (token_kind_type t)
+  HTMLParser::by_kind::by_kind (token_kind_type t) YY_NOEXCEPT
     : kind_ (yytranslate_ (t))
   {}
 
+
+
   void
-  HTMLParser::by_kind::clear ()
+  HTMLParser::by_kind::clear () YY_NOEXCEPT
   {
     kind_ = symbol_kind::S_YYEMPTY;
   }
@@ -231,11 +235,13 @@ namespace html2text {
     return kind_;
   }
 
+
   HTMLParser::symbol_kind_type
   HTMLParser::by_kind::type_get () const YY_NOEXCEPT
   {
     return this->kind ();
   }
+
 
 
   // by_state.
@@ -320,7 +326,7 @@ namespace html2text {
       YY_SYMBOL_PRINT (yymsg, yysym);
 
     // User destructor.
-    YYUSE (yysym.kind ());
+    YY_USE (yysym.kind ());
   }
 
 #if YYDEBUG
@@ -329,7 +335,7 @@ namespace html2text {
   HTMLParser::yy_print_ (std::ostream& yyo, const basic_symbol<Base>& yysym) const
   {
     std::ostream& yyoutput = yyo;
-    YYUSE (yyoutput);
+    YY_USE (yyoutput);
     if (yysym.empty ())
       yyo << "empty symbol";
     else
@@ -337,7 +343,7 @@ namespace html2text {
         symbol_kind_type yykind = yysym.kind ();
         yyo << (yykind < YYNTOKENS ? "token" : "nterm")
             << ' ' << yysym.name () << " (";
-        YYUSE (yykind);
+        YY_USE (yykind);
         yyo << ')';
       }
   }
@@ -363,7 +369,7 @@ namespace html2text {
   }
 
   void
-  HTMLParser::yypop_ (int n)
+  HTMLParser::yypop_ (int n) YY_NOEXCEPT
   {
     yystack_.pop (n);
   }
@@ -406,13 +412,13 @@ namespace html2text {
   }
 
   bool
-  HTMLParser::yy_pact_value_is_default_ (int yyvalue)
+  HTMLParser::yy_pact_value_is_default_ (int yyvalue) YY_NOEXCEPT
   {
     return yyvalue == yypact_ninf_;
   }
 
   bool
-  HTMLParser::yy_table_value_is_error_ (int yyvalue)
+  HTMLParser::yy_table_value_is_error_ (int yyvalue) YY_NOEXCEPT
   {
     return yyvalue == yytable_ninf_;
   }
@@ -573,119 +579,120 @@ namespace html2text {
         {
           switch (yyn)
             {
-  case 2:
+  case 2: // document: document_
 #line 274 "HTMLParser.yy"
             {
     drv.process(*(yystack_[0].value.document));
     delete (yystack_[0].value.document);
   }
-#line 583 "HTMLParser.tab.cc"
+#line 589 "HTMLParser.tab.cc"
     break;
 
-  case 3:
+  case 3: // document_: %empty
 #line 305 "HTMLParser.yy"
               {
     (yylhs.value.document) = new Document;
     (yylhs.value.document)->body.content.reset(new list<auto_ptr<Element> >);
   }
-#line 592 "HTMLParser.tab.cc"
+#line 598 "HTMLParser.tab.cc"
     break;
 
-  case 4:
+  case 4: // document_: document_ error
 #line 309 "HTMLParser.yy"
                     {
     (yylhs.value.document) = (yystack_[1].value.document);
   }
-#line 600 "HTMLParser.tab.cc"
+#line 606 "HTMLParser.tab.cc"
     break;
 
-  case 5:
+  case 5: // document_: document_ DOCTYPE
 #line 312 "HTMLParser.yy"
                       {
     (yylhs.value.document) = (yystack_[1].value.document);
   }
-#line 608 "HTMLParser.tab.cc"
+#line 614 "HTMLParser.tab.cc"
     break;
 
-  case 6:
+  case 6: // document_: document_ HTML
 #line 315 "HTMLParser.yy"
                    {
     (yylhs.value.document)->attributes.reset((yystack_[0].value.tag_attributes));
     (yylhs.value.document) = (yystack_[1].value.document);
   }
-#line 617 "HTMLParser.tab.cc"
+#line 623 "HTMLParser.tab.cc"
     break;
 
-  case 7:
+  case 7: // document_: document_ END_HTML
 #line 319 "HTMLParser.yy"
                        {
     (yylhs.value.document) = (yystack_[1].value.document);
   }
-#line 625 "HTMLParser.tab.cc"
+#line 631 "HTMLParser.tab.cc"
     break;
 
-  case 8:
+  case 8: // document_: document_ HEAD
 #line 322 "HTMLParser.yy"
                    {
     delete (yystack_[0].value.tag_attributes);
     (yylhs.value.document) = (yystack_[1].value.document);
   }
-#line 634 "HTMLParser.tab.cc"
+#line 640 "HTMLParser.tab.cc"
     break;
 
-  case 9:
+  case 9: // document_: document_ END_HEAD
 #line 326 "HTMLParser.yy"
                        {
     (yylhs.value.document) = (yystack_[1].value.document);
   }
-#line 642 "HTMLParser.tab.cc"
+#line 648 "HTMLParser.tab.cc"
     break;
 
-  case 10:
+  case 10: // document_: document_ TITLE opt_pcdata opt_END_TITLE
 #line 329 "HTMLParser.yy"
                                              {
     delete (yystack_[2].value.tag_attributes); // Ignore <TITLE> attributes
     ((yylhs.value.document) = (yystack_[3].value.document))->head.title.reset((yystack_[1].value.pcdata));
   }
-#line 651 "HTMLParser.tab.cc"
+#line 657 "HTMLParser.tab.cc"
     break;
 
-  case 11:
+  case 11: // document_: document_ ISINDEX
 #line 333 "HTMLParser.yy"
                       {
     ((yylhs.value.document) = (yystack_[1].value.document))->head.isindex_attributes.reset((yystack_[0].value.tag_attributes));
   }
-#line 659 "HTMLParser.tab.cc"
+#line 665 "HTMLParser.tab.cc"
     break;
 
-  case 12:
+  case 12: // document_: document_ BASE
 #line 336 "HTMLParser.yy"
                    {
     ((yylhs.value.document) = (yystack_[1].value.document))->head.base_attributes.reset((yystack_[0].value.tag_attributes));
   }
-#line 667 "HTMLParser.tab.cc"
+#line 673 "HTMLParser.tab.cc"
     break;
 
-  case 13:
+  case 13: // document_: document_ META
 #line 339 "HTMLParser.yy"
                    {
-    auto_ptr<Meta> s(new Meta);
-    s->attributes.reset((yystack_[0].value.tag_attributes));
-    ((yylhs.value.document) = (yystack_[1].value.document))->head.metas.push_back(s);
+    //auto_ptr<Meta> s(new Meta);
+    //s->attributes.reset($2);
+    //($$ = $1)->head.metas.push_back(s);
+    (yylhs.value.document) = (yystack_[1].value.document);
   }
-#line 677 "HTMLParser.tab.cc"
+#line 684 "HTMLParser.tab.cc"
     break;
 
-  case 14:
-#line 344 "HTMLParser.yy"
+  case 14: // document_: document_ LINK
+#line 345 "HTMLParser.yy"
                    {
     ((yylhs.value.document) = (yystack_[1].value.document))->head.link_attributes.reset((yystack_[0].value.tag_attributes));
   }
-#line 685 "HTMLParser.tab.cc"
+#line 692 "HTMLParser.tab.cc"
     break;
 
-  case 15:
-#line 347 "HTMLParser.yy"
+  case 15: // document_: document_ SCRIPT
+#line 348 "HTMLParser.yy"
                      {
     auto_ptr<Script> s(new Script);
     s->attributes.reset((yystack_[0].value.tag_attributes));
@@ -694,11 +701,11 @@ namespace html2text {
     }
     ((yylhs.value.document) = (yystack_[1].value.document))->head.scripts.push_back(s);
   }
-#line 698 "HTMLParser.tab.cc"
+#line 705 "HTMLParser.tab.cc"
     break;
 
-  case 16:
-#line 355 "HTMLParser.yy"
+  case 16: // document_: document_ STYLE
+#line 356 "HTMLParser.yy"
                     {
     auto_ptr<Style> s(new Style);
     s->attributes.reset((yystack_[0].value.tag_attributes));
@@ -707,88 +714,88 @@ namespace html2text {
     }
     ((yylhs.value.document) = (yystack_[1].value.document))->head.styles.push_back(s);
   }
-#line 711 "HTMLParser.tab.cc"
+#line 718 "HTMLParser.tab.cc"
     break;
 
-  case 17:
-#line 363 "HTMLParser.yy"
+  case 17: // document_: document_ BODY
+#line 364 "HTMLParser.yy"
                    {
     delete (yystack_[0].value.tag_attributes);
     (yylhs.value.document) = (yystack_[1].value.document);
   }
-#line 720 "HTMLParser.tab.cc"
+#line 727 "HTMLParser.tab.cc"
     break;
 
-  case 18:
-#line 367 "HTMLParser.yy"
+  case 18: // document_: document_ END_BODY
+#line 368 "HTMLParser.yy"
                        {
     (yylhs.value.document) = (yystack_[1].value.document);
   }
-#line 728 "HTMLParser.tab.cc"
+#line 735 "HTMLParser.tab.cc"
     break;
 
-  case 19:
-#line 370 "HTMLParser.yy"
+  case 19: // document_: document_ texts
+#line 371 "HTMLParser.yy"
                     {
     Paragraph *p = new Paragraph;
     p->texts.reset((yystack_[0].value.element_list));
     ((yylhs.value.document) = (yystack_[1].value.document))->body.content->push_back(auto_ptr<Element>(p));
   }
-#line 738 "HTMLParser.tab.cc"
+#line 745 "HTMLParser.tab.cc"
     break;
 
-  case 20:
-#line 375 "HTMLParser.yy"
+  case 20: // document_: document_ heading
+#line 376 "HTMLParser.yy"
                       {
     ((yylhs.value.document) = (yystack_[1].value.document))->body.content->push_back(auto_ptr<Element>((yystack_[0].value.heading)));
   }
-#line 746 "HTMLParser.tab.cc"
+#line 753 "HTMLParser.tab.cc"
     break;
 
-  case 21:
-#line 378 "HTMLParser.yy"
+  case 21: // document_: document_ block
+#line 379 "HTMLParser.yy"
                     {
     ((yylhs.value.document) = (yystack_[1].value.document))->body.content->push_back(auto_ptr<Element>((yystack_[0].value.element)));
   }
-#line 754 "HTMLParser.tab.cc"
+#line 761 "HTMLParser.tab.cc"
     break;
 
-  case 22:
-#line 381 "HTMLParser.yy"
+  case 22: // document_: document_ address
+#line 382 "HTMLParser.yy"
                       {
     ((yylhs.value.document) = (yystack_[1].value.document))->body.content->push_back(auto_ptr<Element>((yystack_[0].value.address)));
   }
-#line 762 "HTMLParser.tab.cc"
+#line 769 "HTMLParser.tab.cc"
     break;
 
-  case 23:
-#line 387 "HTMLParser.yy"
+  case 23: // pcdata: PCDATA
+#line 388 "HTMLParser.yy"
          {
     (yylhs.value.pcdata) = new PCData;
     (yylhs.value.pcdata)->text = *(yystack_[0].value.strinG);
     delete (yystack_[0].value.strinG);
   }
-#line 772 "HTMLParser.tab.cc"
+#line 779 "HTMLParser.tab.cc"
     break;
 
-  case 24:
-#line 395 "HTMLParser.yy"
+  case 24: // body_content: %empty
+#line 396 "HTMLParser.yy"
               {
     (yylhs.value.element_list) = new list<auto_ptr<Element>>;
   }
-#line 780 "HTMLParser.tab.cc"
+#line 787 "HTMLParser.tab.cc"
     break;
 
-  case 25:
-#line 398 "HTMLParser.yy"
+  case 25: // body_content: body_content error
+#line 399 "HTMLParser.yy"
                        {
     (yylhs.value.element_list) = (yystack_[1].value.element_list);
   }
-#line 788 "HTMLParser.tab.cc"
+#line 795 "HTMLParser.tab.cc"
     break;
 
-  case 26:
-#line 401 "HTMLParser.yy"
+  case 26: // body_content: body_content SCRIPT
+#line 402 "HTMLParser.yy"
                         {
     auto_ptr<Script> s(new Script);
     s->attributes.reset((yystack_[0].value.tag_attributes));
@@ -797,11 +804,11 @@ namespace html2text {
     }
 //    ($$ = $1)->head.scripts.push_back(s);
   }
-#line 801 "HTMLParser.tab.cc"
+#line 808 "HTMLParser.tab.cc"
     break;
 
-  case 27:
-#line 409 "HTMLParser.yy"
+  case 27: // body_content: body_content STYLE
+#line 410 "HTMLParser.yy"
                        {
     auto_ptr<Style> s(new Style);
     s->attributes.reset((yystack_[0].value.tag_attributes));
@@ -810,56 +817,56 @@ namespace html2text {
     }
 //    ($$ = $1)->head.styles.push_back(s);
   }
-#line 814 "HTMLParser.tab.cc"
+#line 821 "HTMLParser.tab.cc"
     break;
 
-  case 28:
-#line 417 "HTMLParser.yy"
+  case 28: // body_content: body_content META
+#line 418 "HTMLParser.yy"
                       {
     /* This seems to happen for instance by Mozilla Thunderbird in its
      * replies, a blockquote is followed by a meta tag having content
      * encoding.  Don't error out, just ignore this */
     (yylhs.value.element_list) = new list<auto_ptr<Element>>;
   }
-#line 825 "HTMLParser.tab.cc"
+#line 832 "HTMLParser.tab.cc"
     break;
 
-  case 29:
-#line 423 "HTMLParser.yy"
+  case 29: // body_content: body_content texts
+#line 424 "HTMLParser.yy"
                        {
     Paragraph *p = new Paragraph;
     p->texts = auto_ptr<list<auto_ptr<Element> > >((yystack_[0].value.element_list));
     ((yylhs.value.element_list) = (yystack_[1].value.element_list))->push_back(auto_ptr<Element>(p));
   }
-#line 835 "HTMLParser.tab.cc"
+#line 842 "HTMLParser.tab.cc"
     break;
 
-  case 30:
-#line 428 "HTMLParser.yy"
+  case 30: // body_content: body_content heading
+#line 429 "HTMLParser.yy"
                          {
     ((yylhs.value.element_list) = (yystack_[1].value.element_list))->push_back(auto_ptr<Element>((yystack_[0].value.heading)));
   }
-#line 843 "HTMLParser.tab.cc"
+#line 850 "HTMLParser.tab.cc"
     break;
 
-  case 31:
-#line 431 "HTMLParser.yy"
+  case 31: // body_content: body_content block
+#line 432 "HTMLParser.yy"
                        {
     ((yylhs.value.element_list) = (yystack_[1].value.element_list))->push_back(auto_ptr<Element>((yystack_[0].value.element)));
   }
-#line 851 "HTMLParser.tab.cc"
+#line 858 "HTMLParser.tab.cc"
     break;
 
-  case 32:
-#line 434 "HTMLParser.yy"
+  case 32: // body_content: body_content address
+#line 435 "HTMLParser.yy"
                          {
     ((yylhs.value.element_list) = (yystack_[1].value.element_list))->push_back(auto_ptr<Element>((yystack_[0].value.address)));
   }
-#line 859 "HTMLParser.tab.cc"
+#line 866 "HTMLParser.tab.cc"
     break;
 
-  case 33:
-#line 440 "HTMLParser.yy"
+  case 33: // heading: HX paragraph_content END_HX
+#line 441 "HTMLParser.yy"
                               {
             /* EXTENSION: Allow paragraph content in heading, not only texts */
     if ((yystack_[2].value.heading)->level != (yystack_[0].value.inT)) {
@@ -868,142 +875,142 @@ namespace html2text {
     (yylhs.value.heading) = (yystack_[2].value.heading);
     (yylhs.value.heading)->content.reset((yystack_[1].value.element_list));
   }
-#line 872 "HTMLParser.tab.cc"
+#line 879 "HTMLParser.tab.cc"
     break;
 
-  case 34:
-#line 451 "HTMLParser.yy"
+  case 34: // block: block_except_p
+#line 452 "HTMLParser.yy"
                  {
     (yylhs.value.element) = (yystack_[0].value.element);
   }
-#line 880 "HTMLParser.tab.cc"
+#line 887 "HTMLParser.tab.cc"
     break;
 
-  case 35:
-#line 454 "HTMLParser.yy"
+  case 35: // block: P paragraph_content opt_END_P
+#line 455 "HTMLParser.yy"
                                   {
     Paragraph *p = new Paragraph;
     p->attributes.reset((yystack_[2].value.tag_attributes));
     p->texts.reset((yystack_[1].value.element_list));
     (yylhs.value.element) = p;
   }
-#line 891 "HTMLParser.tab.cc"
+#line 898 "HTMLParser.tab.cc"
     break;
 
-  case 36:
-#line 463 "HTMLParser.yy"
+  case 36: // paragraph_content: %empty
+#line 464 "HTMLParser.yy"
               {
     (yylhs.value.element_list) = new list<auto_ptr<Element> >;
   }
-#line 899 "HTMLParser.tab.cc"
+#line 906 "HTMLParser.tab.cc"
     break;
 
-  case 37:
-#line 466 "HTMLParser.yy"
+  case 37: // paragraph_content: paragraph_content error
+#line 467 "HTMLParser.yy"
                             {
     (yylhs.value.element_list) = (yystack_[1].value.element_list);
   }
-#line 907 "HTMLParser.tab.cc"
+#line 914 "HTMLParser.tab.cc"
     break;
 
-  case 38:
-#line 469 "HTMLParser.yy"
+  case 38: // paragraph_content: paragraph_content texts
+#line 470 "HTMLParser.yy"
                             {
     (yylhs.value.element_list) = (yystack_[1].value.element_list);
     (yylhs.value.element_list)->splice((yylhs.value.element_list)->end(), *(yystack_[0].value.element_list));
     delete (yystack_[0].value.element_list);
   }
-#line 917 "HTMLParser.tab.cc"
+#line 924 "HTMLParser.tab.cc"
     break;
 
-  case 39:
-#line 474 "HTMLParser.yy"
+  case 39: // paragraph_content: paragraph_content block_except_p
+#line 475 "HTMLParser.yy"
                                      {
     ((yylhs.value.element_list) = (yystack_[1].value.element_list))->push_back(auto_ptr<Element>((yystack_[0].value.element)));
   }
-#line 925 "HTMLParser.tab.cc"
+#line 932 "HTMLParser.tab.cc"
     break;
 
-  case 40:
-#line 480 "HTMLParser.yy"
+  case 40: // block_except_p: list
+#line 481 "HTMLParser.yy"
        {
     (yylhs.value.element) = (yystack_[0].value.element);
   }
-#line 933 "HTMLParser.tab.cc"
+#line 940 "HTMLParser.tab.cc"
     break;
 
-  case 41:
-#line 483 "HTMLParser.yy"
+  case 41: // block_except_p: preformatted
+#line 484 "HTMLParser.yy"
                  {
     (yylhs.value.element) = (yystack_[0].value.preformatted);
   }
-#line 941 "HTMLParser.tab.cc"
+#line 948 "HTMLParser.tab.cc"
     break;
 
-  case 42:
-#line 486 "HTMLParser.yy"
+  case 42: // block_except_p: definition_list
+#line 487 "HTMLParser.yy"
                     {
     (yylhs.value.element) = (yystack_[0].value.definition_list);
   }
-#line 949 "HTMLParser.tab.cc"
+#line 956 "HTMLParser.tab.cc"
     break;
 
-  case 43:
-#line 489 "HTMLParser.yy"
+  case 43: // block_except_p: DIV body_content opt_END_DIV
+#line 490 "HTMLParser.yy"
                                  {
     Division *p = new Division;
     p->attributes.reset((yystack_[2].value.tag_attributes));
     p->body_content.reset((yystack_[1].value.element_list));
     (yylhs.value.element) = p;
   }
-#line 960 "HTMLParser.tab.cc"
+#line 967 "HTMLParser.tab.cc"
     break;
 
-  case 44:
-#line 495 "HTMLParser.yy"
+  case 44: // block_except_p: CENTER body_content opt_END_CENTER
+#line 496 "HTMLParser.yy"
                                        {
     Center *p = new Center;
     delete (yystack_[2].value.tag_attributes);       // CENTER has no attributes.
     p->body_content.reset((yystack_[1].value.element_list));
     (yylhs.value.element) = p;
   }
-#line 971 "HTMLParser.tab.cc"
+#line 978 "HTMLParser.tab.cc"
     break;
 
-  case 45:
-#line 501 "HTMLParser.yy"
+  case 45: // block_except_p: BLOCKQUOTE body_content opt_END_BLOCKQUOTE
+#line 502 "HTMLParser.yy"
                                                {
     delete (yystack_[2].value.tag_attributes); // BLOCKQUOTE has no attributes!
     BlockQuote *bq = new BlockQuote;
     bq->content.reset((yystack_[1].value.element_list));
     (yylhs.value.element) = bq;
   }
-#line 982 "HTMLParser.tab.cc"
+#line 989 "HTMLParser.tab.cc"
     break;
 
-  case 46:
-#line 507 "HTMLParser.yy"
+  case 46: // block_except_p: FORM body_content opt_END_FORM
+#line 508 "HTMLParser.yy"
                                    {
     Form *f = new Form;
     f->attributes.reset((yystack_[2].value.tag_attributes));
     f->content.reset((yystack_[1].value.element_list));
     (yylhs.value.element) = f;
   }
-#line 993 "HTMLParser.tab.cc"
+#line 1000 "HTMLParser.tab.cc"
     break;
 
-  case 47:
-#line 513 "HTMLParser.yy"
+  case 47: // block_except_p: HR
+#line 514 "HTMLParser.yy"
        {
     HorizontalRule *h = new HorizontalRule;
     h->attributes.reset((yystack_[0].value.tag_attributes));
     (yylhs.value.element) = h;
   }
-#line 1003 "HTMLParser.tab.cc"
+#line 1010 "HTMLParser.tab.cc"
     break;
 
-  case 48:
-#line 518 "HTMLParser.yy"
+  case 48: // block_except_p: TABLE opt_caption table_rows opt_END_TABLE
+#line 519 "HTMLParser.yy"
                                                {
     Table *t = new Table;
     t->attributes.reset((yystack_[3].value.tag_attributes));
@@ -1011,17 +1018,17 @@ namespace html2text {
     t->rows.reset((yystack_[1].value.table_rows));
     (yylhs.value.element) = t;
   }
-#line 1015 "HTMLParser.tab.cc"
+#line 1022 "HTMLParser.tab.cc"
     break;
 
-  case 49:
-#line 528 "HTMLParser.yy"
+  case 49: // $@1: %empty
+#line 529 "HTMLParser.yy"
      { ++drv.list_nesting; }
-#line 1021 "HTMLParser.tab.cc"
+#line 1028 "HTMLParser.tab.cc"
     break;
 
-  case 50:
-#line 528 "HTMLParser.yy"
+  case 50: // list: OL $@1 list_content END_OL
+#line 529 "HTMLParser.yy"
                                                  {
     OrderedList *ol = new OrderedList;
     ol->attributes.reset((yystack_[3].value.tag_attributes));
@@ -1029,17 +1036,17 @@ namespace html2text {
     ol->nesting = --drv.list_nesting;
     (yylhs.value.element) = ol;
   }
-#line 1033 "HTMLParser.tab.cc"
+#line 1040 "HTMLParser.tab.cc"
     break;
 
-  case 51:
-#line 535 "HTMLParser.yy"
+  case 51: // $@2: %empty
+#line 536 "HTMLParser.yy"
        { ++drv.list_nesting; }
-#line 1039 "HTMLParser.tab.cc"
+#line 1046 "HTMLParser.tab.cc"
     break;
 
-  case 52:
-#line 535 "HTMLParser.yy"
+  case 52: // list: UL $@2 list_content opt_END_UL
+#line 536 "HTMLParser.yy"
                                                        {
     UnorderedList *ul = new UnorderedList;
     ul->attributes.reset((yystack_[3].value.tag_attributes));
@@ -1047,17 +1054,17 @@ namespace html2text {
     ul->nesting = --drv.list_nesting;
     (yylhs.value.element) = ul;
   }
-#line 1051 "HTMLParser.tab.cc"
+#line 1058 "HTMLParser.tab.cc"
     break;
 
-  case 53:
-#line 542 "HTMLParser.yy"
+  case 53: // $@3: %empty
+#line 543 "HTMLParser.yy"
         { ++drv.list_nesting; }
-#line 1057 "HTMLParser.tab.cc"
+#line 1064 "HTMLParser.tab.cc"
     break;
 
-  case 54:
-#line 542 "HTMLParser.yy"
+  case 54: // list: DIR $@3 list_content END_DIR
+#line 543 "HTMLParser.yy"
                                                      {
     Dir *d = new Dir;
     d->attributes.reset((yystack_[3].value.tag_attributes));
@@ -1065,17 +1072,17 @@ namespace html2text {
     d->nesting = --drv.list_nesting;
     (yylhs.value.element) = d;
   }
-#line 1069 "HTMLParser.tab.cc"
+#line 1076 "HTMLParser.tab.cc"
     break;
 
-  case 55:
-#line 549 "HTMLParser.yy"
+  case 55: // $@4: %empty
+#line 550 "HTMLParser.yy"
          { ++drv.list_nesting; }
-#line 1075 "HTMLParser.tab.cc"
+#line 1082 "HTMLParser.tab.cc"
     break;
 
-  case 56:
-#line 549 "HTMLParser.yy"
+  case 56: // list: MENU $@4 list_content END_MENU
+#line 550 "HTMLParser.yy"
                                                        {
     Menu *m = new Menu;
     m->attributes.reset((yystack_[3].value.tag_attributes));
@@ -1083,77 +1090,77 @@ namespace html2text {
     m->nesting = --drv.list_nesting;
     (yylhs.value.element) = m;
   }
-#line 1087 "HTMLParser.tab.cc"
+#line 1094 "HTMLParser.tab.cc"
     break;
 
-  case 57:
-#line 559 "HTMLParser.yy"
+  case 57: // list_content: %empty
+#line 560 "HTMLParser.yy"
               {
     (yylhs.value.list_items) = 0;
   }
-#line 1095 "HTMLParser.tab.cc"
+#line 1102 "HTMLParser.tab.cc"
     break;
 
-  case 58:
-#line 562 "HTMLParser.yy"
+  case 58: // list_content: list_content error
+#line 563 "HTMLParser.yy"
                        {
     (yylhs.value.list_items) = (yystack_[1].value.list_items);
   }
-#line 1103 "HTMLParser.tab.cc"
+#line 1110 "HTMLParser.tab.cc"
     break;
 
-  case 59:
-#line 565 "HTMLParser.yy"
+  case 59: // list_content: list_content list_item
+#line 566 "HTMLParser.yy"
                            {
     (yylhs.value.list_items) = (yystack_[1].value.list_items) ? (yystack_[1].value.list_items) : new list<auto_ptr<ListItem> >;
     (yylhs.value.list_items)->push_back(auto_ptr<ListItem>((yystack_[0].value.list_item)));
   }
-#line 1112 "HTMLParser.tab.cc"
+#line 1119 "HTMLParser.tab.cc"
     break;
 
-  case 60:
-#line 572 "HTMLParser.yy"
+  case 60: // list_item: LI opt_flow opt_END_LI
+#line 573 "HTMLParser.yy"
                          {
     ListNormalItem *lni = new ListNormalItem;
     lni->attributes.reset((yystack_[2].value.tag_attributes));
     lni->flow.reset((yystack_[1].value.element_list));
     (yylhs.value.list_item) = lni;
   }
-#line 1123 "HTMLParser.tab.cc"
+#line 1130 "HTMLParser.tab.cc"
     break;
 
-  case 61:
-#line 578 "HTMLParser.yy"
+  case 61: // list_item: block
+#line 579 "HTMLParser.yy"
           {   /* EXTENSION: Handle a "block" in a list as an indented block. */
     ListBlockItem *lbi = new ListBlockItem;
     lbi->block.reset((yystack_[0].value.element));
     (yylhs.value.list_item) = lbi;
   }
-#line 1133 "HTMLParser.tab.cc"
+#line 1140 "HTMLParser.tab.cc"
     break;
 
-  case 62:
-#line 583 "HTMLParser.yy"
+  case 62: // list_item: texts
+#line 584 "HTMLParser.yy"
           {              /* EXTENSION: Treat "texts" in a list as an "<LI>". */
     ListNormalItem *lni = new ListNormalItem;
     lni->flow.reset((yystack_[0].value.element_list));
     (yylhs.value.list_item) = lni;
   }
-#line 1143 "HTMLParser.tab.cc"
+#line 1150 "HTMLParser.tab.cc"
     break;
 
-  case 63:
-#line 593 "HTMLParser.yy"
+  case 63: // definition_list: DL opt_flow opt_error definition_list opt_END_DL
+#line 594 "HTMLParser.yy"
                                                    {
     delete (yystack_[4].value.tag_attributes);
     delete (yystack_[3].value.element_list); /* Kludge */
     (yylhs.value.definition_list) = (yystack_[1].value.definition_list);
   }
-#line 1153 "HTMLParser.tab.cc"
+#line 1160 "HTMLParser.tab.cc"
     break;
 
-  case 64:
-#line 599 "HTMLParser.yy"
+  case 64: // definition_list: DL opt_flow opt_error definition_list_content END_DL
+#line 600 "HTMLParser.yy"
                                                          {
     DefinitionList *dl = new DefinitionList;
     dl->attributes.reset((yystack_[4].value.tag_attributes));
@@ -1161,210 +1168,210 @@ namespace html2text {
     dl->items.reset((yystack_[1].value.definition_list_item_list));
     (yylhs.value.definition_list) = dl;
   }
-#line 1165 "HTMLParser.tab.cc"
+#line 1172 "HTMLParser.tab.cc"
     break;
 
-  case 65:
-#line 609 "HTMLParser.yy"
+  case 65: // definition_list_content: %empty
+#line 610 "HTMLParser.yy"
               {
     (yylhs.value.definition_list_item_list) = 0;
   }
-#line 1173 "HTMLParser.tab.cc"
+#line 1180 "HTMLParser.tab.cc"
     break;
 
-  case 66:
-#line 612 "HTMLParser.yy"
+  case 66: // definition_list_content: definition_list_content
+#line 613 "HTMLParser.yy"
                             {
     (yylhs.value.definition_list_item_list) = (yystack_[0].value.definition_list_item_list);
   }
-#line 1181 "HTMLParser.tab.cc"
+#line 1188 "HTMLParser.tab.cc"
     break;
 
-  case 67:
-#line 615 "HTMLParser.yy"
+  case 67: // definition_list_content: definition_list_content term_name
+#line 616 "HTMLParser.yy"
                                       {
     (yylhs.value.definition_list_item_list) = (yystack_[1].value.definition_list_item_list) ? (yystack_[1].value.definition_list_item_list) : new list<auto_ptr<DefinitionListItem> >;
     (yylhs.value.definition_list_item_list)->push_back(auto_ptr<DefinitionListItem>((yystack_[0].value.term_name)));
   }
-#line 1190 "HTMLParser.tab.cc"
+#line 1197 "HTMLParser.tab.cc"
     break;
 
-  case 68:
-#line 619 "HTMLParser.yy"
+  case 68: // definition_list_content: definition_list_content term_definition
+#line 620 "HTMLParser.yy"
                                             {
     (yylhs.value.definition_list_item_list) = (yystack_[1].value.definition_list_item_list) ? (yystack_[1].value.definition_list_item_list) : new list<auto_ptr<DefinitionListItem> >;
     (yylhs.value.definition_list_item_list)->push_back(auto_ptr<DefinitionListItem>((yystack_[0].value.term_definition)));
   }
-#line 1199 "HTMLParser.tab.cc"
+#line 1206 "HTMLParser.tab.cc"
     break;
 
-  case 69:
-#line 626 "HTMLParser.yy"
+  case 69: // term_name: DT opt_flow opt_error
+#line 627 "HTMLParser.yy"
                         {      /* EXTENSION: Allow "flow" instead of "texts" */
     delete (yystack_[2].value.tag_attributes);
     (yylhs.value.term_name) = new TermName;
     (yylhs.value.term_name)->flow.reset((yystack_[1].value.element_list));
   }
-#line 1209 "HTMLParser.tab.cc"
+#line 1216 "HTMLParser.tab.cc"
     break;
 
-  case 70:
-#line 631 "HTMLParser.yy"
+  case 70: // term_name: DT opt_flow END_DT opt_P opt_error
+#line 632 "HTMLParser.yy"
                                        {/* EXTENSION: Ignore <P> after </DT> */
     delete (yystack_[4].value.tag_attributes);
     delete (yystack_[1].value.tag_attributes);
     (yylhs.value.term_name) = new TermName;
     (yylhs.value.term_name)->flow.reset((yystack_[3].value.element_list));
   }
-#line 1220 "HTMLParser.tab.cc"
+#line 1227 "HTMLParser.tab.cc"
     break;
 
-  case 71:
-#line 640 "HTMLParser.yy"
+  case 71: // term_definition: DD opt_flow opt_error
+#line 641 "HTMLParser.yy"
                         {
     delete (yystack_[2].value.tag_attributes);
     (yylhs.value.term_definition) = new TermDefinition;
     (yylhs.value.term_definition)->flow.reset((yystack_[1].value.element_list));
   }
-#line 1230 "HTMLParser.tab.cc"
+#line 1237 "HTMLParser.tab.cc"
     break;
 
-  case 72:
-#line 645 "HTMLParser.yy"
+  case 72: // term_definition: DD opt_flow END_DD opt_P opt_error
+#line 646 "HTMLParser.yy"
                                        {/* EXTENSION: Ignore <P> after </DD> */
     delete (yystack_[4].value.tag_attributes);
     delete (yystack_[1].value.tag_attributes);
     (yylhs.value.term_definition) = new TermDefinition;
     (yylhs.value.term_definition)->flow.reset((yystack_[3].value.element_list));
   }
-#line 1241 "HTMLParser.tab.cc"
+#line 1248 "HTMLParser.tab.cc"
     break;
 
-  case 73:
-#line 654 "HTMLParser.yy"
+  case 73: // flow: flow_
+#line 655 "HTMLParser.yy"
         {
     (yylhs.value.element_list) = new list<auto_ptr<Element> >;
     (yylhs.value.element_list)->push_back(auto_ptr<Element>((yystack_[0].value.element)));
   }
-#line 1250 "HTMLParser.tab.cc"
+#line 1257 "HTMLParser.tab.cc"
     break;
 
-  case 74:
-#line 658 "HTMLParser.yy"
+  case 74: // flow: flow error
+#line 659 "HTMLParser.yy"
                {
     (yylhs.value.element_list) = (yystack_[1].value.element_list);
   }
-#line 1258 "HTMLParser.tab.cc"
+#line 1265 "HTMLParser.tab.cc"
     break;
 
-  case 75:
-#line 661 "HTMLParser.yy"
+  case 75: // flow: flow flow_
+#line 662 "HTMLParser.yy"
                {
     ((yylhs.value.element_list) = (yystack_[1].value.element_list))->push_back(auto_ptr<Element>((yystack_[0].value.element)));
   }
-#line 1266 "HTMLParser.tab.cc"
+#line 1273 "HTMLParser.tab.cc"
     break;
 
-  case 76:
-#line 667 "HTMLParser.yy"
+  case 76: // flow_: text
+#line 668 "HTMLParser.yy"
        {
     (yylhs.value.element) = (yystack_[0].value.element);
   }
-#line 1274 "HTMLParser.tab.cc"
+#line 1281 "HTMLParser.tab.cc"
     break;
 
-  case 77:
-#line 670 "HTMLParser.yy"
+  case 77: // flow_: heading
+#line 671 "HTMLParser.yy"
             {          /* EXTENSION: Allow headings in "flow", i.e. in lists */
     (yylhs.value.element) = (yystack_[0].value.heading);
   }
-#line 1282 "HTMLParser.tab.cc"
+#line 1289 "HTMLParser.tab.cc"
     break;
 
-  case 78:
-#line 673 "HTMLParser.yy"
+  case 78: // flow_: block
+#line 674 "HTMLParser.yy"
           {
     (yylhs.value.element) = (yystack_[0].value.element);
   }
-#line 1290 "HTMLParser.tab.cc"
+#line 1297 "HTMLParser.tab.cc"
     break;
 
-  case 79:
-#line 679 "HTMLParser.yy"
+  case 79: // preformatted: PRE opt_texts opt_END_PRE
+#line 680 "HTMLParser.yy"
                             {
     (yylhs.value.preformatted) = new Preformatted;
     (yylhs.value.preformatted)->attributes.reset((yystack_[2].value.tag_attributes));
     (yylhs.value.preformatted)->texts.reset((yystack_[1].value.element_list));
   }
-#line 1300 "HTMLParser.tab.cc"
+#line 1307 "HTMLParser.tab.cc"
     break;
 
-  case 80:
-#line 687 "HTMLParser.yy"
+  case 80: // caption: CAPTION opt_texts END_CAPTION
+#line 688 "HTMLParser.yy"
                                 {
     (yylhs.value.caption) = new Caption;
     (yylhs.value.caption)->attributes.reset((yystack_[2].value.tag_attributes));
     (yylhs.value.caption)->texts.reset((yystack_[1].value.element_list));
   }
-#line 1310 "HTMLParser.tab.cc"
+#line 1317 "HTMLParser.tab.cc"
     break;
 
-  case 81:
-#line 695 "HTMLParser.yy"
+  case 81: // table_rows: %empty
+#line 696 "HTMLParser.yy"
               {
     (yylhs.value.table_rows) = new list<auto_ptr<TableRow> >;
   }
-#line 1318 "HTMLParser.tab.cc"
+#line 1325 "HTMLParser.tab.cc"
     break;
 
-  case 82:
-#line 698 "HTMLParser.yy"
+  case 82: // table_rows: table_rows error
+#line 699 "HTMLParser.yy"
                      {
     (yylhs.value.table_rows) = (yystack_[1].value.table_rows);
   }
-#line 1326 "HTMLParser.tab.cc"
+#line 1333 "HTMLParser.tab.cc"
     break;
 
-  case 83:
-#line 701 "HTMLParser.yy"
+  case 83: // table_rows: table_rows TR table_cells opt_END_TR
+#line 702 "HTMLParser.yy"
                                          {
     TableRow *tr = new TableRow;
     tr->attributes.reset((yystack_[2].value.tag_attributes));
     tr->cells.reset((yystack_[1].value.table_cells));
     ((yylhs.value.table_rows) = (yystack_[3].value.table_rows))->push_back(auto_ptr<TableRow>(tr));
   }
-#line 1337 "HTMLParser.tab.cc"
+#line 1344 "HTMLParser.tab.cc"
     break;
 
-  case 84:
-#line 710 "HTMLParser.yy"
+  case 84: // table_cells: %empty
+#line 711 "HTMLParser.yy"
               {
     (yylhs.value.table_cells) = new list<auto_ptr<TableCell> >;
   }
-#line 1345 "HTMLParser.tab.cc"
+#line 1352 "HTMLParser.tab.cc"
     break;
 
-  case 85:
-#line 713 "HTMLParser.yy"
+  case 85: // table_cells: table_cells error
+#line 714 "HTMLParser.yy"
                       {
     (yylhs.value.table_cells) = (yystack_[1].value.table_cells);
   }
-#line 1353 "HTMLParser.tab.cc"
+#line 1360 "HTMLParser.tab.cc"
     break;
 
-  case 86:
-#line 716 "HTMLParser.yy"
+  case 86: // table_cells: table_cells TD body_content opt_END_TD
+#line 717 "HTMLParser.yy"
                                            {
     TableCell *tc = new TableCell;
     tc->attributes.reset((yystack_[2].value.tag_attributes));
     tc->content.reset((yystack_[1].value.element_list));
     ((yylhs.value.table_cells) = (yystack_[3].value.table_cells))->push_back(auto_ptr<TableCell>(tc));
   }
-#line 1364 "HTMLParser.tab.cc"
+#line 1371 "HTMLParser.tab.cc"
     break;
 
-  case 87:
-#line 722 "HTMLParser.yy"
+  case 87: // table_cells: table_cells TH body_content opt_END_TH opt_END_TD
+#line 723 "HTMLParser.yy"
                                                       {
                             /* EXTENSION: Allow "</TD>" in place of "</TH>". */
     TableHeadingCell *thc = new TableHeadingCell;
@@ -1372,190 +1379,190 @@ namespace html2text {
     thc->content.reset((yystack_[2].value.element_list));
     ((yylhs.value.table_cells) = (yystack_[4].value.table_cells))->push_back(auto_ptr<TableCell>(thc));
   }
-#line 1376 "HTMLParser.tab.cc"
+#line 1383 "HTMLParser.tab.cc"
     break;
 
-  case 88:
-#line 729 "HTMLParser.yy"
+  case 88: // table_cells: table_cells INPUT
+#line 730 "HTMLParser.yy"
                       {    /* EXTENSION: Ignore <INPUT> between table cells. */
     delete (yystack_[0].value.tag_attributes);
     (yylhs.value.table_cells) = (yystack_[1].value.table_cells);
   }
-#line 1385 "HTMLParser.tab.cc"
+#line 1392 "HTMLParser.tab.cc"
     break;
 
-  case 89:
-#line 736 "HTMLParser.yy"
+  case 89: // address: ADDRESS opt_texts END_ADDRESS
+#line 737 "HTMLParser.yy"
                                 { /* Should be "address_content"... */
     delete (yystack_[2].value.tag_attributes);
     (yylhs.value.address) = new Address;
     (yylhs.value.address)->content.reset((yystack_[1].value.element_list));
   }
-#line 1395 "HTMLParser.tab.cc"
+#line 1402 "HTMLParser.tab.cc"
     break;
 
-  case 90:
-#line 746 "HTMLParser.yy"
+  case 90: // texts: text
+#line 747 "HTMLParser.yy"
        {
     (yylhs.value.element_list) = new list<auto_ptr<Element> >;
     (yylhs.value.element_list)->push_back(auto_ptr<Element>((yystack_[0].value.element)));
   }
-#line 1404 "HTMLParser.tab.cc"
+#line 1411 "HTMLParser.tab.cc"
     break;
 
-  case 91:
-#line 750 "HTMLParser.yy"
+  case 91: // texts: texts text
+#line 751 "HTMLParser.yy"
                {
     ((yylhs.value.element_list) = (yystack_[1].value.element_list))->push_back(auto_ptr<Element>((yystack_[0].value.element)));
   }
-#line 1412 "HTMLParser.tab.cc"
+#line 1419 "HTMLParser.tab.cc"
     break;
 
-  case 92:
-#line 756 "HTMLParser.yy"
-                                      { (yylhs.value.element) = (yystack_[1].value.pcdata); }
-#line 1418 "HTMLParser.tab.cc"
-    break;
-
-  case 93:
+  case 92: // text: pcdata opt_error
 #line 757 "HTMLParser.yy"
-                                      { (yylhs.value.element) = (yystack_[1].value.element); }
-#line 1424 "HTMLParser.tab.cc"
+                                      { (yylhs.value.element) = (yystack_[1].value.pcdata); }
+#line 1425 "HTMLParser.tab.cc"
     break;
 
-  case 94:
+  case 93: // text: font opt_error
 #line 758 "HTMLParser.yy"
                                       { (yylhs.value.element) = (yystack_[1].value.element); }
-#line 1430 "HTMLParser.tab.cc"
+#line 1431 "HTMLParser.tab.cc"
     break;
 
-  case 95:
+  case 94: // text: phrase opt_error
 #line 759 "HTMLParser.yy"
                                       { (yylhs.value.element) = (yystack_[1].value.element); }
-#line 1436 "HTMLParser.tab.cc"
+#line 1437 "HTMLParser.tab.cc"
     break;
 
-  case 96:
+  case 95: // text: special opt_error
 #line 760 "HTMLParser.yy"
                                       { (yylhs.value.element) = (yystack_[1].value.element); }
-#line 1442 "HTMLParser.tab.cc"
+#line 1443 "HTMLParser.tab.cc"
     break;
 
-  case 97:
+  case 96: // text: form opt_error
 #line 761 "HTMLParser.yy"
+                                      { (yylhs.value.element) = (yystack_[1].value.element); }
+#line 1449 "HTMLParser.tab.cc"
+    break;
+
+  case 97: // text: NOBR opt_texts END_NOBR opt_error
+#line 762 "HTMLParser.yy"
                                       { /* EXTENSION: NS 1.1 / IE 2.0 */
     NoBreak *nb = new NoBreak;
     delete (yystack_[3].value.tag_attributes);
     nb->content.reset((yystack_[2].value.element_list));
     (yylhs.value.element) = nb;
   }
-#line 1453 "HTMLParser.tab.cc"
+#line 1460 "HTMLParser.tab.cc"
     break;
 
-  case 98:
-#line 770 "HTMLParser.yy"
-                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::TT,     (yystack_[1].value.element_list)); }
-#line 1459 "HTMLParser.tab.cc"
-    break;
-
-  case 99:
+  case 98: // font: TT opt_texts opt_END_TT
 #line 771 "HTMLParser.yy"
-                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::I,      (yystack_[1].value.element_list)); }
-#line 1465 "HTMLParser.tab.cc"
+                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::TT,     (yystack_[1].value.element_list)); }
+#line 1466 "HTMLParser.tab.cc"
     break;
 
-  case 100:
+  case 99: // font: I opt_texts opt_END_I
 #line 772 "HTMLParser.yy"
-                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::B,      (yystack_[1].value.element_list)); }
-#line 1471 "HTMLParser.tab.cc"
+                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::I,      (yystack_[1].value.element_list)); }
+#line 1472 "HTMLParser.tab.cc"
     break;
 
-  case 101:
+  case 100: // font: B opt_texts opt_END_B
 #line 773 "HTMLParser.yy"
-                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::U,      (yystack_[1].value.element_list)); }
-#line 1477 "HTMLParser.tab.cc"
+                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::B,      (yystack_[1].value.element_list)); }
+#line 1478 "HTMLParser.tab.cc"
     break;
 
-  case 102:
+  case 101: // font: U opt_texts opt_END_U
 #line 774 "HTMLParser.yy"
-                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::STRIKE, (yystack_[1].value.element_list)); }
-#line 1483 "HTMLParser.tab.cc"
+                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::U,      (yystack_[1].value.element_list)); }
+#line 1484 "HTMLParser.tab.cc"
     break;
 
-  case 103:
+  case 102: // font: STRIKE opt_texts opt_END_STRIKE
 #line 775 "HTMLParser.yy"
-                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::BIG,    (yystack_[1].value.element_list)); }
-#line 1489 "HTMLParser.tab.cc"
+                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::STRIKE, (yystack_[1].value.element_list)); }
+#line 1490 "HTMLParser.tab.cc"
     break;
 
-  case 104:
+  case 103: // font: BIG opt_texts opt_END_BIG
 #line 776 "HTMLParser.yy"
-                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::SMALL,  (yystack_[1].value.element_list)); }
-#line 1495 "HTMLParser.tab.cc"
+                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::BIG,    (yystack_[1].value.element_list)); }
+#line 1496 "HTMLParser.tab.cc"
     break;
 
-  case 105:
+  case 104: // font: SMALL opt_texts opt_END_SMALL
 #line 777 "HTMLParser.yy"
-                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::SUB,    (yystack_[1].value.element_list)); }
-#line 1501 "HTMLParser.tab.cc"
+                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::SMALL,  (yystack_[1].value.element_list)); }
+#line 1502 "HTMLParser.tab.cc"
     break;
 
-  case 106:
+  case 105: // font: SUB opt_texts opt_END_SUB
 #line 778 "HTMLParser.yy"
+                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::SUB,    (yystack_[1].value.element_list)); }
+#line 1508 "HTMLParser.tab.cc"
+    break;
+
+  case 106: // font: SUP opt_texts opt_END_SUP
+#line 779 "HTMLParser.yy"
                                     { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Font(token::SUP,    (yystack_[1].value.element_list)); }
-#line 1507 "HTMLParser.tab.cc"
+#line 1514 "HTMLParser.tab.cc"
     break;
 
-  case 107:
-#line 782 "HTMLParser.yy"
-                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Phrase(token::EM,     (yystack_[1].value.element_list)); }
-#line 1513 "HTMLParser.tab.cc"
-    break;
-
-  case 108:
+  case 107: // phrase: EM opt_texts opt_END_EM
 #line 783 "HTMLParser.yy"
-                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Phrase(token::STRONG, (yystack_[1].value.element_list)); }
-#line 1519 "HTMLParser.tab.cc"
+                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Phrase(token::EM,     (yystack_[1].value.element_list)); }
+#line 1520 "HTMLParser.tab.cc"
     break;
 
-  case 109:
+  case 108: // phrase: STRONG opt_texts opt_END_STRONG
 #line 784 "HTMLParser.yy"
-                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Phrase(token::DFN,    (yystack_[1].value.element_list)); }
-#line 1525 "HTMLParser.tab.cc"
+                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Phrase(token::STRONG, (yystack_[1].value.element_list)); }
+#line 1526 "HTMLParser.tab.cc"
     break;
 
-  case 110:
+  case 109: // phrase: DFN opt_texts opt_END_DFN
 #line 785 "HTMLParser.yy"
-                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Phrase(token::CODE,   (yystack_[1].value.element_list)); }
-#line 1531 "HTMLParser.tab.cc"
+                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Phrase(token::DFN,    (yystack_[1].value.element_list)); }
+#line 1532 "HTMLParser.tab.cc"
     break;
 
-  case 111:
+  case 110: // phrase: CODE opt_texts opt_END_CODE
 #line 786 "HTMLParser.yy"
-                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Phrase(token::SAMP,   (yystack_[1].value.element_list)); }
-#line 1537 "HTMLParser.tab.cc"
+                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Phrase(token::CODE,   (yystack_[1].value.element_list)); }
+#line 1538 "HTMLParser.tab.cc"
     break;
 
-  case 112:
+  case 111: // phrase: SAMP opt_texts opt_END_SAMP
 #line 787 "HTMLParser.yy"
-                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Phrase(token::KBD,    (yystack_[1].value.element_list)); }
-#line 1543 "HTMLParser.tab.cc"
+                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Phrase(token::SAMP,   (yystack_[1].value.element_list)); }
+#line 1544 "HTMLParser.tab.cc"
     break;
 
-  case 113:
+  case 112: // phrase: KBD opt_texts opt_END_KBD
 #line 788 "HTMLParser.yy"
-                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Phrase(token::VAR,    (yystack_[1].value.element_list)); }
-#line 1549 "HTMLParser.tab.cc"
+                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Phrase(token::KBD,    (yystack_[1].value.element_list)); }
+#line 1550 "HTMLParser.tab.cc"
     break;
 
-  case 114:
+  case 113: // phrase: VAR opt_texts opt_END_VAR
 #line 789 "HTMLParser.yy"
-                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Phrase(token::CITE,   (yystack_[1].value.element_list)); }
-#line 1555 "HTMLParser.tab.cc"
+                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Phrase(token::VAR,    (yystack_[1].value.element_list)); }
+#line 1556 "HTMLParser.tab.cc"
     break;
 
-  case 115:
-#line 796 "HTMLParser.yy"
+  case 114: // phrase: CITE opt_texts opt_END_CITE
+#line 790 "HTMLParser.yy"
+                                    { delete (yystack_[2].value.tag_attributes); (yylhs.value.element) = new Phrase(token::CITE,   (yystack_[1].value.element_list)); }
+#line 1562 "HTMLParser.tab.cc"
+    break;
+
+  case 115: // special: A opt_LI opt_flow opt_END_A
+#line 797 "HTMLParser.yy"
                               {
     delete (yystack_[2].value.tag_attributes);
     Anchor *a = new Anchor;
@@ -1576,11 +1583,11 @@ namespace html2text {
         a->refnum = drv.links->items->size();
     }
   }
-#line 1580 "HTMLParser.tab.cc"
+#line 1587 "HTMLParser.tab.cc"
     break;
 
-  case 116:
-#line 816 "HTMLParser.yy"
+  case 116: // special: IMG
+#line 817 "HTMLParser.yy"
         {
 	auto_ptr<list<TagAttribute>> attr;
 	attr.reset((yystack_[0].value.tag_attributes));
@@ -1621,320 +1628,320 @@ namespace html2text {
 		(yylhs.value.element) = i;
 	}
   }
-#line 1625 "HTMLParser.tab.cc"
+#line 1632 "HTMLParser.tab.cc"
     break;
 
-  case 117:
-#line 856 "HTMLParser.yy"
+  case 117: // special: APPLET applet_content END_APPLET
+#line 857 "HTMLParser.yy"
                                      {
     Applet *a = new Applet;
     a->attributes.reset((yystack_[2].value.tag_attributes));
     a->content.reset((yystack_[1].value.element_list));
     (yylhs.value.element) = a;
   }
-#line 1636 "HTMLParser.tab.cc"
+#line 1643 "HTMLParser.tab.cc"
     break;
 
-  case 118:
-#line 864 "HTMLParser.yy"
+  case 118: // special: FONT opt_flow opt_END_FONT
+#line 865 "HTMLParser.yy"
                                {
     Font2 *f2 = new Font2;
     f2->attributes.reset((yystack_[2].value.tag_attributes));
     f2->elements.reset((yystack_[1].value.element_list));
     (yylhs.value.element) = f2;
   }
-#line 1647 "HTMLParser.tab.cc"
+#line 1654 "HTMLParser.tab.cc"
     break;
 
-  case 119:
-#line 870 "HTMLParser.yy"
+  case 119: // special: BASEFONT
+#line 871 "HTMLParser.yy"
              {
     BaseFont *bf = new BaseFont;
     bf->attributes.reset((yystack_[0].value.tag_attributes));
     (yylhs.value.element) = bf;
   }
-#line 1657 "HTMLParser.tab.cc"
+#line 1664 "HTMLParser.tab.cc"
     break;
 
-  case 120:
-#line 875 "HTMLParser.yy"
+  case 120: // special: BR
+#line 876 "HTMLParser.yy"
        {
     LineBreak *lb = new LineBreak;
     lb->attributes.reset((yystack_[0].value.tag_attributes));
     (yylhs.value.element) = lb;
   }
-#line 1667 "HTMLParser.tab.cc"
+#line 1674 "HTMLParser.tab.cc"
     break;
 
-  case 121:
-#line 880 "HTMLParser.yy"
+  case 121: // special: MAP map_content END_MAP
+#line 881 "HTMLParser.yy"
                             {
     Map *m = new Map;
     m->attributes.reset((yystack_[2].value.tag_attributes));
     m->areas.reset((yystack_[1].value.tag_attributes_list));
     (yylhs.value.element) = m;
   }
-#line 1678 "HTMLParser.tab.cc"
+#line 1685 "HTMLParser.tab.cc"
     break;
 
-  case 122:
-#line 889 "HTMLParser.yy"
+  case 122: // applet_content: %empty
+#line 890 "HTMLParser.yy"
               {
     (yylhs.value.element_list) = 0;
   }
-#line 1686 "HTMLParser.tab.cc"
+#line 1693 "HTMLParser.tab.cc"
     break;
 
-  case 123:
-#line 892 "HTMLParser.yy"
+  case 123: // applet_content: applet_content text
+#line 893 "HTMLParser.yy"
                         {
     (yylhs.value.element_list) = (yystack_[1].value.element_list) ? (yystack_[1].value.element_list) : new list<auto_ptr<Element> >;
     (yylhs.value.element_list)->push_back(auto_ptr<Element>((yystack_[0].value.element)));
   }
-#line 1695 "HTMLParser.tab.cc"
+#line 1702 "HTMLParser.tab.cc"
     break;
 
-  case 124:
-#line 896 "HTMLParser.yy"
+  case 124: // applet_content: applet_content PARAM
+#line 897 "HTMLParser.yy"
                          {
     (yylhs.value.element_list) = (yystack_[1].value.element_list) ? (yystack_[1].value.element_list) : new list<auto_ptr<Element> >;
     Param *p = new Param;
     p->attributes.reset((yystack_[0].value.tag_attributes));
     (yylhs.value.element_list)->push_back(auto_ptr<Element>(p));
   }
-#line 1706 "HTMLParser.tab.cc"
+#line 1713 "HTMLParser.tab.cc"
     break;
 
-  case 125:
-#line 905 "HTMLParser.yy"
+  case 125: // map_content: %empty
+#line 906 "HTMLParser.yy"
               {
     (yylhs.value.tag_attributes_list) = 0;
   }
-#line 1714 "HTMLParser.tab.cc"
+#line 1721 "HTMLParser.tab.cc"
     break;
 
-  case 126:
-#line 908 "HTMLParser.yy"
+  case 126: // map_content: map_content error
+#line 909 "HTMLParser.yy"
                       {
     (yylhs.value.tag_attributes_list) = (yystack_[1].value.tag_attributes_list);
   }
-#line 1722 "HTMLParser.tab.cc"
+#line 1729 "HTMLParser.tab.cc"
     break;
 
-  case 127:
-#line 911 "HTMLParser.yy"
+  case 127: // map_content: map_content AREA
+#line 912 "HTMLParser.yy"
                      {
     (yylhs.value.tag_attributes_list) = (yystack_[1].value.tag_attributes_list) ? (yystack_[1].value.tag_attributes_list) : new list<auto_ptr<list<TagAttribute> > >;
     (yylhs.value.tag_attributes_list)->push_back(auto_ptr<list<TagAttribute> >((yystack_[0].value.tag_attributes)));
   }
-#line 1731 "HTMLParser.tab.cc"
+#line 1738 "HTMLParser.tab.cc"
     break;
 
-  case 128:
-#line 918 "HTMLParser.yy"
+  case 128: // form: INPUT
+#line 919 "HTMLParser.yy"
         {
     Input *i = new Input;
     i->attributes.reset((yystack_[0].value.tag_attributes));
     (yylhs.value.element) = i;
   }
-#line 1741 "HTMLParser.tab.cc"
+#line 1748 "HTMLParser.tab.cc"
     break;
 
-  case 129:
-#line 923 "HTMLParser.yy"
+  case 129: // form: SELECT select_content END_SELECT
+#line 924 "HTMLParser.yy"
                                      {
     Select *s = new Select;
     s->attributes.reset((yystack_[2].value.tag_attributes));
     s->content.reset((yystack_[1].value.option_list));
     (yylhs.value.element) = s;
   }
-#line 1752 "HTMLParser.tab.cc"
+#line 1759 "HTMLParser.tab.cc"
     break;
 
-  case 130:
-#line 929 "HTMLParser.yy"
+  case 130: // form: TEXTAREA pcdata END_TEXTAREA
+#line 930 "HTMLParser.yy"
                                  {
     TextArea *ta = new TextArea;
     ta->attributes.reset((yystack_[2].value.tag_attributes));
     ta->pcdata.reset((yystack_[1].value.pcdata));
     (yylhs.value.element) = ta;
   }
-#line 1763 "HTMLParser.tab.cc"
+#line 1770 "HTMLParser.tab.cc"
     break;
 
-  case 131:
-#line 938 "HTMLParser.yy"
+  case 131: // select_content: option
+#line 939 "HTMLParser.yy"
          {
     (yylhs.value.option_list) = new list<auto_ptr<Option> >;
     (yylhs.value.option_list)->push_back(auto_ptr<Option>((yystack_[0].value.option)));
   }
-#line 1772 "HTMLParser.tab.cc"
+#line 1779 "HTMLParser.tab.cc"
     break;
 
-  case 132:
-#line 942 "HTMLParser.yy"
+  case 132: // select_content: select_content option
+#line 943 "HTMLParser.yy"
                           {
     ((yylhs.value.option_list) = (yystack_[1].value.option_list))->push_back(auto_ptr<Option>((yystack_[0].value.option)));
   }
-#line 1780 "HTMLParser.tab.cc"
+#line 1787 "HTMLParser.tab.cc"
     break;
 
-  case 133:
-#line 948 "HTMLParser.yy"
+  case 133: // option: OPTION pcdata opt_END_OPTION
+#line 949 "HTMLParser.yy"
                                {
     (yylhs.value.option) = new Option;
     (yylhs.value.option)->attributes.reset((yystack_[2].value.tag_attributes));
     (yylhs.value.option)->pcdata.reset((yystack_[1].value.pcdata));
   }
-#line 1790 "HTMLParser.tab.cc"
+#line 1797 "HTMLParser.tab.cc"
     break;
 
-  case 134:
-#line 958 "HTMLParser.yy"
-       { (yylhs.value.heading) = new Heading; (yylhs.value.heading)->level = 1; (yylhs.value.heading)->attributes.reset((yystack_[0].value.tag_attributes)); }
-#line 1796 "HTMLParser.tab.cc"
-    break;
-
-  case 135:
+  case 134: // HX: H1
 #line 959 "HTMLParser.yy"
-       { (yylhs.value.heading) = new Heading; (yylhs.value.heading)->level = 2; (yylhs.value.heading)->attributes.reset((yystack_[0].value.tag_attributes)); }
-#line 1802 "HTMLParser.tab.cc"
+       { (yylhs.value.heading) = new Heading; (yylhs.value.heading)->level = 1; (yylhs.value.heading)->attributes.reset((yystack_[0].value.tag_attributes)); }
+#line 1803 "HTMLParser.tab.cc"
     break;
 
-  case 136:
+  case 135: // HX: H2
 #line 960 "HTMLParser.yy"
-       { (yylhs.value.heading) = new Heading; (yylhs.value.heading)->level = 3; (yylhs.value.heading)->attributes.reset((yystack_[0].value.tag_attributes)); }
-#line 1808 "HTMLParser.tab.cc"
+       { (yylhs.value.heading) = new Heading; (yylhs.value.heading)->level = 2; (yylhs.value.heading)->attributes.reset((yystack_[0].value.tag_attributes)); }
+#line 1809 "HTMLParser.tab.cc"
     break;
 
-  case 137:
+  case 136: // HX: H3
 #line 961 "HTMLParser.yy"
-       { (yylhs.value.heading) = new Heading; (yylhs.value.heading)->level = 4; (yylhs.value.heading)->attributes.reset((yystack_[0].value.tag_attributes)); }
-#line 1814 "HTMLParser.tab.cc"
+       { (yylhs.value.heading) = new Heading; (yylhs.value.heading)->level = 3; (yylhs.value.heading)->attributes.reset((yystack_[0].value.tag_attributes)); }
+#line 1815 "HTMLParser.tab.cc"
     break;
 
-  case 138:
+  case 137: // HX: H4
 #line 962 "HTMLParser.yy"
-       { (yylhs.value.heading) = new Heading; (yylhs.value.heading)->level = 5; (yylhs.value.heading)->attributes.reset((yystack_[0].value.tag_attributes)); }
-#line 1820 "HTMLParser.tab.cc"
+       { (yylhs.value.heading) = new Heading; (yylhs.value.heading)->level = 4; (yylhs.value.heading)->attributes.reset((yystack_[0].value.tag_attributes)); }
+#line 1821 "HTMLParser.tab.cc"
     break;
 
-  case 139:
+  case 138: // HX: H5
 #line 963 "HTMLParser.yy"
+       { (yylhs.value.heading) = new Heading; (yylhs.value.heading)->level = 5; (yylhs.value.heading)->attributes.reset((yystack_[0].value.tag_attributes)); }
+#line 1827 "HTMLParser.tab.cc"
+    break;
+
+  case 139: // HX: H6
+#line 964 "HTMLParser.yy"
        { (yylhs.value.heading) = new Heading; (yylhs.value.heading)->level = 6; (yylhs.value.heading)->attributes.reset((yystack_[0].value.tag_attributes)); }
-#line 1826 "HTMLParser.tab.cc"
+#line 1833 "HTMLParser.tab.cc"
     break;
 
-  case 140:
-#line 967 "HTMLParser.yy"
-           { (yylhs.value.inT) = 1; }
-#line 1832 "HTMLParser.tab.cc"
-    break;
-
-  case 141:
+  case 140: // END_HX: END_H1
 #line 968 "HTMLParser.yy"
-           { (yylhs.value.inT) = 2; }
-#line 1838 "HTMLParser.tab.cc"
+           { (yylhs.value.inT) = 1; }
+#line 1839 "HTMLParser.tab.cc"
     break;
 
-  case 142:
+  case 141: // END_HX: END_H2
 #line 969 "HTMLParser.yy"
-           { (yylhs.value.inT) = 3; }
-#line 1844 "HTMLParser.tab.cc"
+           { (yylhs.value.inT) = 2; }
+#line 1845 "HTMLParser.tab.cc"
     break;
 
-  case 143:
+  case 142: // END_HX: END_H3
 #line 970 "HTMLParser.yy"
-           { (yylhs.value.inT) = 4; }
-#line 1850 "HTMLParser.tab.cc"
+           { (yylhs.value.inT) = 3; }
+#line 1851 "HTMLParser.tab.cc"
     break;
 
-  case 144:
+  case 143: // END_HX: END_H4
 #line 971 "HTMLParser.yy"
-           { (yylhs.value.inT) = 5; }
-#line 1856 "HTMLParser.tab.cc"
+           { (yylhs.value.inT) = 4; }
+#line 1857 "HTMLParser.tab.cc"
     break;
 
-  case 145:
+  case 144: // END_HX: END_H5
 #line 972 "HTMLParser.yy"
+           { (yylhs.value.inT) = 5; }
+#line 1863 "HTMLParser.tab.cc"
+    break;
+
+  case 145: // END_HX: END_H6
+#line 973 "HTMLParser.yy"
            { (yylhs.value.inT) = 6; }
-#line 1862 "HTMLParser.tab.cc"
+#line 1869 "HTMLParser.tab.cc"
     break;
 
-  case 146:
-#line 977 "HTMLParser.yy"
+  case 146: // opt_pcdata: %empty
+#line 978 "HTMLParser.yy"
                             { (yylhs.value.pcdata) = 0; }
-#line 1868 "HTMLParser.tab.cc"
+#line 1875 "HTMLParser.tab.cc"
     break;
 
-  case 147:
-#line 977 "HTMLParser.yy"
+  case 147: // opt_pcdata: pcdata
+#line 978 "HTMLParser.yy"
                                                   { (yylhs.value.pcdata) = (yystack_[0].value.pcdata); }
-#line 1874 "HTMLParser.tab.cc"
+#line 1881 "HTMLParser.tab.cc"
     break;
 
-  case 148:
-#line 978 "HTMLParser.yy"
+  case 148: // opt_caption: %empty
+#line 979 "HTMLParser.yy"
                             { (yylhs.value.caption) = 0; }
-#line 1880 "HTMLParser.tab.cc"
+#line 1887 "HTMLParser.tab.cc"
     break;
 
-  case 149:
-#line 978 "HTMLParser.yy"
+  case 149: // opt_caption: caption
+#line 979 "HTMLParser.yy"
                                                   { (yylhs.value.caption) = (yystack_[0].value.caption); }
-#line 1886 "HTMLParser.tab.cc"
+#line 1893 "HTMLParser.tab.cc"
     break;
 
-  case 150:
-#line 979 "HTMLParser.yy"
-                            { (yylhs.value.element_list) = 0; }
-#line 1892 "HTMLParser.tab.cc"
-    break;
-
-  case 151:
-#line 979 "HTMLParser.yy"
-                                                  { (yylhs.value.element_list) = (yystack_[0].value.element_list); }
-#line 1898 "HTMLParser.tab.cc"
-    break;
-
-  case 152:
+  case 150: // opt_texts: %empty
 #line 980 "HTMLParser.yy"
                             { (yylhs.value.element_list) = 0; }
-#line 1904 "HTMLParser.tab.cc"
+#line 1899 "HTMLParser.tab.cc"
     break;
 
-  case 153:
+  case 151: // opt_texts: texts
 #line 980 "HTMLParser.yy"
                                                   { (yylhs.value.element_list) = (yystack_[0].value.element_list); }
-#line 1910 "HTMLParser.tab.cc"
+#line 1905 "HTMLParser.tab.cc"
     break;
 
-  case 154:
-#line 982 "HTMLParser.yy"
-                            { (yylhs.value.tag_attributes) = 0; }
-#line 1916 "HTMLParser.tab.cc"
+  case 152: // opt_flow: %empty
+#line 981 "HTMLParser.yy"
+                            { (yylhs.value.element_list) = 0; }
+#line 1911 "HTMLParser.tab.cc"
     break;
 
-  case 155:
-#line 982 "HTMLParser.yy"
-                                                  { (yylhs.value.tag_attributes) = (yystack_[0].value.tag_attributes); }
-#line 1922 "HTMLParser.tab.cc"
+  case 153: // opt_flow: flow
+#line 981 "HTMLParser.yy"
+                                                  { (yylhs.value.element_list) = (yystack_[0].value.element_list); }
+#line 1917 "HTMLParser.tab.cc"
     break;
 
-  case 156:
+  case 154: // opt_LI: %empty
 #line 983 "HTMLParser.yy"
                             { (yylhs.value.tag_attributes) = 0; }
-#line 1928 "HTMLParser.tab.cc"
+#line 1923 "HTMLParser.tab.cc"
     break;
 
-  case 157:
+  case 155: // opt_LI: LI
 #line 983 "HTMLParser.yy"
                                                   { (yylhs.value.tag_attributes) = (yystack_[0].value.tag_attributes); }
-#line 1934 "HTMLParser.tab.cc"
+#line 1929 "HTMLParser.tab.cc"
+    break;
+
+  case 156: // opt_P: %empty
+#line 984 "HTMLParser.yy"
+                            { (yylhs.value.tag_attributes) = 0; }
+#line 1935 "HTMLParser.tab.cc"
+    break;
+
+  case 157: // opt_P: P
+#line 984 "HTMLParser.yy"
+                                                  { (yylhs.value.tag_attributes) = (yystack_[0].value.tag_attributes); }
+#line 1941 "HTMLParser.tab.cc"
     break;
 
 
-#line 1938 "HTMLParser.tab.cc"
+#line 1945 "HTMLParser.tab.cc"
 
             default:
               break;
@@ -2168,16 +2175,16 @@ namespace html2text {
     // Actual number of expected tokens
     int yycount = 0;
 
-    int yyn = yypact_[+yyparser_.yystack_[0].state];
+    const int yyn = yypact_[+yyparser_.yystack_[0].state];
     if (!yy_pact_value_is_default_ (yyn))
       {
         /* Start YYX at -YYN if negative to avoid negative indexes in
            YYCHECK.  In other words, skip the first -YYN actions for
            this state because they are default actions.  */
-        int yyxbegin = yyn < 0 ? -yyn : 0;
+        const int yyxbegin = yyn < 0 ? -yyn : 0;
         // Stay within bounds of both yycheck and yytname.
-        int yychecklim = yylast_ - yyn + 1;
-        int yyxend = yychecklim < YYNTOKENS ? yychecklim : YYNTOKENS;
+        const int yychecklim = yylast_ - yyn + 1;
+        const int yyxend = yychecklim < YYNTOKENS ? yychecklim : YYNTOKENS;
         for (int yyx = yyxbegin; yyx < yyxend; ++yyx)
           if (yycheck_[yyx + yyn] == yyx && yyx != symbol_kind::S_YYerror
               && !yy_table_value_is_error_ (yytable_[yyx + yyn]))
@@ -2195,6 +2202,9 @@ namespace html2text {
       yyarg[0] = symbol_kind::S_YYEMPTY;
     return yycount;
   }
+
+
+
 
 
 
@@ -2367,7 +2377,7 @@ namespace html2text {
   const short
   HTMLParser::yydefgoto_[] =
   {
-      -1,     1,     2,    68,    90,    97,    98,   112,    71,    72,
+       0,     1,     2,    68,    90,    97,    98,   112,    71,    72,
      111,   131,    95,   109,   168,   237,    73,   240,   260,   261,
       99,   100,    74,   124,   213,   262,   157,    85,    77,    78,
       79,    80,    87,   108,    81,   116,   117,    82,   230,   128,
@@ -2974,28 +2984,28 @@ namespace html2text {
   HTMLParser::yyrline_[] =
   {
        0,   274,   274,   305,   309,   312,   315,   319,   322,   326,
-     329,   333,   336,   339,   344,   347,   355,   363,   367,   370,
-     375,   378,   381,   387,   395,   398,   401,   409,   417,   423,
-     428,   431,   434,   440,   451,   454,   463,   466,   469,   474,
-     480,   483,   486,   489,   495,   501,   507,   513,   518,   528,
-     528,   535,   535,   542,   542,   549,   549,   559,   562,   565,
-     572,   578,   583,   593,   599,   609,   612,   615,   619,   626,
-     631,   640,   645,   654,   658,   661,   667,   670,   673,   679,
-     687,   695,   698,   701,   710,   713,   716,   722,   729,   736,
-     746,   750,   756,   757,   758,   759,   760,   761,   770,   771,
-     772,   773,   774,   775,   776,   777,   778,   782,   783,   784,
-     785,   786,   787,   788,   789,   796,   816,   856,   864,   870,
-     875,   880,   889,   892,   896,   905,   908,   911,   918,   923,
-     929,   938,   942,   948,   958,   959,   960,   961,   962,   963,
-     967,   968,   969,   970,   971,   972,   977,   977,   978,   978,
-     979,   979,   980,   980,   982,   982,   983,   983,   985,   985,
-     986,   986,   987,   987,   988,   988,   989,   989,   990,   990,
-     991,   991,   992,   992,   993,   993,   994,   994,   995,   995,
-     996,   996,   997,   997,   998,   998,   999,   999,  1000,  1000,
-    1001,  1001,  1002,  1002,  1003,  1003,  1004,  1004,  1005,  1005,
-    1006,  1006,  1007,  1007,  1008,  1008,  1009,  1009,  1010,  1010,
-    1011,  1011,  1012,  1012,  1013,  1013,  1014,  1014,  1015,  1015,
-    1016,  1016,  1017,  1017,  1018,  1018,  1020,  1020
+     329,   333,   336,   339,   345,   348,   356,   364,   368,   371,
+     376,   379,   382,   388,   396,   399,   402,   410,   418,   424,
+     429,   432,   435,   441,   452,   455,   464,   467,   470,   475,
+     481,   484,   487,   490,   496,   502,   508,   514,   519,   529,
+     529,   536,   536,   543,   543,   550,   550,   560,   563,   566,
+     573,   579,   584,   594,   600,   610,   613,   616,   620,   627,
+     632,   641,   646,   655,   659,   662,   668,   671,   674,   680,
+     688,   696,   699,   702,   711,   714,   717,   723,   730,   737,
+     747,   751,   757,   758,   759,   760,   761,   762,   771,   772,
+     773,   774,   775,   776,   777,   778,   779,   783,   784,   785,
+     786,   787,   788,   789,   790,   797,   817,   857,   865,   871,
+     876,   881,   890,   893,   897,   906,   909,   912,   919,   924,
+     930,   939,   943,   949,   959,   960,   961,   962,   963,   964,
+     968,   969,   970,   971,   972,   973,   978,   978,   979,   979,
+     980,   980,   981,   981,   983,   983,   984,   984,   986,   986,
+     987,   987,   988,   988,   989,   989,   990,   990,   991,   991,
+     992,   992,   993,   993,   994,   994,   995,   995,   996,   996,
+     997,   997,   998,   998,   999,   999,  1000,  1000,  1001,  1001,
+    1002,  1002,  1003,  1003,  1004,  1004,  1005,  1005,  1006,  1006,
+    1007,  1007,  1008,  1008,  1009,  1009,  1010,  1010,  1011,  1011,
+    1012,  1012,  1013,  1013,  1014,  1014,  1015,  1015,  1016,  1016,
+    1017,  1017,  1018,  1018,  1019,  1019,  1021,  1021
   };
 
   void
@@ -3026,7 +3036,7 @@ namespace html2text {
 #endif // YYDEBUG
 
   HTMLParser::symbol_kind_type
-  HTMLParser::yytranslate_ (int t)
+  HTMLParser::yytranslate_ (int t) YY_NOEXCEPT
   {
     // YYTRANSLATE[TOKEN-NUM] -- Symbol number corresponding to
     // TOKEN-NUM as returned by yylex.
@@ -3074,21 +3084,22 @@ namespace html2text {
      115,   116,   117,   118,   119,   120,   121,   122,   123,   124,
      125,   126,   127,   128,   129,   130
     };
-    const int user_token_number_max_ = 385;
+    // Last valid token kind.
+    const int code_max = 385;
 
     if (t <= 0)
       return symbol_kind::S_YYEOF;
-    else if (t <= user_token_number_max_)
-      return YY_CAST (symbol_kind_type, translate_table[t]);
+    else if (t <= code_max)
+      return static_cast <symbol_kind_type> (translate_table[t]);
     else
       return symbol_kind::S_YYUNDEF;
   }
 
 #line 40 "HTMLParser.yy"
 } // html2text
-#line 3090 "HTMLParser.tab.cc"
+#line 3101 "HTMLParser.tab.cc"
 
-#line 1022 "HTMLParser.yy"
+#line 1023 "HTMLParser.yy"
  /* } */
 
 void
