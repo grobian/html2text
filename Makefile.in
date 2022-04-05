@@ -55,20 +55,14 @@ DEFINES     = -DVERSION=$(VERSION) \
 			  $(AUTO_PTR_BROKEN) \
 			  $(NULL)
 
-MYCPPFLAGS  = $(CPPFLAGS) $(INCLUDES) $(DEFINES)
-MYCXXFLAGS  = $(CXXFLAGS)
-MYLIBS      = $(LIBSTDCXX_LIBS) $(SOCKET_LIBRARIES) $(ICONV_LIBRARIES)
+H2TCPPFLAGS = $(CPPFLAGS) $(INCLUDES) $(DEFINES)
+H2TCXXFLAGS = $(CXXFLAGS)
+H2TLIBS     = $(LIBSTDCXX_LIBS) $(SOCKET_LIBRARIES) $(ICONV_LIBRARIES)
 
 .SUFFIXES: .cpp .o
 .PHONY: default all bison-local check install clean clobber depend
 
 default: all
-
-.cpp.o:
-	$(CXX) -c $(MYCPPFLAGS) $(MYCXXFLAGS) $*.cpp
-
-HTMLParser.o: HTMLParser.tab.cc HTMLParser.tab.hh
-	$(CXX) -c  $(MYCPPFLAGS) $(MYCXXFLAGS) -o HTMLParser.o HTMLParser.tab.cc
 
 # -----------------------------------------------------------------------------
 
@@ -79,23 +73,21 @@ all: html2text
 	@echo '"/usr/local/bin", "/usr/local/man/man1" and "/usr/local/man/man5").';
 	@echo
 
-OBJS = \
-	   Area.o \
-	   cmp_nocase.o \
-	   format.o \
-	   html.o \
-	   html2text.o \
-	   HTMLControl.o \
-	   HTMLDriver.o \
-	   HTMLParser.o \
-	   Properties.o \
-	   sgml.o \
-	   table.o \
-	   iconvstream.o \
-	   $(NULL)
+SRCS = $(wildcard *.cpp)
+
+OBJS = HTMLParser.o $(subst .cpp,.o,$(SRCS))
+
+HTMLParser.o: HTMLParser.tab.cc HTMLParser.tab.hh
+	$(CXX) -c $(H2TCPPFLAGS) $(H2TCXXFLAGS) -o HTMLParser.o HTMLParser.tab.cc
+
+%.o: %.cpp %.h
+	$(CXX) -c $(H2TCPPFLAGS) $(H2TCXXFLAGS) $<
+
+%.o: %.cpp
+	$(CXX) -c $(H2TCPPFLAGS) $(H2TCXXFLAGS) $<
 
 html2text: $(OBJS) $(LIBSTDCXX_LIBS)
-	$(CXX) $(LDFLAGS) $(OBJS) $(MYLIBS) -o $@
+	$(CXX) $(LDFLAGS) $(OBJS) $(H2TLIBS) -o $@
 
 # -----------------------------------------------------------------------------
 
