@@ -245,25 +245,6 @@ else
 fi;
 
 #
-# $MAKEDEPEND_INCLUDES
-#
-MAKEDEPEND_INCLUDES="";
-$echo 'Checking "makedepend" includes... \c';
-echo "#include <iostream>" >$tmp_file.C;
-MAKEDEPEND_INCLUDES=`$CXX -E $tmp_file.C 2>/dev/null |
-sed -n \
-  -e 's/^#line .*"\(\/.*\)\/.*".*/-I\1/p' \
-  -e 's/^# [1-9][0-9]* "\(\/.*\)\/.*".*/-I\1/p' |
-sort -u |
-tr '\n' ' '`;
-
-if test "$MAKEDEPEND_INCLUDES" = ""; then
-  $echo none;
-else
-  $echo "use \"$MAKEDEPEND_INCLUDES\"";
-fi;
-
-#
 # Create "Makefile" from "Makefile.in".
 #
 
@@ -277,8 +258,7 @@ for i in \
   EXPLICIT \
   LIBSTDCXX_INCLUDES \
   LIBSTDCXX_LIBS \
-  AUTO_PTR_BROKEN \
-  MAKEDEPEND_INCLUDES; \
+  AUTO_PTR_BROKEN; \
 do cmd="$cmd -e \"s|@$i@|\$$i|g\""; done;
 for dir in $makedirs; do
   $echo "Creating \"$dir/Makefile\" from \"$dir/Makefile.in\"... \\c";
@@ -293,7 +273,6 @@ for dir in $makedirs; do
 EOF
   eval "$cmd" <$dir/Makefile.in >>$dir/Makefile;
   $echo 'done';
-  if test -f $dir/Dependencies; then true; else >$dir/Dependencies; fi;
 done;
 
 #

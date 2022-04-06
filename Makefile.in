@@ -60,7 +60,7 @@ H2TCXXFLAGS = $(CXXFLAGS)
 H2TLIBS     = $(LIBSTDCXX_LIBS) $(SOCKET_LIBRARIES) $(ICONV_LIBRARIES)
 
 .SUFFIXES: .cpp .o
-.PHONY: default all bison-local check install clean clobber depend
+.PHONY: default all bison-local check install clean clobber
 
 default: all
 
@@ -143,19 +143,13 @@ install:
 
 clean: local-clean
 local-clean:
-	rm -f *.o *~ core html2text Dependencies Makefile;
+	rm -f *.o *~ core html2text
+
+dist-clean: local-clean
+	rm -f Makefile
 
 clobber: local-clobber
 local-clobber: local-clean
 	rm -f html2text
 
-depend: local-depend
-local-depend: HTMLParser.tab.hh
-	@>Dependencies
-	makedepend -f Dependencies $(CPPFLAGS) $(MAKEDEPEND_INCLUDES) *.cpp
-	@rm -f Dependencies.bak
-
 # -----------------------------------------------------------------------------
-
-include Dependencies
-
