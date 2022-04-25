@@ -19,10 +19,11 @@
 # Tue Nov 11 21:30:26 CET 2003
 
 # mimick autoconf behaviour of accepting variable overrides on command
-# line
+# line, while also accepting options
 for arg in "$@" ; do
 	case "${arg}" in
-		*=*)  eval "${arg}"  ;;
+		--*=*)  eval `echo "${arg}" | sed -e 's/^--//'`  ;;
+		*=*)    eval "${arg}"  ;;
 	esac
 done
 
