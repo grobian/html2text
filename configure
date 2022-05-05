@@ -27,6 +27,12 @@ for arg in "$@" ; do
 	esac
 done
 
+[ -z "$PREFIX" ] && PREFIX="${prefix:-/usr/local}"
+[ -z "$BINDIR" ] && BINDIR="${bindir:-$PREFIX/bin}"
+[ -z "$DATAROOTDIR" ] && DATAROOTDIR="${datarootdir:-$PREFIX/share}"
+[ -z "$MANDIR" ] && MANDIR="${mandir:-$DATAROOTDIR/man}"
+[ -z "$DOCDIR" ] && DOCDIR="${docdir:-$DATAROOTDIR/doc/html2text}"
+
 echo=echo
 
 rm -rf configure-tmp || exit 1;
@@ -277,6 +283,10 @@ for i in \
   EXPLICIT \
   LIBSTDCXX_INCLUDES \
   LIBSTDCXX_LIBS \
+  PREFIX \
+  BINDIR \
+  MANDIR \
+  DOCDIR \
   AUTO_PTR_BROKEN; \
 do cmd="$cmd -e \"s|@$i@|\$$i|g\""; done;
 for dir in $makedirs; do

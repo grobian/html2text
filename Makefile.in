@@ -32,10 +32,10 @@ BISON  = bison
 YFLAGS =
 
 INSTALLER = install
-PREFIX    = /usr/local
-BINDIR    = $(PREFIX)/bin
-MANDIR    = $(PREFIX)/share/man
-DOCDIR    = $(PREFIX)/share/doc/html2text
+PREFIX    = @PREFIX@
+BINDIR    = @BINDIR@
+MANDIR    = @MANDIR@
+DOCDIR    = @DOCDIR@
 
 CXX                 = @CXX@
 BOOL_DEFINITION     = @BOOL_DEFINITION@
