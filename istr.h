@@ -21,7 +21,7 @@
 
 /* crude temp hack until we properly use wchar, glibc isspace crashes on
  * too large values */
-#define isspace(X) ((X) > 0 && (X) < 256 && isspace(X))
+#define isspace(X) (((int)(X)) > 0 && ((int)(X)) < 256 && isspace((int)(X)))
 
 class istr {
 	public:
