@@ -34,7 +34,7 @@ YFLAGS =
 INSTALLER = install
 PREFIX    = /usr/local
 BINDIR    = $(PREFIX)/bin
-MANDIR    = $(PREFIX)/man
+MANDIR    = $(PREFIX)/share/man
 DOCDIR    = $(PREFIX)/share/doc/html2text
 
 CXX                 = @CXX@
