@@ -263,7 +263,7 @@ fi;
 
 # set default CXX flags if none explicitly given
 if test "x${CXXFLAGS}" = "x" ; then
-  CXXFLAGS="-g -O2 -Wall -Werror"  # autoconf-like default + warnings
+  CXXFLAGS="-g -O2 -Wall"  # autoconf-like default + warnings
 fi
 
 #
