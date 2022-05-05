@@ -46,7 +46,8 @@ LIBSTDCXX_INCLUDES  = @LIBSTDCXX_INCLUDES@
 LIBSTDCXX_LIBS      = @LIBSTDCXX_LIBS@
 AUTO_PTR_BROKEN     = @AUTO_PTR_BROKEN@
 MAKEDEPEND_INCLUDES = @MAKEDEPEND_INCLUDES@
-CXXFLAGS            = -g -O2 -Wall -Wextra  # automake like + warnings
+CXXFLAGS            = -g -O2 -Wall -Wextra @CXXFLAGS@ # automake like + warnings
+LDFLAGS             = @LDFLAGS@
 
 INCLUDES    = $(LIBSTDCXX_INCLUDES)
 DEFINES     = -DVERSION=$(VERSION) \
@@ -87,7 +88,7 @@ HTMLParser.o: HTMLParser.tab.cc HTMLParser.tab.hh
 	$(CXX) -c $(H2TCPPFLAGS) $(H2TCXXFLAGS) $<
 
 html2text: $(OBJS) $(LIBSTDCXX_LIBS)
-	$(CXX) $(LDFLAGS) $(OBJS) $(H2TLIBS) -o $@
+	$(CXX) $(LDFLAGS) $(OBJS) $(H2TLIBS) $(H2TCXXFLAGS) -o $@
 
 # -----------------------------------------------------------------------------
 
