@@ -58,8 +58,8 @@ int main(int, char **) {
 EOF
 CXX=${CXX-unknown}
 foundCXX=
-for i in "$CXX" "g++" "CC" "cc"; do
-  for f in "" "-std=c++11" "-std=c++0x"; do
+for i in "$CXX" "g++" "clang++" "CC" "cc"; do
+  for f in "-std=c++11" "-std=c++0x" ""; do
     if ${i} ${f} -c $tmp_file.C 2>/dev/null; then
       foundCXX="${i} ${f}"
       break
