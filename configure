@@ -59,9 +59,9 @@ for i in "$CXX" "g++" "CC" "cc"; do
       break
     fi
   done
-  test -n "${foundCXX}" && break
+  test "x${foundCXX}" != "x" && break
 done
-if test -z "${foundCXX}"; then
+if test "x${foundCXX}" = "x" ; then
   $echo "Error: Could not find a working C++11 compiler."
   exit 1
 fi;
@@ -254,6 +254,11 @@ else
   $echo 'not defined or not working, use "auto_ptr.h"';
   AUTO_PTR_BROKEN="-DAUTO_PTR_BROKEN";
 fi;
+
+# set default CXX flags if none explicitly given
+if test "x${CXXFLAGS}" = "x" ; then
+  CXXFLAGS="-g -O2 -Wall -Werror"  # autoconf-like default + warnings
+fi
 
 #
 # Create "Makefile" from "Makefile.in".
