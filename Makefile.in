@@ -67,10 +67,10 @@ default: all
 # -----------------------------------------------------------------------------
 
 all: html2text
-	@echo ;
-	@echo 'Compilation completed. You may now move "html2text", "html2text.1"';
-	@echo 'and "html2textrc.5" to their installation directories (e.g.';
-	@echo '"/usr/local/bin", "/usr/local/man/man1" and "/usr/local/man/man5").';
+	@echo
+	@echo 'Compilation completed. You may now move "html2text", "html2text.1"'
+	@echo 'and "html2textrc.5" to their installation directories (e.g.'
+	@echo '"/usr/local/bin", "/usr/local/man/man1" and "/usr/local/man/man5").'
 	@echo
 
 SRCS = $(wildcard *.cpp)
@@ -127,13 +127,13 @@ check:
 # This is mostly thought for RPM builts and users that don't read the documentation.
 
 install:
-	$(INSTALLER) -d -m 755 $(DESTDIR)$(BINDIR);
-	$(INSTALLER) -m 755 html2text $(DESTDIR)$(BINDIR);
-	$(INSTALLER) -d -m 755 $(DESTDIR)$(MANDIR)/man1;
-	$(INSTALLER) -d -m 755 $(DESTDIR)$(MANDIR)/man5;
-	$(INSTALLER) -m 644 html2text.1 $(DESTDIR)$(MANDIR)/man1;
-	$(INSTALLER) -m 644 html2textrc.5 $(DESTDIR)$(MANDIR)/man5;
-	$(INSTALLER) -d -m 755 $(DESTDIR)$(DOCDIR);
+	$(INSTALLER) -d -m 755 $(DESTDIR)$(BINDIR)
+	$(INSTALLER) -m 755 html2text $(DESTDIR)$(BINDIR)
+	$(INSTALLER) -d -m 755 $(DESTDIR)$(MANDIR)/man1
+	$(INSTALLER) -d -m 755 $(DESTDIR)$(MANDIR)/man5
+	$(INSTALLER) -m 644 html2text.1 $(DESTDIR)$(MANDIR)/man1
+	$(INSTALLER) -m 644 html2textrc.5 $(DESTDIR)$(MANDIR)/man5
+	$(INSTALLER) -d -m 755 $(DESTDIR)$(DOCDIR)
 	$(INSTALLER) -p -m 644 \
 		CHANGES COPYING CREDITS KNOWN_BUGS \
 		README.md README-1.3.2a RELEASE_NOTES TODO \
