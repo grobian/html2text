@@ -1,0 +1,143 @@
+In this file, a bulk of historical data is present from files removed,
+so only available in the git history.  The retained fragments are kept
+in the repository to keep the trail available for licensing reasons.
+
+===============================================================================
+CHANGES file:
+https://github.com/grobian/html2text/blob/9c5cbce5f510fba3d2261167dbed68de30c1161c/CHANGES
+
+relevant excerpts:
+
+
+                         #############################
+                         #                           #
+                         # Changes in Version 1.3.0  #
+                         #                           #
+                         #   (released 2001-10-08)   #
+                         #############################
+
+Ported to g++-3.0 and GPL
+****************************************
+
+------------------------------
+Ported to g++ version 3.0.
+This uses the 'istream.h' header file from the g++3's 'backward' directory.
+------------------------------
+Bugfix: '-' did not work as synonym for STDIN.
+------------------------------
+Added support for the EURO-sign (well, almost).
+------------------------------
+Finaly the GNU GPL as new copyright terms for all parts of the program, after
+GMRS agreed to change the program's license terms to it.
+------------------------------
+
+
+                         #############################
+                         #                           #
+                         # Changes in Version 1.2.2a #
+                         #                           #
+                         #   (released 2000-09-15)   #
+                         #############################
+
+New Location
+****************************************
+
+------------------------------
+No changes were made. We call it now Version 1.2.2A only in order to make it
+perfectly clear to anybody that this is no longer the package deriving
+straight from GMRS, since they do not maintain this program any longer.
+------------------------------
+
+
+===============================================================================
+README-1.3.2a
+https://github.com/grobian/html2text/blob/ddaa52b55a73fc9eca80e16d0b72e25409a40614/README-1.3.2a
+
+relevant excerpts:
+
+html2text is a command line utility, written in C++, that converts HTML
+documents into plain text. It was written up to version 1.2.2 for and is
+copyrighted by GMRS Software GmbH, Unterschleißheim.
+
+# ----------------------------------------------------------------------------
+# GMRS agreed to change the program's license terms to GPL.
+
+Message-ID: <01c401c10f72$d11c3660$12c8a8c0@jag>
+Reply-To: "David Geffen" <geffen@one4net.com>
+From: "David Geffen" <david@one4net.com>
+To: <mbayer@zedat.fu-berlin.de>
+Date: Wed, 18 Jul 2001 12:17:14 +0200
+Organization: GMRS Software GmbH
+
+Hallo Herr Bayer,
+
+html2text darf unter die GPL veroeffentlicht werden, solange one4net keinerlei
+Nachteile oder Verpflichtungen dadurch entstehen.
+
+Mit freundlichen Gruessen
+David Geffen
+
+
+----- Original Message -----
+From: "Martin Bayer" <mbayer@zedat.fu-berlin.de>
+To: <geffen@one4net.com>
+Sent: Thursday, July 12, 2001 5:39 PM
+Subject: Re: Lizenzbedingungen von 'html2text'
+
+
+> Guten Tag!
+>
+> On Mon, Jun 25, 2001 at 03:23:31PM +0200, David Geffen wrote:
+> > > Aus diesem Grunde möchte ich Sie herzlich bitten, zu überlegen, ob es
+> > > für GMRS nicht möglich wäre, 'html2text' nachträglich unter die GPL zu
+> > > stellen.
+> >
+> > ich bin erst heute zurueck aus dem Urlaub gekommen.
+> >
+> > Ich werde mich in den naechsten paar Tage dazu melden.
+>
+> Darf ich Sie fragen, ob Sie in dieser Angelegenheit bereits zu einem
+> Entschluss gekommen sind? Es ist mittlerweile gelungen, das Programm nach
+> g++3 zu portieren, und da wäre es schön, wenn bereits diese neue Version
+> unter GPL veröffentlicht werden könne.
+>
+> Mit den besten Grüßen
+> --
+> Martin Bayer
+>                                                 c.ne Ostiense, 212/E/15
+> E-Mail: mail@mbayer.de                          I-00154 Roma
+> WWW: http://www.mbayer.de                       GSM: +39 3476605285
+
+
+# ----------------------------------------------------------------------------
+# This program is not provided nor supported by GMRS any longer.
+
+Since GMRS decided not to develop nor to support this program any longer,
+they also did not provide its source code any more. With this, I realised,
+the source code of this program was hardly to obtain, as most archives
+included at best a precompiled version. Because I liked the features, I
+offered a webspace where this program now is living at,
+
+	http://userpage.fu-berlin.de/~mbayer/tools/html2text.html
+
+I'm afraid in this way I've become the maintainer of this package, even if I
+actually don't have time free to spend on working on the program by myself.
+Please keep this in mind if you are going to write me. :-)
+
+
+===============================================================================
+RELEASE_NOTES
+https://github.com/grobian/html2text/blob/c8b579cac0d9d4e45e37fa1702fbd130b98b4305/RELEASE_NOTES
+
+nothing relevant in this file
+
+
+===============================================================================
+TODO
+https://github.com/grobian/html2text/blob/c8b579cac0d9d4e45e37fa1702fbd130b98b4305/TODO
+
+nothing relevant in this file
+
+
+===============================================================================
+
