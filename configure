@@ -38,26 +38,36 @@ makedirs=".";
 # $CXX
 #
 
-$echo 'Checking C++ compiler... \c';
-cat <<EOF >$tmp_file.C;
+$echo 'Checking C++11 compiler... \c'
+cat <<EOF >$tmp_file.C
 #include <iostream>
 int main(int, char **) {
   std::cout << "hello" << std::endl;
+  std::string w = "world";
+  for (auto c : w)
+    std::cout << c;
+  std::cout << std::endl;
   return 0;
 }
 EOF
 CXX=${CXX-unknown}
+foundCXX=
 for i in "$CXX" "g++" "CC" "cc"; do
-  if $i -c $tmp_file.C 2>/dev/null; then
-    CXX="$i";
-    break;
-  fi;
-done;
-if test "$CXX" = unknown; then
-  $echo "Error: Could not find a working C++ compiler.";
-  exit 1;
+  for f in "" "-std=c++11" "-std=c++0x"; do
+    if ${i} ${f} -c $tmp_file.C 2>/dev/null; then
+      foundCXX="${i} ${f}"
+      break
+    fi
+  done
+  test -n "${foundCXX}" && break
+done
+if test -z "${foundCXX}"; then
+  $echo "Error: Could not find a working C++11 compiler."
+  exit 1
 fi;
-$echo "use \"$CXX\"";
+CXX="${foundCXX}"
+$echo "use \"$CXX\""
+
 
 #
 # $SOCKET_LIBRARIES
