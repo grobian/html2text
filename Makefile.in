@@ -112,6 +112,7 @@ TESTS= \
 	   utf-8=meta-in-blockquote \
 	   utf-8=table-with-border \
 	   utf-8=tag-with-colon-attribute \
+	   utf-8=unicode-hex-references \
 	   utf-8=cid-image-link \
 	   utf-8=ifendif \
 	   auto=html4meta \
