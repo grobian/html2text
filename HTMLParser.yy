@@ -1,15 +1,11 @@
-
- /***************************************************************************/
-
 /*
  * Portions Copyright (c) 1999 GMRS Software GmbH
  * Carl-von-Linde-Str. 38, D-85716 Unterschleissheim, http://www.gmrs.de
  * All rights reserved.
  *
  * Author: Arno Unkrig <arno@unkrig.de>
- */
- 
-/* This program is free software; you can redistribute it and/or modify
+
+ * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
@@ -19,19 +15,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License in the file COPYING for more details.
  */
-
- /***************************************************************************/
-
-/*
- * Changes to version 1.2.2 were made by Martin Bayer <mbayer@zedat.fu-berlin.de>
- * Dates and reasons of modifications:
- * Sun Apr  7 11:54:06 CEST 2002: Make some closing tags optional
- * Mon Jul 22 13:42:13 CEST 2002: Don't insert Paragraphs to other block elements
- * Mon Aug 12 17:14:57 CEST 2002: Make even more closing tags optional
- */
-  
- /***************************************************************************/
-
 
 %skeleton "lalr1.cc"
 %require "3.5"
@@ -61,8 +44,6 @@ class HTMLDriver;
 #undef yyerror
 #define yyerror drv.yyerror
 }
-
-/* ------------------------------------------------------------------------- */
 
 %union {
   Document                           *document;
@@ -263,8 +244,6 @@ class HTMLDriver;
 %token                  END_VAR
 
 %token                  END               0  "end of file"
-
-/* ------------------------------------------------------------------------- */
 
 %start document
 
@@ -740,8 +719,6 @@ address:
   }
   ;
 
-/* ------------------------------------------------------------------------- */
-
 texts:
   text {
     $$ = new list<auto_ptr<Element> >;
@@ -952,8 +929,6 @@ option:
   }
   ;
 
-/* ------------------------------------------------------------------------- */
-
 HX:
   H1   { $$ = new Heading; $$->level = 1; $$->attributes.reset($1); }
   | H2 { $$ = new Heading; $$->level = 2; $$->attributes.reset($1); }
@@ -1026,4 +1001,3 @@ html2text::HTMLParser::error(const std::string& msg)
 {
 	yyerror(msg.c_str());
 }
-

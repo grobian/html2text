@@ -1,15 +1,11 @@
-
-/***************************************************************************/
-
 /*
  * Portions Copyright (c) 1999 GMRS Software GmbH
  * Carl-von-Linde-Str. 38, D-85716 Unterschleissheim, http://www.gmrs.de
  * All rights reserved.
  *
  * Author: Arno Unkrig <arno@unkrig.de>
- */
-
-/* This program is free software; you can redistribute it and/or modify
+ *
+ * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
@@ -19,21 +15,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License in the file COPYING for more details.
  */
-
-/***************************************************************************/
-
-/*
- * Changes to version 1.2.2 were made by Martin Bayer <mbayer@zedat.fu-berlin.de>
- * Dates and reasons of modifications:
- * Sun Mar 18 19:51:54 CET 2001: fixed segfault
- * Fre Jun  8 17:37:12 CEST 2001: new image handling
- * Thu Oct  4 21:34:26 CEST 2001: ported to g++ 3.0
- * Mon Jul 29 13:09:26 CEST 2002: fixed runtime increment
- * Wed Jul  2 22:04:08 CEST 2003: ported to g++ 3.3
- */
-
-/***************************************************************************/
-
 
 #include <sstream>
 
@@ -54,8 +35,6 @@
 #define nelems(array) (sizeof(array) / sizeof((array)[0]))
 #endif
 
-/* ------------------------------------------------------------------------- */
-
 static Line *line_format(const list<auto_ptr<Element> > *elements);
 static Area *make_up(const Line &line, Area::size_type w, int halign);
 static Area *format(
@@ -70,8 +49,6 @@ static void format(
 	int halign,
 	iconvstream &os
 	);
-
-/* ------------------------------------------------------------------------- */
 
 /*
  * Helper class that retrieves several block-formatting properties in one
@@ -122,8 +99,6 @@ struct ListFormat {
 		) const;
 };
 
-/* ------------------------------------------------------------------------- */
-
 // Attributes: VERSION (ignored)
 Area *
 Document::format(Area::size_type w, int halign) const
@@ -163,8 +138,6 @@ Document::format(
 	for (size_t j = 0; j < (size_t)bf.vspace_after; ++j)
 		os << endl;
 }
-
-/* ------------------------------------------------------------------------- */
 
 // Attributes: BACKGROUND BGCOLOR TEXT LINK VLINK ALINK (ignored)
 Area *
@@ -209,8 +182,6 @@ Body::format(
 		os << endl;
 }
 
-/* ------------------------------------------------------------------------- */
-
 enum {
 	NO_BULLET,
 	ARABIC_NUMBERS, LOWER_ALPHA, UPPER_ALPHA, LOWER_ROMAN, UPPER_ROMAN,
@@ -232,7 +203,8 @@ OrderedList::format(Area::size_type w, int /*halign*/) const
 	list<auto_ptr<ListItem> >::const_iterator i;
 	int number = 1;
 	for (i = il.begin(); i != il.end(); ++i) {
-		auto_ptr<Area> a((*i)->format(w, type, lf.get_indent(nesting), &number));
+		auto_ptr<Area> a((*i)->format(w, type,
+		                              lf.get_indent(nesting), &number));
 		if (a.get()) {
 			if (res.get()) {
 				res->append(lf.vspace_between);
@@ -412,9 +384,13 @@ ListNormalItem::format(
 	case LOWER_ROMAN:
 	{
 		static const char *lower_roman[] = {
-			"0", "i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix",
-			"x", "xi", "xii", "xiii", "xiv", "xv", "xvi", "xvii", "xviii", "xix",
-			"xx", "xxi", "xxii", "xxiii", "xxiv", "xxv", "xxvi", "xxvii", "xxviii", "xxix"
+			"0",
+			"i",    "ii",    "iii",    "iv",   "v",
+			"vi",   "vii",   "viii",   "ix",   "x",
+			"xi",   "xii",   "xiii",   "xiv",  "xv",
+			"xvi",  "xvii",  "xviii",  "xix",  "xx",
+			"xxi",  "xxii",  "xxiii",  "xxiv", "xxv",
+			"xxvi", "xxvii", "xxviii", "xxix"
 		};
 		const char *p = (
 			number >= 0 && number < (int) nelems(lower_roman) ?
@@ -428,9 +404,13 @@ ListNormalItem::format(
 	case UPPER_ROMAN:
 	{
 		static const char *upper_roman[] = {
-			"0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX",
-			"X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX",
-			"XX", "XXI", "XXII", "XXIII", "XXIV", "XXV", "XXVI", "XXVII", "XXVIII", "XXIX"
+			"0",
+			"I",    "II",    "III",    "IV",   "V",
+			"VI",   "VII",   "VIII",   "IX",   "X",
+			"XI",   "XII",   "XIII",   "XIV",  "XV",
+			"XVI",  "XVII",  "XVIII",  "XIX",  "XX",
+			"XXI",  "XXII",  "XXIII",  "XXIV", "XXV",
+			"XXVI", "XXVII", "XXVIII", "XXIX"
 		};
 		const char *p = (
 			number >= 0 && number < (int) nelems(upper_roman) ?
@@ -465,7 +445,7 @@ ListBlockItem::format(
 	Area::size_type w,
 	int /*type*/,
 	Area::size_type indent,
-	int             */*number_in_out*/ /*= 0*/
+	int             * /*number_in_out*/ /*= 0*/
 	) const
 {
 	if (!block.get())
@@ -481,8 +461,6 @@ ListBlockItem::format(
 	*res >>= indent;
 	return res.release();
 }
-
-/* ------------------------------------------------------------------------- */
 
 // Attributes: COMPACT (ignored)
 Area *
@@ -562,8 +540,6 @@ TermDefinition::format(Area::size_type w, int halign) const
 	return res.release();
 }
 
-/* ------------------------------------------------------------------------- */
-
 // Attributes: ALIGN NOSHADE SIZE WIDTH (ignored)
 Area *
 HorizontalRule::format(Area::size_type w, int /*halign*/) const
@@ -580,8 +556,6 @@ HorizontalRule::format(Area::size_type w, int /*halign*/) const
 	return res;
 }
 
-/* ------------------------------------------------------------------------- */
-
 // Attributes: ALIGN (processed)
 Area *
 Heading::format(Area::size_type w, int halign) const
@@ -597,12 +571,18 @@ Heading::format(Area::size_type w, int halign) const
 	static char cell_attributes[7];
 	if (!cell_attributes[0]) {
 		cell_attributes[0] = 1;
-		cell_attributes[1] = Formatting::getAttributes("H1.attributes", Cell::BOLD);
-		cell_attributes[2] = Formatting::getAttributes("H2.attributes", Cell::BOLD);
-		cell_attributes[3] = Formatting::getAttributes("H3.attributes", Cell::BOLD);
-		cell_attributes[4] = Formatting::getAttributes("H4.attributes", Cell::BOLD);
-		cell_attributes[5] = Formatting::getAttributes("H5.attributes", Cell::BOLD);
-		cell_attributes[6] = Formatting::getAttributes("H6.attributes", Cell::BOLD);
+		cell_attributes[1] = Formatting::getAttributes("H1.attributes",
+		                                               Cell::BOLD);
+		cell_attributes[2] = Formatting::getAttributes("H2.attributes",
+		                                               Cell::BOLD);
+		cell_attributes[3] = Formatting::getAttributes("H3.attributes",
+		                                               Cell::BOLD);
+		cell_attributes[4] = Formatting::getAttributes("H4.attributes",
+		                                               Cell::BOLD);
+		cell_attributes[5] = Formatting::getAttributes("H5.attributes",
+		                                               Cell::BOLD);
+		cell_attributes[6] = Formatting::getAttributes("H6.attributes",
+		                                               Cell::BOLD);
 	}
 
 	auto_ptr<Area> res;
@@ -895,8 +875,6 @@ Address::format(Area::size_type w, int halign) const
 	return res.release();
 }
 
-/* ------------------------------------------------------------------------- */
-
 // Attributes: ACTION METHOD ENCTYPE (ignored)
 Area *
 Form::format(Area::size_type w, int halign) const
@@ -922,7 +900,6 @@ Input::line_format() const
 			size = 20;
 		if (value.empty())
 			value = name;
-//		if ((int) value.length() > size) { value.erase(size); } else
 		if ((int) value.length() < size)
 			value.append(size - value.length(), ' ');
 		res = '[' + string(value.c_str()) + ']';
@@ -984,8 +961,6 @@ TextArea::format(Area::size_type w, int halign) const
 	return line.get() ? make_up(*line, w, halign) : 0;
 }
 
-/* ------------------------------------------------------------------------- */
-
 Line *
 PCData::line_format() const
 {
@@ -1002,31 +977,40 @@ static char
 get_font_cell_attributes(int attribute)
 {
 	if (attribute == HTMLParser_token::TT) {
-		static char a = Formatting::getAttributes("TT.attributes", Cell::NONE);
+		static char a = Formatting::getAttributes("TT.attributes",
+		                                          Cell::NONE);
 		return a;
 	} else if (attribute == HTMLParser_token::I) {
-		static char a = Formatting::getAttributes("I.attributes", Cell::NONE);
+		static char a = Formatting::getAttributes("I.attributes",
+		                                          Cell::NONE);
 		return a;
 	} else if (attribute == HTMLParser_token::B) {
-		static char a = Formatting::getAttributes("B.attributes", Cell::BOLD);
+		static char a = Formatting::getAttributes("B.attributes",
+		                                          Cell::BOLD);
 		return a;
 	} else if (attribute == HTMLParser_token::U) {
-		static char a = Formatting::getAttributes("U.attributes", Cell::UNDERLINE);
+		static char a = Formatting::getAttributes("U.attributes",
+		                                          Cell::UNDERLINE);
 		return a;
 	} else if (attribute == HTMLParser_token::STRIKE) {
-		static char a = Formatting::getAttributes("STRIKE.attributes", Cell::STRIKETHROUGH);
+		static char a = Formatting::getAttributes("STRIKE.attributes",
+		                                          Cell::STRIKETHROUGH);
 		return a;
 	} else if (attribute == HTMLParser_token::BIG) {
-		static char a = Formatting::getAttributes("BIG.attributes", Cell::NONE);
+		static char a = Formatting::getAttributes("BIG.attributes",
+		                                          Cell::NONE);
 		return a;
 	} else if (attribute == HTMLParser_token::SMALL) {
-		static char a = Formatting::getAttributes("SMALL.attributes", Cell::NONE);
+		static char a = Formatting::getAttributes("SMALL.attributes",
+		                                          Cell::NONE);
 		return a;
 	} else if (attribute == HTMLParser_token::SUB) {
-		static char a = Formatting::getAttributes("SUB.attributes", Cell::NONE);
+		static char a = Formatting::getAttributes("SUB.attributes",
+		                                          Cell::NONE);
 		return a;
 	} else if (attribute == HTMLParser_token::SUP) {
-		static char a = Formatting::getAttributes("SUP.attributes", Cell::NONE);
+		static char a = Formatting::getAttributes("SUP.attributes",
+		                                          Cell::NONE);
 		return a;
 	}
 	return Cell::NONE;
@@ -1068,28 +1052,36 @@ static char
 get_phrase_cell_attributes(int attribute)
 {
 	if (attribute == HTMLParser_token::EM) {
-		static char a = Formatting::getAttributes("EM.attributes", Cell::BOLD);
+		static char a = Formatting::getAttributes("EM.attributes",
+		                                          Cell::BOLD);
 		return a;
 	} else if (attribute == HTMLParser_token::STRONG) {
-		static char a = Formatting::getAttributes("STRONG.attributes", Cell::BOLD);
+		static char a = Formatting::getAttributes("STRONG.attributes",
+		                                          Cell::BOLD);
 		return a;
 	} else if (attribute == HTMLParser_token::DFN) {
-		static char a = Formatting::getAttributes("DFN.attributes", Cell::NONE);
+		static char a = Formatting::getAttributes("DFN.attributes",
+		                                          Cell::NONE);
 		return a;
 	} else if (attribute == HTMLParser_token::CODE) {
-		static char a = Formatting::getAttributes("CODE.attributes", Cell::NONE);
+		static char a = Formatting::getAttributes("CODE.attributes",
+		                                          Cell::NONE);
 		return a;
 	} else if (attribute == HTMLParser_token::SAMP) {
-		static char a = Formatting::getAttributes("SAMP.attributes", Cell::NONE);
+		static char a = Formatting::getAttributes("SAMP.attributes",
+		                                          Cell::NONE);
 		return a;
 	} else if (attribute == HTMLParser_token::KBD) {
-		static char a = Formatting::getAttributes("KBD.attributes", Cell::NONE);
+		static char a = Formatting::getAttributes("KBD.attributes",
+		                                          Cell::NONE);
 		return a;
 	} else if (attribute == HTMLParser_token::VAR) {
-		static char a = Formatting::getAttributes("VAR.attributes", Cell::NONE);
+		static char a = Formatting::getAttributes("VAR.attributes",
+		                                          Cell::NONE);
 		return a;
 	} else if (attribute == HTMLParser_token::CITE) {
-		static char a = Formatting::getAttributes("CITE.attributes", Cell::NONE);
+		static char a = Formatting::getAttributes("CITE.attributes",
+		                                          Cell::NONE);
 		return a;
 	}
 	return Cell::NONE;
@@ -1236,23 +1228,12 @@ NoBreak::line_format() const
 	return l;
 }
 
-/* ------------------------------------------------------------------------- */
-
 /*
  * Make up "line" into an Area. Attempt to return an Area no wider than "w".
  */
 static Area *
 make_up(const Line &line, Area::size_type w, int halign)
 {
-//{
-//  cout << "make_up(\"";
-//  for (Line::size_type i = 0; i < line.length(); i++) {
-//    if (isprint(line[i].character)) cout << line[i].character;
-//    else cout << "[" << (int) line[i].character << "]";
-//  }
-//  cout << "\")" << endl;
-//}
-
 	if (line.empty())
 		return 0;
 
@@ -1341,8 +1322,6 @@ make_up(const Line &line, Area::size_type w, int halign)
 	return res.release();
 }
 
-/* ------------------------------------------------------------------------- */
-
 /*
  * Attempt to line-format all "elements". If one of the elements can only be
  * area-formatted, return null. In that case, "::format()" (below) will
@@ -1369,8 +1348,6 @@ line_format(const list<auto_ptr<Element> > *elements)
 
 	return res.release();
 }
-
-/* ------------------------------------------------------------------------- */
 
 /*
  * Basically, a list of "Text"s is a stream of words that has to be formatted
@@ -1506,11 +1483,7 @@ format(
 	}
 }
 
-/* ------------------------------------------------------------------------- */
-
 static Properties formatting_properties;
-
-/* ----------------------- */
 
 /*static*/ void
 Formatting::setProperty(const char *key, const char *value)
@@ -1518,15 +1491,11 @@ Formatting::setProperty(const char *key, const char *value)
 	formatting_properties.setProperty(key, value);
 }
 
-/* ----------------------- */
-
 /*static*/ void
 Formatting::loadProperties(istream &is)
 {
 	formatting_properties.load(is);
 }
-
-/* ----------------------- */
 
 /*static*/ const char *
 Formatting::getString(const char *key, const char *dflt)
@@ -1534,15 +1503,11 @@ Formatting::getString(const char *key, const char *dflt)
 	return formatting_properties.getProperty(key, dflt);
 }
 
-// neue Methode fuer leere Attribute - Johannes Geiger
-
 const char *
 Formatting::getString(const char *key)
 {
 	return formatting_properties.getProperty(key);
 }
-
-/* ----------------------- */
 
 /*
  * Property not set                               => 0
@@ -1573,16 +1538,12 @@ Formatting::getStringVector(const char *key, const char *dflt)
 	return res;
 }
 
-/* ----------------------- */
-
 /*static*/ int
 Formatting::getInt(const char *key, int dflt)
 {
 	const char *p = formatting_properties.getProperty(key, 0);
 	return p ? atoi(p) : dflt;
 }
-
-/* ----------------------- */
 
 /*static*/ vector<int> *
 Formatting::getIntVector(const char *key, const char *dflt)
@@ -1607,8 +1568,6 @@ Formatting::getIntVector(const char *key, const char *dflt)
 	return res;
 }
 
-/* ----------------------- */
-
 /*static*/ char
 Formatting::getAttributes(const char *key, char dflt)
 {
@@ -1630,8 +1589,6 @@ Formatting::getAttributes(const char *key, char dflt)
 	}
 	return res;
 }
-
-/* ------------------------------------------------------------------------- */
 
 BlockFormat::BlockFormat(
 	const char      *item_name,
@@ -1683,8 +1640,6 @@ BlockFormat::effective_width(Area::size_type w) const
 	 */
 	return 1;
 }
-
-/* ------------------------------------------------------------------------- */
 
 ListFormat::ListFormat(
 	const char      *item_name,
@@ -1752,6 +1707,3 @@ ListFormat::get_type(
 			NULL
 			);
 }
-
-/* ------------------------------------------------------------------------- */
-

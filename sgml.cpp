@@ -1,15 +1,11 @@
-
-/***************************************************************************/
-
 /*
  * Portions Copyright (c) 1999 GMRS Software GmbH
  * Carl-von-Linde-Str. 38, D-85716 Unterschleissheim, http://www.gmrs.de
  * All rights reserved.
  *
  * Author: Arno Unkrig <arno@unkrig.de>
- */
-
-/* This program is free software; you can redistribute it and/or modify
+ *
+ * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
@@ -19,19 +15,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License in the file COPYING for more details.
  */
-
-/***************************************************************************/
-
-/*
- * Changes to version 1.2.2 were made by Martin Bayer <mbayer@zedat.fu-berlin.de>
- * Dates and reasons of modifications:
- * Thu Oct  4 22:14:38 CEST 2001: included EURO-sign
- * Sat Sep 14 15:23:25 CEST 2002: Added plain ASCII output patch by Bela Lubkin
- * Thu Nov 20 18:23:59 CET 2003: SGML entities array revised
- */
-
-/***************************************************************************/
-
 
 #include <stdlib.h>
 #include <string.h>
@@ -44,8 +27,6 @@
 #ifndef nelems
 #define nelems(array) (sizeof(array) / sizeof((array)[0]))
 #endif
-
-/* ------------------------------------------------------------------------- */
 
 /*
  * Selected SGML entities, with translations to ASCII and unicode.
@@ -327,8 +308,6 @@ entities[] = {
 	{ "zwnj",     0x200C },
 };
 
-/* ------------------------------------------------------------------------- */
-
 int mkutf8(unsigned long x)
 {
 	int ret = 0;
@@ -445,6 +424,3 @@ replace_sgml_entities(istr *s)
 		}
 	}
 }
-
-/* ------------------------------------------------------------------------- */
-

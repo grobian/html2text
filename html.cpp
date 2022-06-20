@@ -1,15 +1,11 @@
-
-/***************************************************************************/
-
 /*
  * Portions Copyright (c) 1999 GMRS Software GmbH
  * Carl-von-Linde-Str. 38, D-85716 Unterschleissheim, http://www.gmrs.de
  * All rights reserved.
  *
  * Author: Arno Unkrig <arno@unkrig.de>
- */
-
-/* This program is free software; you can redistribute it and/or modify
+ *
+ * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
@@ -20,18 +16,6 @@
  * GNU General Public License in the file COPYING for more details.
  */
 
-/***************************************************************************/
-
-/*
- * Changes to version 1.2.2 were made by Martin Bayer <mbayer@zedat.fu-berlin.de>
- * Dates and reasons of modifications:
- * Fre Jun  8 17:43:02 CEST 2001: new method
- * Wed Jul  2 22:07:12 CEST 2003: ported to g++ 3.3
- */
-
-/***************************************************************************/
-
-
 #include <stdlib.h>
 #include <stdarg.h>
 
@@ -39,8 +23,6 @@
 #include "HTMLParser.tab.hh"
 #include "cmp_nocase.h"
 #include "iconvstream.h"
-
-/* ------------------------------------------------------------------------- */
 
 /*
  * Some C++ compilers (e.g. EGCS 2.91.66) have problems if all virtual
@@ -50,8 +32,6 @@
  */
 Element::~Element()
 {}
-
-/* ------------------------------------------------------------------------- */
 
 istr
 get_attribute(
@@ -71,7 +51,6 @@ get_attribute(
 }
 
 // *exists is set to false if attribute *name does not exist - Johannes Geiger
-
 istr
 get_attribute(
 	const list<TagAttribute> *as,
@@ -90,7 +69,6 @@ get_attribute(
 	*exists = false;
 	return istr("");
 }
-
 
 int
 get_attribute(
@@ -187,8 +165,6 @@ get_attribute(
 
 	return s ? v : dflt2;
 }
-
-/* ------------------------------------------------------------------------- */
 
 istr
 get_style_attr(istr *style, const char *name, const char *dflt)

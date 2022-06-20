@@ -1,15 +1,11 @@
-
-/***************************************************************************/
-
 /*
  * Portions Copyright (c) 1999 GMRS Software GmbH
  * Carl-von-Linde-Str. 38, D-85716 Unterschleissheim, http://www.gmrs.de
  * All rights reserved.
  *
  * Author: Arno Unkrig <arno@unkrig.de>
- */
-
-/* This program is free software; you can redistribute it and/or modify
+ *
+ * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
@@ -19,20 +15,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License in the file COPYING for more details.
  */
-
-/***************************************************************************/
-
-/*
- * Changes to version 1.2.2 were made by Martin Bayer <mbayer@zedat.fu-berlin.de>
- * Dates and reasons of modifications:
- * Fre Jun  8 17:20:38 CEST 2001: fixed coredump
- * Sun Apr  7 11:31:10 CEST 2002: fixed parser errors
- * Wed Jul  2 22:00:21 CEST 2003: ported to g++ 3.3
- * Sun Nov 16 22:13:50 CET 2003: better rendering of XHTML
- */
-
-/***************************************************************************/
-
 
 #include <iostream>
 #include <stdlib.h>
@@ -57,8 +39,6 @@ enum {
 	END_TAG, BLOCK_END_TAG,
 	NON_CONTAINER_TAG
 };
-
-/* ------------------------------------------------------------------------- */
 
 void
 HTMLControl::htmlparser_yyerror(const char *p)
@@ -199,8 +179,6 @@ int HTMLControl::htmlparser_yylex(
 	}
 }
 
-/* ------------------------------------------------------------------------- */
-
 /*
  * Keep this array sorted alphabetically!
  */
@@ -287,8 +265,6 @@ tag_names[] = {
 	pack2(VAR),
 #undef pack
 };
-
-/* ------------------------------------------------------------------------- */
 
 int
 HTMLControl::yylex2(html2text::HTMLParser::semantic_type *value_return,
@@ -615,8 +591,6 @@ HTMLControl::yylex2(html2text::HTMLParser::semantic_type *value_return,
 	}
 }
 
-/* ------------------------------------------------------------------------- */
-
 bool
 HTMLControl::read_cdata(const char *terminal, string *value_return)
 {
@@ -631,8 +605,9 @@ HTMLControl::read_cdata(const char *terminal, string *value_return)
 		if (toupper(c) == terminal[state]) {
 			state++;
 			if (terminal[state] == '\0') {
-// s.erase(s.length() - state);
-// caused core dump on empty STYLE and SCRIPT elements - Johannes Geiger
+				// s.erase(s.length() - state);
+				// caused core dump on empty STYLE and
+				// SCRIPT elements - Johannes Geiger
 				s.erase(s.length() - state + 1);
 				return true;
 			}
@@ -642,8 +617,6 @@ HTMLControl::read_cdata(const char *terminal, string *value_return)
 		s += c;
 	}
 }
-
-/* ------------------------------------------------------------------------- */
 
 int
 HTMLControl::get_char()
@@ -701,6 +674,3 @@ HTMLControl::unget_char(int c)
 	}
 	ungotten_chars[number_of_ungotten_chars++] = c;
 }
-
-/* ------------------------------------------------------------------------- */
-

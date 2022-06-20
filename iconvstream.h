@@ -12,7 +12,6 @@
  * GNU General Public License in the file COPYING for more details.
  */
 
-
 #ifndef ICONVSTREAM_H
 #define ICONVSTREAM_H 1
 

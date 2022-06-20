@@ -1,15 +1,11 @@
-
-/***************************************************************************/
-
 /*
  * Portions Copyright (c) 1999 GMRS Software GmbH
  * Carl-von-Linde-Str. 38, D-85716 Unterschleissheim, http://www.gmrs.de
  * All rights reserved.
  *
  * Author: Arno Unkrig <arno@unkrig.de>
- */
-
-/* This program is free software; you can redistribute it and/or modify
+ *
+ * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
@@ -20,22 +16,8 @@
  * GNU General Public License in the file COPYING for more details.
  */
 
-/***************************************************************************/
-
-/*
- * Changes to version 1.2.2 were made by Martin Bayer <mbayer@zedat.fu-berlin.de>
- * Dates and reasons of modifications:
- * Thu Oct  4 21:25:07 CEST 2001: ported to g++ 3.0
- * Wed Jul  2 22:01:12 CEST 2003: ported to g++ 3.3
- */
-
-/***************************************************************************/
-
-
 #ifndef __HTMLControl_h_INCLUDED__ /* { */
 #define __HTMLControl_h_INCLUDED__
-
-/* ------------------------------------------------------------------------- */
 
 #include "iconvstream.h"
 #include <istream>
@@ -43,8 +25,6 @@
 #include "HTMLParser.tab.hh"
 
 using std::istream;
-
-/* ------------------------------------------------------------------------- */
 
 class HTMLControl {
 	public:
@@ -78,7 +58,8 @@ class HTMLControl {
 		/*
 		 * Helpers.
 		 */
-		int yylex2(html2text::HTMLParser::semantic_type *value_return, int *tag_type_return);
+		int yylex2(html2text::HTMLParser::semantic_type *value_return,
+				   int *tag_type_return);
 		bool literal_mode;
 		int next_token;
 		html2text::HTMLParser::semantic_type next_token_value;
@@ -94,9 +75,4 @@ class HTMLControl {
 		int number_of_ungotten_chars;
 };
 
-/* ------------------------------------------------------------------------- */
-
 #endif /* } */
-
-/* ------------------------------------------------------------------------- */
-

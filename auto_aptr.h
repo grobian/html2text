@@ -1,6 +1,3 @@
-
-/***************************************************************************/
-
 /*
  * Portions Copyright (c) 1999 GMRS Software GmbH
  * Carl-von-Linde-Str. 38, D-85716 Unterschleissheim, http://www.gmrs.de
@@ -8,15 +5,7 @@
  *
  * Author: Arno Unkrig <arno@unkrig.de>
  *
- * All advertising materials mentioning features or use of this software
- * must display the following acknowledgement:
- * "This product includes software developed by GMRS Software GmbH."
- * The name of GMRS Software GmbH may not be used to endorse or promote
- * products derived from this software without specific prior written
- * permission.
- */
-
-/* This program is free software; you can redistribute it and/or modify
+ * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
@@ -27,25 +16,8 @@
  * GNU General Public License in the file COPYING for more details.
  */
 
-/***************************************************************************/
-
-/*
- * Changes to version 1.2.2 were made by Martin Bayer <mbayer@zedat.fu-berlin.de>
- * Dates and reasons of modifications:
- * Thu Oct  4 21:29:40 CEST 2001: ported to g++ 3.0
- */
-
-/***************************************************************************/
-
-
 #ifndef __auto_aptr_h_INCLUDED__ /* { */
 #define __auto_aptr_h_INCLUDED__
-
-/* ------------------------------------------------------------------------- */
-
-#ident "$Id: auto_aptr.h,v 1.2 1999/07/09 09:08:40 arno Exp $"
-
-/* ------------------------------------------------------------------------- */
 
 /*
  * This template class is very similar to the standard "auto_ptr", but it is
@@ -53,8 +25,6 @@
  * passed to it must have been allocated with "new[]", and "auto_aptr" will
  * delete it with "delete[]".
  */
-
-/* ------------------------------------------------------------------------- */
 
 #include <stdlib.h>
 
@@ -122,9 +92,4 @@ private:
 T *p;
 };
 
-/* ------------------------------------------------------------------------- */
-
 #endif /* } */
-
-/* ------------------------------------------------------------------------- */
-

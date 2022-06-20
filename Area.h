@@ -1,15 +1,11 @@
-
-/***************************************************************************/
-
 /*
  * Portions Copyright (c) 1999 GMRS Software GmbH
  * Carl-von-Linde-Str. 38, D-85716 Unterschleissheim, http://www.gmrs.de
  * All rights reserved.
  *
  * Author: Arno Unkrig <arno@unkrig.de>
- */
-
-/* This program is free software; you can redistribute it and/or modify
+ *
+ * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
@@ -20,23 +16,8 @@
  * GNU General Public License in the file COPYING for more details.
  */
 
-/***************************************************************************/
-
-/*
- * Changes to version 1.2.2 were made by Martin Bayer <mbayer@zedat.fu-berlin.de>
- * Dates and reasons of modifications:
- * Thu Oct  4 21:21:10 CEST 2001: ported to g++ 3.0
- * Wed Jul  2 21:59:41 CEST 2003: ported to g++ 3.3
- */
-
-/***************************************************************************/
-
-
 #ifndef __Area_h_INCLUDED__ /* { */
 #define __Area_h_INCLUDED__
-
-/* ------------------------------------------------------------------------- */
-
 
 #include <sys/types.h>
 #include <string>
@@ -49,8 +30,6 @@ BOOL_DEFINITION
 #endif
 
 using std::string;
-
-/* ------------------------------------------------------------------------- */
 
 struct Cell {
 	int character;
@@ -66,8 +45,6 @@ struct Cell {
 		attribute = NONE;
 	}
 };
-
-/* ------------------------------------------------------------------------- */
 
 class Line {
 	public:
@@ -143,8 +120,6 @@ class Line {
 
 		friend class Area;
 };
-
-/* ------------------------------------------------------------------------- */
 
 class Area {
 	public:
@@ -240,9 +215,4 @@ class Area {
 		friend iconvstream &operator<<(iconvstream&, const Area &);
 };
 
-/* ------------------------------------------------------------------------- */
-
 #endif /* } */
-
-/* ------------------------------------------------------------------------- */
-

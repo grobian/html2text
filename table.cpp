@@ -1,15 +1,11 @@
-
-/***************************************************************************/
-
 /*
  * Portions Copyright (c) 1999 GMRS Software GmbH
  * Carl-von-Linde-Str. 38, D-85716 Unterschleissheim, http://www.gmrs.de
  * All rights reserved.
  *
  * Author: Arno Unkrig <arno@unkrig.de>
- */
-
-/* This program is free software; you can redistribute it and/or modify
+ *
+ * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
@@ -20,34 +16,15 @@
  * GNU General Public License in the file COPYING for more details.
  */
 
-/***************************************************************************/
-
-/*
- * Changes to version 1.2.2 were made by Martin Bayer <mbayer@zedat.fu-berlin.de>
- * Dates and reasons of modifications:
- * Mon Jul 22 13:30:32 CEST 2002: fixed segfault
- */
-
-/***************************************************************************/
-
-
-/* ------------------------------------------------------------------------- */
-
 /*
  * "Table::format()" has been taken out of "format.C" because it is way more
  * complex than the "format()" methods of the other HTML elements.
  */
 
-/* ------------------------------------------------------------------------- */
-
-#ident "$Id: table.C,v 1.15 1999/11/12 18:57:35 arno Exp $"
-
 #include <iostream>
 #include "html.h"
 #include "auto_aptr.h"
 #include "format.h"
-
-/* ------------------------------------------------------------------------- */
 
 // Should be local to "Table::format()", but CFRONT can't handle this.
 struct LogicalCell {
@@ -60,8 +37,6 @@ struct LogicalCell {
 	bool minimized;           // Cannot be narrowed any more.
 	auto_ptr<Area>  area;     // Formatted cell -- computed at a late stage.
 };
-
-/* ------------------------------------------------------------------------- */
 
 /*
  * Correct x and y of the logical cells according to the other cells' ROWSPAN
@@ -224,7 +199,8 @@ create_lcs(
 						w
 						- left_border_width
 						- right_border_width
-						- (*number_of_columns_return - 1) * (column_spacing + 0),
+						- (*number_of_columns_return - 1) *
+						  (column_spacing + 0),
 						Area::LEFT // Yields better results than "p->halign"!
 						));
 				p->width = tmp.get() ? tmp->width() : 0;
@@ -382,19 +358,6 @@ narrow_table(
 	column_widths_in_out[widest_column] = new_column_width;
 	*table_width_in_out -= old_column_width - new_column_width;
 
-//cerr
-//  << "Narrowed column "
-//  << widest_column
-//  << " from "
-//  << old_column_width
-//  << " to "
-//  << new_column_width
-//  << endl;
-//cerr << "table_width=" << *table_width_in_out << endl;
-//for (int z = 0; z < number_of_columns; ++z) {
-//  cerr << "column_widths[" << z << "]=" << column_widths_in_out[z] << endl;
-//}
-
 	return true;
 }
 
@@ -428,10 +391,6 @@ compute_row_heights(
 		lc.area.reset(lc.cell->format(w, lc.halign));
 		if (!lc.area.get())
 			continue;
-//    cerr << "lc.halign=" << lc.halign << ", w=" << w << endl;
-//    cerr
-//      << "***" << *lc.area << "***" << endl <<
-//      lc.area->width() << "x" << lc.area->height() << endl;
 		Area::size_type h = (lc.h - 1) * row_spacing;
 		{
 			for (int y = lc.y; y < lc.y + lc.h; ++y)
@@ -553,7 +512,8 @@ Table::format(Area::size_type w, int halign) const
 	/*
 	 * Compute row heights.
 	 */
-	auto_aptr<Area::size_type> row_heights = new Area::size_type[number_of_rows];
+	auto_aptr<Area::size_type> row_heights =
+	    new Area::size_type[number_of_rows];
 
 	compute_row_heights(
 			&lcs,
@@ -636,7 +596,8 @@ Table::format(Area::size_type w, int halign) const
 			const LogicalCell &lc = **i;
 
 			// Calculate cell position.
-			Area::size_type x = x0 + left_border_width, y = y0 + top_border_width;
+			Area::size_type x = x0 + left_border_width;
+			Area::size_type y = y0 + top_border_width;
 			{
 				for (int j = 0; j < lc.x; j++)
 					x += column_widths[j] + column_spacing;
@@ -663,8 +624,9 @@ Table::format(Area::size_type w, int halign) const
 				res->insert(*lc.area, x, y, w, h, lc.halign, lc.valign);
 			}
 			if (draw_border) {
-				// If the right neighbor cell bottom is flush with this cell's bottom,
-				// then also underline the border between the two cells.
+				// If the right neighbor cell bottom is flush with this
+				// cell's bottom, then also underline the border between
+				// the two cells.
 				bool underline_column_separator = false;
 				{
 					int lx = lc.x + lc.w, ly = lc.y + lc.h;
@@ -694,5 +656,3 @@ Table::format(Area::size_type w, int halign) const
 
 	return res.release();
 }
-
-/* ------------------------------------------------------------------------- */

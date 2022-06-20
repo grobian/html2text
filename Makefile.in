@@ -1,6 +1,3 @@
-
-# -----------------------------------------------------------------------------
-#
 # Portions Copyright (c) 1999 GMRS Software GmbH
 # Carl-von-Linde-Str. 38, D-85716 Unterschleissheim, http://www.gmrs.de
 # All rights reserved.
@@ -16,15 +13,6 @@
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 # FOR A PARTICULAR PURPOSE. See the GNU General Public License in the file
 # COPYING for more details.
-#
-# -----------------------------------------------------------------------------
-#
-# Changes to version 1.2.2 were made by Martin Bayer <mbayer@zedat.fu-berlin.de>
-#
-# Version 2.0.0 is the first version after fork
-#               github.com/grobian/html2text
-#
-# -----------------------------------------------------------------------------
 
 VERSION=2.0.2_pre
 
@@ -65,8 +53,6 @@ H2TLIBS     = $(LIBSTDCXX_LIBS) $(SOCKET_LIBRARIES) $(ICONV_LIBRARIES) $(LIBS)
 
 default: all
 
-# -----------------------------------------------------------------------------
-
 all: html2text
 	@echo
 	@echo 'Compilation completed. You may now move "html2text", "html2text.1"'
@@ -90,15 +76,11 @@ HTMLParser.o: HTMLParser.tab.cc HTMLParser.tab.hh
 html2text: $(OBJS) $(LIBSTDCXX_LIBS)
 	$(CXX) $(LDFLAGS) $(OBJS) $(H2TLIBS) $(H2TCXXFLAGS) -o $@
 
-# -----------------------------------------------------------------------------
-
 # Since bison isn't always installed, HTMLParser.tab.hh and
 # HTMLParser.tab.cc are only built when 'make bison-local' is issued.
 
 bison-local:
 	$(BISON) $(YFLAGS) -d HTMLParser.yy
-
-# -----------------------------------------------------------------------------
 
 TESTS= \
 	   ascii=ordered-list \
@@ -123,8 +105,6 @@ TESTS= \
 check:
 	@cd tests && ./runtest.sh $(TESTS)
 
-# -----------------------------------------------------------------------------
-
 # This is mostly thought for RPM builts and users that don't read the documentation.
 
 install:
@@ -140,8 +120,6 @@ install:
 		README.md README-1.3.2a RELEASE_NOTES TODO \
 		$(DESTDIR)$(DOCDIR)
 
-# -----------------------------------------------------------------------------
-
 clean: local-clean
 local-clean:
 	rm -f *.o *~ core html2text
@@ -152,5 +130,3 @@ dist-clean: local-clean
 clobber: local-clobber
 local-clobber: local-clean
 	rm -f html2text
-
-# -----------------------------------------------------------------------------
