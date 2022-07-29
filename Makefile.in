@@ -123,6 +123,7 @@ clean: local-clean
 local-clean:
 	rm -f *.o *~ core html2text
 
+distclean: dist-clean
 dist-clean: local-clean
 	rm -f Makefile
 
