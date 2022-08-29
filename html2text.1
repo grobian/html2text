@@ -35,6 +35,8 @@ html2text \- an advanced HTML\-to\-text converter
 ] [
 .B \-ascii
 ] [
+.B \-utf8
+] [
 .IR input-file " ..."
 ]
 .SH DESCRIPTION
@@ -96,6 +98,15 @@ is used instead. Non\-ASCII characters are rendered via iconv's
 transliteration feature.  As such this option is an alias for
 .B -to_encoding
 .IR ASCII//TRANSLIT .
+.TP
+.B \-utf8
+Assume both terminal and input stream are in
+.B UTF-8
+mode. This is an alias for
+.B -from_encoding
+.IR UTF-8
+.B -to_encoding
+.IR UTF-8 .
 .TP
 .BI "\-from_encoding " encoding
 Sets the encoding of the input file or stream to the given encoding.  By

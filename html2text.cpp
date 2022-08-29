@@ -52,6 +52,8 @@ text.\n\
   -to_encoding   Output using given encoding\n\
   -ascii         Use plain ASCII for output instead of UTF-8\n\
                  alias for: -to_encoding ASCII//TRANSLIT \n\
+  -utf8          Assume both terminal and input stream are in UTF-8 mode\n\
+                 alias for: -from_encoding UTF-8 -to_encoding UTF-8 \n\
   -o <file>      Redirect output into <file>\n\
 ";
 
@@ -123,6 +125,9 @@ main(int argc, char **argv)
 			extarg = &to_encoding;
 		} else if (!strcmp(arg, "-ascii")) {
 			to_encoding = "ASCII//TRANSLIT";  /* create things like (c) */
+		} else if (!strcmp(arg, "-utf8")) {
+			from_encoding = "UTF-8";
+			to_encoding = "UTF-8";
 		} else {
 			std::cerr
 				<< "Unrecognized command line option \""
