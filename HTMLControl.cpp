@@ -359,12 +359,15 @@ HTMLControl::yylex2(html2text::HTMLParser::semantic_type *value_return,
 				return HTMLParser_token::DOCTYPE;
 			}
 
-			if (c == '/' || isalpha(c) || c == '_') {
+			if (c == '/' || isalpha(c) || c == '_' || c == '?') {
 				string tag_name;
 				bool is_end_tag = false;
 
 				if (c == '/') {
 					is_end_tag = true;
+					c = get_char();
+				}
+				if (c == '?') {
 					c = get_char();
 				}
 				if (!isalpha(c) && c != '_')
@@ -555,7 +558,7 @@ HTMLControl::yylex2(html2text::HTMLParser::semantic_type *value_return,
 				if (c == '<') {
 					int c2;
 					unget_char(c2 = get_char());
-					if (c2 == '!' || c2 == '/' || isalpha(c2)) {
+					if (c2 == '!' || c2 == '/' || c2 == '?' || isalpha(c2)) {
 						unget_char(c);
 						break;
 					}
