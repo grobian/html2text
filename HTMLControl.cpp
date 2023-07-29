@@ -24,7 +24,7 @@
 #include "html.h"
 #include "HTMLControl.h"
 #include "HTMLDriver.h"
-#include "HTMLParser.tab.hh"
+#include "HTMLParser.hh"
 #include "sgml.h"
 #include "cmp_nocase.h"
 #include "istr.h"

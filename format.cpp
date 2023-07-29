@@ -24,7 +24,7 @@
 #include <map>
 
 #include "html.h"
-#include "HTMLParser.tab.hh"
+#include "HTMLParser.hh"
 #include "sgml.h"
 #include "cmp_nocase.h"
 #include "format.h"

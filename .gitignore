@@ -1,5 +1,5 @@
 .gitignore
 *.o
 html2text
-Makefile
+/Makefile
 Dependencies

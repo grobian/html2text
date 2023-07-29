@@ -13,7 +13,7 @@
 
 #include "HTMLDriver.h"
 #include "HTMLControl.h"
-#include "HTMLParser.tab.hh"
+#include "HTMLParser.hh"
 #include "iconvstream.h"
 
 HTMLDriver::HTMLDriver(HTMLControl& c,

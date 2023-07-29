@@ -32,7 +32,7 @@
 
 
 /**
- ** \file HTMLParser.tab.hh
+ ** \file y.tab.h
  ** Define the html2text::parser class.
  */
 
@@ -42,10 +42,10 @@
 // especially those whose name start with YY_ or yy_.  They are
 // private implementation details that can be changed or removed.
 
-#ifndef YY_YY_HTMLPARSER_TAB_HH_INCLUDED
-# define YY_YY_HTMLPARSER_TAB_HH_INCLUDED
+#ifndef YY_YY_HTMLPARSER_HH_INCLUDED
+# define YY_YY_HTMLPARSER_HH_INCLUDED
 // "%code requires" blocks.
-#line 43 "HTMLParser.yy"
+#line 26 "HTMLParser.yy"
 
 #include <string>
 #define HTMLParser_token html2text::HTMLParser::token
@@ -53,7 +53,7 @@
 #include "istr.h"
 class HTMLDriver;
 
-#line 57 "HTMLParser.tab.hh"
+#line 57 "HTMLParser.hh"
 
 
 # include <cstdlib> // std::abort
@@ -187,9 +187,9 @@ class HTMLDriver;
 # define YYDEBUG 1
 #endif
 
-#line 40 "HTMLParser.yy"
+#line 23 "HTMLParser.yy"
 namespace html2text {
-#line 193 "HTMLParser.tab.hh"
+#line 193 "HTMLParser.hh"
 
 
 
@@ -207,7 +207,7 @@ namespace html2text {
     /// Symbol semantic values.
     union value_type
     {
-#line 67 "HTMLParser.yy"
+#line 48 "HTMLParser.yy"
 
   Document                           *document;
   Element                            *element;
@@ -232,7 +232,7 @@ namespace html2text {
   Address                            *address;
   list<auto_ptr<list<TagAttribute>>> *tag_attributes_list;
 
-#line 236 "HTMLParser.tab.hh"
+#line 236 "HTMLParser.hh"
 
     };
 #endif
@@ -1133,11 +1133,11 @@ namespace html2text {
   };
 
 
-#line 40 "HTMLParser.yy"
+#line 23 "HTMLParser.yy"
 } // html2text
-#line 1139 "HTMLParser.tab.hh"
+#line 1139 "HTMLParser.hh"
 
 
 
 
-#endif // !YY_YY_HTMLPARSER_TAB_HH_INCLUDED
+#endif // !YY_YY_HTMLPARSER_HH_INCLUDED

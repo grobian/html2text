@@ -20,7 +20,7 @@
 #include <stdarg.h>
 
 #include "html.h"
-#include "HTMLParser.tab.hh"
+#include "HTMLParser.hh"
 #include "cmp_nocase.h"
 #include "iconvstream.h"
 

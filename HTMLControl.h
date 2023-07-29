@@ -22,7 +22,7 @@
 #include "iconvstream.h"
 #include <istream>
 
-#include "HTMLParser.tab.hh"
+#include "HTMLParser.hh"
 
 using std::istream;
 

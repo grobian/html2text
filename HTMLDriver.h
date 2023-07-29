@@ -14,7 +14,7 @@
 #ifndef HTML_DRIVER_H
 #define HTML_DRIVER_H 1
 
-#include "HTMLParser.tab.hh"
+#include "HTMLParser.hh"
 #include "HTMLControl.h"
 #include "iconvstream.h"
 
