@@ -72,8 +72,9 @@ iconvstream::close_is(void)
 {
 	if (is_open()) {
 		::close(fd_is);
-		delete readbuf;
-		delete rutf8buf;
+		iconv_close(iconv_handle_is);
+		delete[] readbuf;
+		delete[] rutf8buf;
 	}
 }
 
@@ -118,13 +119,14 @@ iconvstream::close_os(void)
 	if (os_open()) {
 		*this << flush;
 		::close(fd_os);
-		delete writebuf;
-		delete wutf8buf;
+		iconv_close(iconv_handle_os);
+		delete[] writebuf;
+		delete[] wutf8buf;
 	}
 }
 
-static const char *
-find_tokens(char *buf, size_t len, const char **tokens)
+const char *
+iconvstream::find_tokens(char *buf, size_t len, const char **tokens)
 {
 	char        *startp     = NULL;
 	char        *curp;
@@ -145,7 +147,12 @@ find_tokens(char *buf, size_t len, const char **tokens)
 		{
 			if (startp != NULL) {
 				if (*curtoken == NULL) {
-					return strndup(startp, curp - startp);  /* LEAK */
+					if (find_tokens_c_str_buf != nullptr)
+						delete[] find_tokens_c_str_buf;
+					find_tokens_c_str_buf = new char[(curp - startp) + 1];
+					memcpy(find_tokens_c_str_buf, startp, curp - startp);
+					find_tokens_c_str_buf[curp - startp] = '\0';
+					return find_tokens_c_str_buf;
 				} else if (strlen(*curtoken) == (size_t)(curp - startp) &&
 						   strncasecmp(*curtoken, startp, curp - startp) == 0)
 				{

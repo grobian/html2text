@@ -194,9 +194,12 @@ main(int argc, char **argv)
 
 	{
 		std::ifstream ifs;
+		std::string homerc;
 
-		if (rcfile == NULL && home != NULL)
-			rcfile = (string(home) + "/.html2textrc").c_str();
+		if (rcfile == NULL && home != NULL) {
+			homerc = string(home) + "/.html2textrc";
+			rcfile = homerc.c_str();
+		}
 		if (rcfile != NULL)
 			ifs.open(rcfile);
 		if (rcfile == NULL || !ifs.rdbuf()->is_open())
@@ -246,9 +249,9 @@ main(int argc, char **argv)
 
 		if (driver.parse() != 0)
 			exit(1);
-	}
 
-	is.close();
+		is.close();
+	}
 
 	return 0;
 }

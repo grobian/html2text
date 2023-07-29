@@ -42,6 +42,11 @@ class istr {
 			for (i = 0; i < (size_t)p.length(); i++)
 				elems.push_back(((int)p.at(i)) & 0xFF);
 		}
+		~istr()
+		{
+			if (c_str_buf != nullptr)
+				delete[] c_str_buf;
+		}
 
 		bool empty(void)
 		{
@@ -161,25 +166,31 @@ class istr {
 		}
 		const char *c_str(void) const
 		{
-			std::unique_ptr<string> s(new std::string);
+			std::string s = std::string("");
 
 			for (int c : elems) {
-				*s += c & 0xFF;
+				s += c & 0xFF;
 				if ((c >> 7) & 1) {
 					unsigned int d = c;
 					unsigned char point = 1;
 					while ((c >> (7 - point++)) & 1) {
 						d >>= 8;
-						*s += d & 0xFF;
+						s += d & 0xFF;
 					};
 				}
 			}
 
-			return s->c_str();
+			if (c_str_buf != nullptr)
+				delete[] c_str_buf;
+			c_str_buf = new char[s.size() + 1];
+			memcpy(c_str_buf, s.data(), s.size());
+			c_str_buf[s.size()] = '\0';
+			return c_str_buf;
 		}
 
 	private:
 		std::vector<int> elems;
+		mutable char *c_str_buf = nullptr;
 };
 
 #endif

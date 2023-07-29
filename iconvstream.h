@@ -33,6 +33,11 @@ class iconvstream {
 			fd_os(-1)
 		{
 		}
+		~iconvstream()
+		{
+			if (find_tokens_c_str_buf != nullptr)
+				delete[] find_tokens_c_str_buf;
+		}
 
 		void open_is(const char *url, const char *encoding);
 		void open_is(const string &url, const char *encoding);
@@ -61,6 +66,9 @@ class iconvstream {
 		iconvstream &operator<<(char inp);
 
 	private:
+		const char* find_tokens(char*, size_t, const char**);
+		char *find_tokens_c_str_buf = nullptr;
+
 		const char *open_err;
 		const char *encoding;
 

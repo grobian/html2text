@@ -26,6 +26,7 @@ class HTMLDriver {
 				int& width_,
 				int& mode_,
 				bool& debug_parser);
+		~HTMLDriver();
 
 		int parse();
 		int lex(html2text::HTMLParser::semantic_type * const lval);

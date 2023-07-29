@@ -34,6 +34,12 @@ HTMLDriver::HTMLDriver(HTMLControl& c,
 	links->nesting = 0;
 };
 
+HTMLDriver::~HTMLDriver()
+{
+	if (links != nullptr)
+		delete links;
+}
+
 int HTMLDriver::parse()
 {
 	html2text::HTMLParser parse(*this);
