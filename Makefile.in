@@ -4,6 +4,8 @@
 #
 # Author: Arno Unkrig <arno@unkrig.de>
 #
+# Copyright 2020-2023 Fabian Groffen <grobian@gentoo.org>
+#
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
 # Foundation; either version 2 of the License, or (at your option) any later
@@ -27,7 +29,6 @@ DOCDIR    = @DOCDIR@
 
 CXX                 = @CXX@
 BOOL_DEFINITION     = @BOOL_DEFINITION@
-EXPLICIT            = @EXPLICIT@
 SOCKET_LIBRARIES    = @SOCKET_LIBRARIES@
 ICONV_LIBRARIES     = @ICONV_LIBRARIES@
 LIBSTDCXX_INCLUDES  = @LIBSTDCXX_INCLUDES@
@@ -40,7 +41,6 @@ LDFLAGS             = @LDFLAGS@
 INCLUDES    = $(LIBSTDCXX_INCLUDES)
 DEFINES     = -DVERSION=$(VERSION) \
 			  $(BOOL_DEFINITION) \
-			  $(EXPLICIT) \
 			  $(AUTO_PTR_BROKEN) \
 			  $(NULL)
 

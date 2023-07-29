@@ -172,36 +172,6 @@ unknown)
   $echo "use '$BOOL_DEFINITION'";;
 esac;
 
-#
-# $EXPLICIT
-#
-
-$echo 'Checking "explicit"... \c';
-EXPLICIT=unknown;
-cat <<EOF >$tmp_file.C;
-struct C {
-  explicit C(int) {}
-};
-int main(int, char **) { C x(7); return 0; }
-EOF
-for i in \
-  '' \
-  '-Dexplicit='; \
-do
-  if eval "$CXX $tmp_file.C $i -o $tmp_file 2>/dev/null"; then
-    EXPLICIT="$i";
-    break;
-  fi;
-done;
-case "$EXPLICIT" in
-unknown)
-  $echo 'Error: Could not a suitable definition for "explicit".';
-  exit 1;;
-"")
-  $echo "built-in";;
-*)
-  $echo "use '$EXPLICIT'";;
-esac;
 
 #
 # $LIBSTDCXX_INCLUDES, $LIBSTDCXX_LIBS
