@@ -66,6 +66,7 @@ void HTMLDriver::process(const Document& document)
 			h->content.reset(data);
 			document.body.content->push_back(auto_ptr<Element>(h));
 			document.body.content->push_back(auto_ptr<Element>(links));
+			links = nullptr;  /* now taken by auto_ptr */
 		}
 
 		document.format(/*indent_left*/ 0, width, Area::LEFT, os);

@@ -35,7 +35,10 @@ for t in "${TESTS[@]}" ; do
 	run_h2t() {
 		${H2T} "$@"
 		local ret=$?
-		[[ ${ret} -ne 0 ]] && echo "html2text return code ${ret}"
+		if [[ ${ret} -ne 0 ]] ; then
+			echo "html2text return code ${ret}, invocation was:"
+			echo "  ${H2T} $*"
+		fi
 		return ${ret}
 	}
 

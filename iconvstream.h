@@ -73,23 +73,23 @@ class iconvstream {
 		const char *encoding;
 
 		int fd_is;
-		iconv_t iconv_handle_is;
-		unsigned char *readbuf;
+		iconv_t iconv_handle_is = nullptr;
+		unsigned char *readbuf = nullptr;
 		size_t readbufsze;
 		size_t readbuflen;
 		size_t readbufpos;
-		unsigned char *rutf8buf;
+		unsigned char *rutf8buf = nullptr;
 		size_t rutf8bufsze;
 		size_t rutf8buflen;
 		size_t rutf8bufpos;
 
 		int fd_os;
-		iconv_t iconv_handle_os;
-		unsigned char *writebuf;
+		iconv_t iconv_handle_os = nullptr;
+		unsigned char *writebuf = nullptr;
 		size_t writebufsze;
 		size_t writebuflen;
 		size_t writebufpos;
-		unsigned char *wutf8buf;
+		unsigned char *wutf8buf = nullptr;
 		size_t wutf8bufsze;
 		size_t wutf8buflen;
 		size_t wutf8bufpos;

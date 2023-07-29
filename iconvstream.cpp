@@ -72,7 +72,8 @@ iconvstream::close_is(void)
 {
 	if (is_open()) {
 		::close(fd_is);
-		iconv_close(iconv_handle_is);
+		if (iconv_handle_is != nullptr)
+			iconv_close(iconv_handle_is);
 		delete[] readbuf;
 		delete[] rutf8buf;
 	}
@@ -119,7 +120,8 @@ iconvstream::close_os(void)
 	if (os_open()) {
 		*this << flush;
 		::close(fd_os);
-		iconv_close(iconv_handle_os);
+		if (iconv_handle_os != nullptr)
+			iconv_close(iconv_handle_os);
 		delete[] writebuf;
 		delete[] wutf8buf;
 	}
