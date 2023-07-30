@@ -63,7 +63,9 @@ RECVERSION=${NEWVERSION}.9999_pre
 
 # create official version
 # AC_INIT([html2text], [2.1.1.9999_pre], [BUG-REPORT-ADDRESS])
-sed -i.release -e '/^AC_INIT/s/\['"${VERSION}"'_pre\]/['"${NEWVERSION}"']/' \
+sed -i.release \
+	-e '/^AC_INIT/s/\['"${VERSION}"'_pre\]/['"${NEWVERSION}"']/' \
+	-e "/^AM_MAINTAINER_MODE/s:\[enable\]:[disable]:" \
 	configure.ac || die
 git diff | cat
 read -p "OK to commit and create tag v${NEWVERSION}? [yN] " ans
@@ -77,12 +79,31 @@ case "${ans}" in
 		;;
 esac
 rm -f configure.ac.release
-autoreconf -f -i
 git commit -a --signoff -m "release ${NEWVERSION}" || die
 git tag v${NEWVERSION}
 
+echo "building release tar"
+SRCDIR=${PWD}
+CHANGES=.make-release-tmp.$$
+mkdir "${CHANGES}"
+trap "rm -Rf ${CHANGES}" EXIT
+
+mkdir "${CHANGES}"/build || die
+pushd "${CHANGES}"/build || die
+git clone "${SRCDIR}" html2text
+pushd html2text
+git checkout "v${NEWVERSION}" || die
+autoreconf -f -i
+./configure
+make dist
+mv html2text-${NEWVERSION}.tar.* "${SRCDIR}"/ || die
+popd || die
+popd || die
+
 # flag the repo being beyond the release
-sed -i -e '/^AC_INIT/s/\['"${NEWVERSION}"'\]/['"${RECVERSION}"']/' \
+sed -i \
+	-e '/^AC_INIT/s/\['"${NEWVERSION}"'\]/['"${RECVERSION}"']/' \
+	-e "/^AM_MAINTAINER_MODE/s:\[disable\]:[enable]:" \
 	configure.ac || die
 autoreconf -f -i
 git commit -a --signoff -m "post release update" || die

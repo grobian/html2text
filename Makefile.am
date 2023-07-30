@@ -18,20 +18,45 @@ AM_YFLAGS = -d -Wno-yacc
 bin_PROGRAMS = html2text
 html2text_SOURCES = \
 					Area.cpp \
+					Area.h \
+					auto_aptr.h \
+					auto_ptr.h \
 					cmp_nocase.cpp \
+					cmp_nocase.h \
 					format.cpp \
+					format.h \
 					html2text.cpp \
 					HTMLControl.cpp \
-					HTMLParser.yy \
+					HTMLControl.h \
 					html.cpp \
 					HTMLDriver.cpp \
+					HTMLDriver.h \
+					html.h \
+					HTMLParser.yy \
 					iconvstream.cpp \
+					iconvstream.h \
+					istr.h \
 					Properties.cpp \
+					Properties.h \
 					sgml.cpp \
-					table.cpp
+					sgml.h \
+					table.cpp \
+					$(NULL)
+
 BUILT_SOURCES = HTMLParser.hh
 man1_MANS = html2text.1
 man5_MANS = html2textrc.5
+
+EXTRA_DIST = \
+			 tests \
+			 COPYING \
+			 CREDITS \
+			 html2text.1 \
+			 html2textrc.5 \
+			 INSTALL \
+			 KNOWN_BUGS \
+			 README.md \
+			 $(NULL)
 
 check-local: html2text
 	@$(MAKE) $(AM_MAKEFLAGS) -C tests

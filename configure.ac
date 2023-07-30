@@ -16,6 +16,7 @@
 AC_PREREQ([2.71])
 AC_INIT([html2text], [2.2.0.9999_pre], [BUG-REPORT-ADDRESS])
 AM_INIT_AUTOMAKE
+AM_MAINTAINER_MODE([enable])
 AM_ICONV
 #AC_CONFIG_SRCDIR([html.h])
 #AC_CONFIG_HEADERS([config.h])
@@ -25,11 +26,6 @@ AC_PROG_YACC
 AC_PROG_CXX
 AC_PROG_INSTALL
 AC_PROG_LN_S
-
-# Checks for libraries.
-
-# Checks for header files.
-AC_CHECK_HEADERS([fcntl.h libintl.h unistd.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CHECK_HEADER_STDBOOL
@@ -41,7 +37,6 @@ AC_CHECK_TYPES([ptrdiff_t])
 AC_FUNC_ERROR_AT_LINE
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
-AC_CHECK_FUNCS([memmove strerror strncasecmp])
 
-AC_CONFIG_FILES([Makefile po/Makefile.in])
+AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
