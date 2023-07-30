@@ -83,6 +83,58 @@ struct htmlparsertoken *HTMLControl::get_nth_token(int id)
 								  &tokw->next_token_tag_type);
 		tokw->next = NULL;
 
+		/* do some space normalisation on PCDATA here to ease whitespace
+		 * logics lateron */
+		if (tokw->next_token == HTMLParser_token::PCDATA && !literal_mode) {
+			istr &s(*tokw->next_token_value.strinG);
+			/* empty string, just skip, get the next one */
+			if (s.empty()) {
+				del_nth_token(id);
+				return get_nth_token(id);
+			}
+
+			/* we got something, collate sequences of whitespace
+			 * within the string */
+			for (string::size_type x = 0; x < s.length(); x++) {
+				if (isspace(s[x])) {
+					string::size_type y;
+					for (y = x + 1; y < s.length() && isspace(s[y]); y++)
+						;
+					s.replace(x, y - x, " ");
+				}
+			}
+
+			/* if we have trailing or leading spaces, transform them
+			 * into their own token, so collapsing them is easier */
+			if (s.length() > 1) {
+				if (isspace(s[s.length() - 1])) {
+					s.erase(s.length() - 1, 1);  /* drop space */
+					/* append token */
+					htmlparsertoken *space = new htmlparsertoken;
+					space->next_token = HTMLParser_token::PCDATA;
+					space->next_token_tag_type = NOT_A_TAG;
+					space->next_token_value.strinG = new istr(" ");
+					space->next = NULL;
+					tokw->next = space;
+				}
+				if (isspace(s[0])) {
+					s.erase(0, 1);  /* drop space */
+					/* prepend token */
+					htmlparsertoken *space = new htmlparsertoken;
+					space->next = tokw;
+					if (next_tokens == tokw) {
+						next_tokens = space;
+					} else {
+						tail->next = space;
+					}
+					space->next_token = HTMLParser_token::PCDATA;
+					space->next_token_tag_type = NOT_A_TAG;
+					space->next_token_value.strinG = new istr(" ");
+					tokw = space;
+				}
+			}
+		}
+
 		return tokw;
 	}
 
@@ -143,7 +195,6 @@ int HTMLControl::htmlparser_yylex(
 
 			firsttok            = get_nth_token(0);
 			next_token          = firsttok->next_token;
-			next_token_tag_type = firsttok->next_token_tag_type;
 			next_token_value    = firsttok->next_token_value;
 
 			if (next_token == HTMLParser_token::PCDATA) {
@@ -157,83 +208,74 @@ int HTMLControl::htmlparser_yylex(
 		if (token == HTMLParser_token::END_PRE)
 			literal_mode = false;
 
+		if (tag_type == BLOCK_START_TAG ||
+			tag_type == BLOCK_END_TAG ||
+			token == HTMLParser_token::BR ||
+			token == HTMLParser_token::HR)
+			document_start = true;  /* swallow whitespace */
+
 		if (token == HTMLParser_token::PCDATA) {
-			/* In order to post-process the PCDATA token, we need to
-			 * look ahead one token...  */
-			firsttok            = get_nth_token(0);
-			next_token          = firsttok->next_token;
-			next_token_tag_type = firsttok->next_token_tag_type;
-			next_token_value    = firsttok->next_token_value;
+			if (literal_mode) {
+				firsttok            = get_nth_token(0);
+				next_token          = firsttok->next_token;
+				next_token_value    = firsttok->next_token_value;
 
-			/* Erase " '\n' { ' ' } " immediately before "</PRE>".  */
-			if (next_token == HTMLParser_token::END_PRE) {
-				istr &s(*value_return->strinG);
-				string::size_type x = s.length();
-				while (x > 0 && s[x - 1] == ' ')
-					--x;
-				if (x > 0 && s[x - 1] == '\n')
-					s.erase(x - 1, string::npos);
-			}
-			/* Erase whitespace before end tag or block start tag. */
-			else if (!literal_mode && (
-					next_token_tag_type == END_TAG ||
-					next_token_tag_type == BLOCK_END_TAG ||
-					next_token_tag_type == BLOCK_START_TAG
-					))
-			{
-				istr &s(*value_return->strinG);
-				string::size_type x = s.length();
-				while (x > 0 && isspace(s[x - 1]))
-					--x;
-				s.erase(x, string::npos);
-			}
+				/* Erase " '\n' { ' ' } " immediately before "</PRE>".  */
+				if (next_token == HTMLParser_token::END_PRE) {
+					istr &s(*value_return->strinG);
+					string::size_type x = s.length();
+					while (x > 0 && s[x - 1] == ' ')
+						--x;
+					if (x > 0 && s[x - 1] == '\n')
+						s.erase(x - 1, string::npos);
+				}
+			} else {
+				/* In order to post-process the PCDATA token, we need to
+			 	 * look ahead until we find another PCDATA token.  We're
+			 	 * trying to eliminate empty ones here, so as to avoid too
+			 	 * little and too much whitespace.  During reading,
+			 	 * strings are whitespace normalised, and trailing or
+			 	 * leading spaces are converted into separate elements
+			 	 * here. */
 
-			/* Collate sequences of whitespace, if not in "literal mode". */
-			if (!literal_mode) {
 				istr &s(*value_return->strinG);
-				for (string::size_type x = 0; x < s.length(); ++x) {
-					if (isspace(s[x])) {
-						string::size_type y;
-						for (y = x + 1; y < s.length() && isspace(s[y]); ++y)
-							;
-						s.replace(x, y - x, " ");
+				bool keepspace = document_start ? false : true;
+				if (isspace(s[0])) {  /* this must be a space on its own */
+					for (int i = 0; ;) {
+						firsttok            = get_nth_token(i);
+						next_token          = firsttok->next_token;
+						next_token_tag_type = firsttok->next_token_tag_type;
+						next_token_value    = firsttok->next_token_value;
+
+						if (next_token == EOF ||
+							next_token == HTMLParser_token::PRE ||
+							next_token_tag_type == BLOCK_START_TAG ||
+							next_token_tag_type == BLOCK_END_TAG)
+						{
+							keepspace = false;
+							break;
+						}
+
+						if (next_token == HTMLParser_token::PCDATA) {
+							istr &ns(*next_token_value.strinG);
+							if (isspace(ns[0])) {
+								/* duplicate, drop */
+								del_nth_token(i);
+								continue;
+							} else {
+								break;  /* we're done here */
+							}
+						}
+						i++;
 					}
-				}
-				if (s.empty()) {
-					delete value_return->strinG;
-					continue;
-				}
-			}
-		}
 
-		/* Erase whitespace after start tag or block end tag, if not in
-		 * "literal mode".  */
-		if (!literal_mode &&
-				((
-				  tag_type == START_TAG ||
-				  tag_type == BLOCK_START_TAG ||
-				  tag_type == BLOCK_END_TAG ||
-				  token == HTMLParser_token::BR ||
-				  token == HTMLParser_token::HR
-				 ) &&
-				 token != HTMLParser_token::SCRIPT &&
-				 token != HTMLParser_token::STYLE
-				))
-		{
-			firsttok            = get_nth_token(0);
-			next_token          = firsttok->next_token;
-			next_token_tag_type = firsttok->next_token_tag_type;
-			next_token_value    = firsttok->next_token_value;
-
-			if (next_token == HTMLParser_token::PCDATA) {
-				istr &s(*next_token_value.strinG);
-				string::size_type x;
-				for (x = 0; x < s.length() && isspace(s[x]); ++x)
-					;
-				if (x > 0)
-					s.erase(0, x);
-				if (s.empty()) {
-					del_nth_token(0);
+					if (!keepspace) {
+						/* drop, we're excessive */
+						delete value_return->strinG;
+						continue;
+					}
+				} else {
+					document_start = false;
 				}
 			}
 		}

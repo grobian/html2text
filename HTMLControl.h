@@ -44,6 +44,7 @@ class HTMLControl {
 			current_column(0),
 			file_name(file_name_),
 			literal_mode(false),
+			document_start(true),
 			next_tokens(NULL),
 			debug_scanner(debug_scanner_),
 			is(is_),
@@ -68,6 +69,7 @@ class HTMLControl {
 		int yylex2(html2text::HTMLParser::semantic_type *value_return,
 				   int *tag_type_return);
 		bool literal_mode;
+		bool document_start;
 		/* next_token, next_token_tag_type, next_token_value */
 		struct htmlparsertoken *next_tokens;
 		struct htmlparsertoken *get_nth_token(int id);
