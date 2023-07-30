@@ -30,6 +30,8 @@ html2text_SOURCES = \
 					sgml.cpp \
 					table.cpp
 BUILT_SOURCES = HTMLParser.hh
+man1_MANS = html2text.1
+man5_MANS = html2textrc.5
 
 check-local: html2text
 	@$(MAKE) $(AM_MAKEFLAGS) -C tests
