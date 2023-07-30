@@ -42,6 +42,9 @@ html2text_SOURCES = \
 					sgml.h \
 					table.cpp \
 					$(NULL)
+html2text_LDADD = \
+				  $(LIBICONV) \
+				  $(NULL)
 
 BUILT_SOURCES = HTMLParser.hh
 man1_MANS = html2text.1

@@ -123,7 +123,8 @@ am_html2text_OBJECTS = Area.$(OBJEXT) cmp_nocase.$(OBJEXT) \
 	iconvstream.$(OBJEXT) Properties.$(OBJEXT) sgml.$(OBJEXT) \
 	table.$(OBJEXT)
 html2text_OBJECTS = $(am_html2text_OBJECTS)
-html2text_LDADD = $(LDADD)
+am__DEPENDENCIES_1 =
+html2text_DEPENDENCIES = $(am__DEPENDENCIES_1)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -397,6 +398,10 @@ html2text_SOURCES = \
 					sgml.h \
 					table.cpp \
 					$(NULL)
+
+html2text_LDADD = \
+				  $(LIBICONV) \
+				  $(NULL)
 
 BUILT_SOURCES = HTMLParser.hh
 man1_MANS = html2text.1
