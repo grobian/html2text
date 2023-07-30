@@ -89,6 +89,30 @@ struct htmlparsertoken *HTMLControl::get_nth_token(int id)
 	return NULL;
 }
 
+void HTMLControl::del_nth_token(int id)
+{
+	int i;
+	htmlparsertoken *tokw;
+	htmlparsertoken *tail = NULL;
+
+	for (i = 0, tokw = next_tokens; tokw != NULL; tokw = tokw->next, i++) {
+		if (i == id)
+			break;
+		tail = tokw;
+	}
+
+	if (i == id) {
+		if (tail == NULL) {
+			next_tokens =  next_tokens->next;
+		} else {
+			tail->next = tokw->next;
+		}
+		if (tokw->next_token == HTMLParser_token::PCDATA)
+			delete tokw->next_token_value.strinG;
+		delete tokw;
+	}
+}
+
 /*
  * Effectively, this method simply invokes "yylex2()", but it does some
  * postprocessing on PCDATA tokens that would be difficult to do in "yylex2()".
@@ -209,9 +233,7 @@ int HTMLControl::htmlparser_yylex(
 				if (x > 0)
 					s.erase(0, x);
 				if (s.empty()) {
-					delete next_token_value.strinG;
-					next_tokens = next_tokens->next;
-					delete firsttok;
+					del_nth_token(0);
 				}
 			}
 		}

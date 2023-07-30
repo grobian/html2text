@@ -71,6 +71,7 @@ class HTMLControl {
 		/* next_token, next_token_tag_type, next_token_value */
 		struct htmlparsertoken *next_tokens;
 		struct htmlparsertoken *get_nth_token(int id);
+		void del_nth_token(int id);
 
 		int get_char();
 		void unget_char(int);
