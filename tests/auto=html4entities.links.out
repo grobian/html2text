@@ -445,7 +445,7 @@ GGeenneerraall PPuunnccttuuaattiioonn
 ensp     en space                                        U+2002 ISOpub
 emsp     em space                                        U+2003 ISOpub
 thinsp   thin space                                      U+2009 ISOpub
-zwnj   ‌ zero width non-joiner                           U+200C NEW RFC 2070
+zwnj     zero width non-joiner                           U+200C NEW RFC 2070
 zwj    ‍ zero width joiner                               U+200D NEW RFC 2070
 lrm    ‎ left-to-right mark                              U+200E NEW RFC 2070
 rlm    ‏ right-to-left mark                              U+200F NEW RFC 2070

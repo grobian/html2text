@@ -305,7 +305,7 @@ entities[] = {
 	{ "yuml",     0x00FF },
 	{ "zeta",     0x03B6 },
 	{ "zwj",      0x200D },
-	{ "zwnj",     0x200C },
+	{ "zwnj",     0      },  /* 0x200C irrelevant when rendered in monotype */
 };
 
 int mkutf8(unsigned long x)
@@ -415,9 +415,13 @@ replace_sgml_entities(istr *s)
 					name, entities, nelems(entities), sizeof(TextToInt),
 					(int (*)(const void *, const void *))strcmp);
 			if (entity != NULL) {
-				if (entity->unicode)
+				if (entity->unicode) {
 					s->replace(beg, j - beg, mkutf8(entity->unicode));
-				j = beg + 1;
+					j = beg + 1;
+				} else {
+					s->erase(beg, j - beg);
+					j = beg;
+				}
 			}
 		} else {
 			;                   /* EXTENSION: Allow literal '&' sometimes. */
