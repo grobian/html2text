@@ -34,8 +34,11 @@ done
 [[ -z ${MODE} ]] && usage
 
 # grab current version
-VERSION=$(sed -n '/^VERSION=/s/^.*=\([0-9.]\+\)_pre/\1/p' Makefile.in)
-[[ -z ${VERSION} ]] && die "VERSION unset or invalid in Makefile.in"
+# AC_INIT([html2text], [2.1.1.9999_pre], [BUG-REPORT-ADDRESS])
+VERSION=$(sed -n \
+	-e '/^AC_INIT/s/^.*\[html2text\],\s*\[\([0-9.]\+\)_pre\].*$/\1/p' \
+	configure.ac)
+[[ -z ${VERSION} ]] && die "VERSION unset or invalid in configure.ac"
 
 # split out first 3 components, throw away the rest (should not be there)
 MAJOR=${VERSION%%.*}
@@ -59,7 +62,9 @@ esac
 RECVERSION=${NEWVERSION}.9999_pre
 
 # create official version
-sed -i.release -e '/^VERSION=/s/=.*$/='"${NEWVERSION}"'/' Makefile.in || die
+# AC_INIT([html2text], [2.1.1.9999_pre], [BUG-REPORT-ADDRESS])
+sed -i.release -e '/^AC_INIT/s/\['"${VERSION}"'_pre\]/['"${NEWVERSION}"']/' \
+	configure.ac || die
 git diff | cat
 read -p "OK to commit and create tag v${NEWVERSION}? [yN] " ans
 case "${ans}" in
@@ -67,14 +72,17 @@ case "${ans}" in
 		: # ok
 		;;
 	*)
-		mv Makefile.in.release Makefile.in
+		mv configure.ac.release configure.ac
 		die "aborting"
 		;;
 esac
-rm -f Makefile.in.release
-git commit --signoff -m "release ${NEWVERSION}" Makefile.in || die
+rm -f configure.ac.release
+autoreconf -f -i
+git commit -a --signoff -m "release ${NEWVERSION}" || die
 git tag v${NEWVERSION}
 
 # flag the repo being beyond the release
-sed -i -e '/^VERSION=/s/=.*$/='"${RECVERSION}"'/' Makefile.in || die
-git commit --signoff -m "post release update" Makefile.in || die
+sed -i -e '/^AC_INIT/s/\['"${NEWVERSION}"'\]/['"${RECVERSION}"']/' \
+	configure.ac || die
+autoreconf -f -i
+git commit -a --signoff -m "post release update" || die
