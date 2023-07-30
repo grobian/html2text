@@ -26,6 +26,13 @@
 
 using std::istream;
 
+struct htmlparsertoken {
+	int next_token;
+	int next_token_tag_type;
+	html2text::HTMLParser::semantic_type next_token_value;
+	struct htmlparsertoken *next;
+};
+
 class HTMLControl {
 	public:
 		HTMLControl(iconvstream& is_,
@@ -37,7 +44,7 @@ class HTMLControl {
 			current_column(0),
 			file_name(file_name_),
 			literal_mode(false),
-			next_token(EOF),
+			next_tokens(NULL),
 			debug_scanner(debug_scanner_),
 			is(is_),
 			number_of_ungotten_chars(0)
@@ -61,9 +68,9 @@ class HTMLControl {
 		int yylex2(html2text::HTMLParser::semantic_type *value_return,
 				   int *tag_type_return);
 		bool literal_mode;
-		int next_token;
-		html2text::HTMLParser::semantic_type next_token_value;
-		int next_token_tag_type;
+		/* next_token, next_token_tag_type, next_token_value */
+		struct htmlparsertoken *next_tokens;
+		struct htmlparsertoken *get_nth_token(int id);
 
 		int get_char();
 		void unget_char(int);

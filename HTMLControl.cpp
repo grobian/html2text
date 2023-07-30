@@ -62,6 +62,33 @@ HTMLControl::htmlparser_yyerror(const char *p)
 		<< std::endl;
 }
 
+struct htmlparsertoken *HTMLControl::get_nth_token(int id)
+{
+	int i;
+	htmlparsertoken *tokw;
+	htmlparsertoken *tail = NULL;
+
+	for (i = 0, tokw = next_tokens; tokw != NULL; tokw = tokw->next, i++) {
+		if (i == id)
+			return tokw;
+		tail = tokw;
+	}
+
+	if (i == id) {
+		if (tail == NULL)
+			next_tokens = tokw = new htmlparsertoken;
+		else
+			tokw = tail->next = new htmlparsertoken;
+		tokw->next_token = yylex2(&tokw->next_token_value,
+								  &tokw->next_token_tag_type);
+		tokw->next = NULL;
+
+		return tokw;
+	}
+
+	return NULL;
+}
+
 /*
  * Effectively, this method simply invokes "yylex2()", but it does some
  * postprocessing on PCDATA tokens that would be difficult to do in "yylex2()".
@@ -70,22 +97,31 @@ int HTMLControl::htmlparser_yylex(
 		html2text::HTMLParser::semantic_type *value_return)
 {
 	for (;;) { // Notice the "return" at the end of the body!
-		int token, tag_type;
+		int token;
+		int tag_type;
+		int next_token;
+		int next_token_tag_type;
+		html2text::HTMLParser::semantic_type next_token_value;
+		struct htmlparsertoken *firsttok;
 
-		if (next_token == EOF) {
-			token = yylex2(value_return, &tag_type);
-		} else {
-			token = next_token;
-			*value_return = next_token_value;
-			tag_type = next_token_tag_type;
-			next_token = EOF;
-		}
+		firsttok      = get_nth_token(0);
+		token         = firsttok->next_token;
+		tag_type      = firsttok->next_token_tag_type;
+		*value_return = firsttok->next_token_value;
+
+		/* pop token */
+		next_tokens = next_tokens->next;
+		delete firsttok;
 
 		/* Switch on/off "literal mode" on "<PRE>" and "</PRE>" */
 		if (token == HTMLParser_token::PRE) {
 			literal_mode = true;
 
-			next_token = yylex2(&next_token_value, &next_token_tag_type);
+			firsttok            = get_nth_token(0);
+			next_token          = firsttok->next_token;
+			next_token_tag_type = firsttok->next_token_tag_type;
+			next_token_value    = firsttok->next_token_value;
+
 			if (next_token == HTMLParser_token::PCDATA) {
 				/* Swallow '\n' immediately following "<PRE>" */
 				istr &s(*next_token_value.strinG);
@@ -100,7 +136,10 @@ int HTMLControl::htmlparser_yylex(
 		if (token == HTMLParser_token::PCDATA) {
 			/* In order to post-process the PCDATA token, we need to
 			 * look ahead one token...  */
-			next_token = yylex2(&next_token_value, &next_token_tag_type);
+			firsttok            = get_nth_token(0);
+			next_token          = firsttok->next_token;
+			next_token_tag_type = firsttok->next_token_tag_type;
+			next_token_value    = firsttok->next_token_value;
 
 			/* Erase " '\n' { ' ' } " immediately before "</PRE>".  */
 			if (next_token == HTMLParser_token::END_PRE) {
@@ -157,7 +196,11 @@ int HTMLControl::htmlparser_yylex(
 				 token != HTMLParser_token::STYLE
 				))
 		{
-			next_token = yylex2(&next_token_value, &next_token_tag_type);
+			firsttok            = get_nth_token(0);
+			next_token          = firsttok->next_token;
+			next_token_tag_type = firsttok->next_token_tag_type;
+			next_token_value    = firsttok->next_token_value;
+
 			if (next_token == HTMLParser_token::PCDATA) {
 				istr &s(*next_token_value.strinG);
 				string::size_type x;
@@ -167,7 +210,8 @@ int HTMLControl::htmlparser_yylex(
 					s.erase(0, x);
 				if (s.empty()) {
 					delete next_token_value.strinG;
-					next_token = EOF;
+					next_tokens = next_tokens->next;
+					delete firsttok;
 				}
 			}
 		}
