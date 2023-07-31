@@ -51,9 +51,10 @@
 #define HTMLParser_token html2text::HTMLParser::token
 #include "html.h"
 #include "istr.h"
+#include "sgml.h"
 class HTMLDriver;
 
-#line 57 "HTMLParser.hh"
+#line 58 "HTMLParser.hh"
 
 
 # include <cstdlib> // std::abort
@@ -189,7 +190,7 @@ class HTMLDriver;
 
 #line 23 "HTMLParser.yy"
 namespace html2text {
-#line 193 "HTMLParser.hh"
+#line 194 "HTMLParser.hh"
 
 
 
@@ -207,7 +208,7 @@ namespace html2text {
     /// Symbol semantic values.
     union value_type
     {
-#line 48 "HTMLParser.yy"
+#line 49 "HTMLParser.yy"
 
   Document                           *document;
   Element                            *element;
@@ -232,7 +233,7 @@ namespace html2text {
   Address                            *address;
   list<auto_ptr<list<TagAttribute>>> *tag_attributes_list;
 
-#line 236 "HTMLParser.hh"
+#line 237 "HTMLParser.hh"
 
     };
 #endif
@@ -1135,7 +1136,7 @@ namespace html2text {
 
 #line 23 "HTMLParser.yy"
 } // html2text
-#line 1139 "HTMLParser.hh"
+#line 1140 "HTMLParser.hh"
 
 
 

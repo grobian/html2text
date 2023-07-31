@@ -28,6 +28,7 @@
 #define HTMLParser_token html2text::HTMLParser::token
 #include "html.h"
 #include "istr.h"
+#include "sgml.h"
 class HTMLDriver;
 }
 
@@ -782,6 +783,7 @@ special:
 	if (drv.enable_links && !href.empty() && href[0] != '#') {
         ListNormalItem *lni = new ListNormalItem;
         PCData *d = new PCData;
+        replace_sgml_entities(&href);
         d->text = href;
         list<auto_ptr<Element>> *data = new list<auto_ptr<Element>>;
         data->push_back(auto_ptr<Element>(d));
