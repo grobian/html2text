@@ -1601,15 +1601,15 @@ BlockFormat::BlockFormat(
 {
 	char lb[80];
 
-	sprintf(lb, "%s.vspace.before", item_name);
+	snprintf(lb, sizeof(lb), "%s.vspace.before", item_name);
 	vspace_before = Formatting::getInt(lb, default_vspace_before);
-	sprintf(lb, "%s.vspace.after", item_name);
+	snprintf(lb, sizeof(lb), "%s.vspace.after", item_name);
 	vspace_after = Formatting::getInt(lb, default_vspace_after);
-	sprintf(lb, "%s.indent.left", item_name);
+	snprintf(lb, sizeof(lb), "%s.indent.left", item_name);
 	indent_left = Formatting::getInt(lb, default_indent_left);
-	sprintf(lb, "%s.indent.right", item_name);
+	snprintf(lb, sizeof(lb), "%s.indent.right", item_name);
 	indent_right = Formatting::getInt(lb, default_indent_right);
-	sprintf(lb, "%s.prefix", item_name);
+	snprintf(lb, sizeof(lb), "%s.prefix", item_name);
 	quote_char = Formatting::getString(lb, default_quote_char);
 }
 
@@ -1652,15 +1652,15 @@ ListFormat::ListFormat(
 {
 	char lb[80];
 
-	sprintf(lb, "%s.vspace.before", item_name);
+	snprintf(lb, sizeof(lb), "%s.vspace.before", item_name);
 	vspace_before = Formatting::getInt(lb, default_vspace_before);
-	sprintf(lb, "%s.vspace.between", item_name);
+	snprintf(lb, sizeof(lb), "%s.vspace.between", item_name);
 	vspace_between = Formatting::getInt(lb, default_vspace_between);
-	sprintf(lb, "%s.vspace.after", item_name);
+	snprintf(lb, sizeof(lb), "%s.vspace.after", item_name);
 	vspace_after = Formatting::getInt(lb, default_vspace_after);
-	sprintf(lb, "%s.indents", item_name);
+	snprintf(lb, sizeof(lb), "%s.indents", item_name);
 	indents.reset(Formatting::getIntVector(lb, default_indents));
-	sprintf(lb, "%s.default_types", item_name);
+	snprintf(lb, sizeof(lb), "%s.default_types", item_name);
 	default_types.reset(Formatting::getStringVector(lb, default_default_types));
 }
 
