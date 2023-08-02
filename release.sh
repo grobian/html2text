@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 
-# Copyright 2020-2022 Fabian Groffen <grobian@gentoo.org>
+# Copyright 2020-2023 Fabian Groffen <grobian@gentoo.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -49,14 +49,20 @@ BUGFIX=${VERSION#${MAJOR}.${MINOR}.} ; BUGFIX=${BUGFIX%%.*}
 case "${MODE}" in
 	major)
 		NEWVERSION=$((MAJOR + 1)).0.0
+		FUTUREVERSION=$((MAJOR + 1)).1.0
 		;;
 	minor)
 		NEWVERSION=${MAJOR}.$((MINOR + 1)).0
+		FUTUREVERSION=${MAJOR}.$((MINOR + 2)).0
 		;;
 	bugfix)
 		NEWVERSION=${MAJOR}.${MINOR}.$((BUGFIX + 1))
+		FUTUREVERSION=${MAJOR}.$((MINOR + 1)).0
 		;;
 esac
+
+TODAY=$(date +%F)
+EUTODAY=$(date +%d-%m-%Y)
 
 # version we store after the release
 RECVERSION=${NEWVERSION}.9999_pre
@@ -67,6 +73,18 @@ sed -i.release \
 	-e '/^AC_INIT/s/\['"${VERSION}"'_pre\]/['"${NEWVERSION}"']/' \
 	-e "/^AM_MAINTAINER_MODE/s:\[enable\]:[disable]:" \
 	configure.ac || die
+mv ChangeLog.md ChangeLog.md.release
+{
+	echo "# ${FUTUREVERSION} (unreleased master branch)"
+	echo
+	echo "### New Features"
+	echo
+	echo "### Bugfixes"
+	echo
+	echo
+	echo "# ${NEWVERSION} (${EUTODAY})"
+	sed -e "1d" ChangeLog.md.release
+} > ChangeLog.md
 git diff | cat
 read -p "OK to commit and create tag v${NEWVERSION}? [yN] " ans
 case "${ans}" in
@@ -75,10 +93,11 @@ case "${ans}" in
 		;;
 	*)
 		mv configure.ac.release configure.ac
+		mv ChangeLog.md.release ChangeLog.md
 		die "aborting"
 		;;
 esac
-rm -f configure.ac.release
+rm -f configure.ac.release ChangeLog.md.release
 git commit -a --signoff -m "release ${NEWVERSION}" || die
 git tag v${NEWVERSION}
 
