@@ -5,6 +5,9 @@
 
 ### Bugfixes
 
+* [Issue #59](https://github.com/grobian/html2text/issues/59)
+  Fix build for C++ compilers that do not default to C++11 or more
+  recent.
 
 
 # 2.2.3 (31-07-2023)
