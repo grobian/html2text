@@ -1,5 +1,15 @@
 .gitignore
 *.o
-html2text
+/html2text
+
+/Dependencies
+/HTMLParser.cc
+/HTMLParser.hh
 /Makefile
-Dependencies
+/Makefile.in
+/compile
+/configure
+/depcomp
+/install-sh
+/missing
+/ylwrap
