@@ -12,7 +12,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License in the file COPYING for more details.
 
-H2T="../html2text -rcfile .html2textrc"
+H2T="../html2text -rcfile .html2textrc -nobs"
 MODE=cat
 TESTS=( "$@" )
 VARIANTS=(

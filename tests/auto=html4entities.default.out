@@ -1,11 +1,11 @@
 
 
-## HHTTMMLL 44 CChhaarraacctteerr EEnnttiittiieess
-TTaabbllee ooff tthhee cchhaarraacctteerr eennttiittiieess rreeqquuiirreedd bbyy HHTTMMLL 44,, ttoo tteesstt wweebb bbrroowwsseerr
-ccoommpplliiaannccee ##
-This page is ripped out of the HTML 4 documentation at _W_3 and massaged so you
+# HTML 4 Character Entities
+Table of the character entities required by HTML 4, to test web browser
+compliance #
+This page is ripped out of the HTML 4 documentation at W3 and massaged so you
 can test your browser’s rendering of special characters.
-CCoonntteennttss
+Contents
    1. Introduction to character entity references
    2. Character entity references for ISO 8859-1 characters
          1. The list of characters
@@ -17,7 +17,7 @@ CCoonntteennttss
          1. The list of characters
 
 
-#### 2244..11 IInnttrroodduuccttiioonn ttoo cchhaarraacctteerr eennttiittyy rreeffeerreenncceess ####
+## 24.1 Introduction to character entity references ##
 A character entity reference is an SGML construct that references a character
 of the document character set.
 This version of HTML supports several sets of character entity references:
@@ -37,7 +37,7 @@ entry are usually written with uppercase letters, we have converted them to
 lowercase in this specification for reasons of readability.
 
 
-#### 2244..22 CChhaarraacctteerr eennttiittyy rreeffeerreenncceess ffoorr IISSOO 88885599--11 cchhaarraacctteerrss ####
+## 24.2 Character entity references for ISO 8859-1 characters ##
 The character entity references in this section produce characters whose
 numeric equivalents should already be supported by conforming HTML 2.0 user
 agents. Thus, the character entity reference &divide; is a more convenient form
@@ -51,7 +51,7 @@ ZERO WIDTH NON-BREAKING SPACE for byte-order detection purposes. 65535 (FFFF
 hexadecimal) is unassigned.
 
 
-###### 2244..22..11 TThhee lliisstt ooff cchhaarraacctteerrss ######
+### 24.2.1 The list of characters ###
 <!-- Portions © International Organization for Standardization 1986
      Permission to copy in any form is granted for use with
      conforming SGML systems and applications as defined in
@@ -169,8 +169,8 @@ thorn  þ latin small letter thorn                               U+00FE ISOlat1
 yuml   ÿ latin small letter y with diaeresis                    U+00FF ISOlat1
 
 
-#### 2244..33 CChhaarraacctteerr eennttiittyy rreeffeerreenncceess ffoorr ssyymmbboollss,, mmaatthheemmaattiiccaall ssyymmbboollss,, aanndd
-GGrreeeekk lleetttteerrss ####
+## 24.3 Character entity references for symbols, mathematical symbols, and
+Greek letters ##
 The character entity references in this section produce characters that may be
 represented by glyphs in the widely available Adobe Symbol font, including
 Greek characters, various bracketing symbols, and a selection of mathematical
@@ -181,17 +181,17 @@ display the relevant [ISO10646] characters or by other means, such as
 internally mapping the listed entities, numeric character references, and
 characters to the appropriate position in some font that contains the requisite
 glyphs.
-WWhheenn ttoo uussee GGrreeeekk eennttiittiieess.. TThhiiss eennttiittyy sseett ccoonnttaaiinnss aallll tthhee lleetttteerrss uusseedd iinn
-mmooddeerrnn GGrreeeekk.. HHoowweevveerr,, iitt ddooeess nnoott iinncclluuddee GGrreeeekk ppuunnccttuuaattiioonn,, pprreeccoommppoosseedd
-aacccceenntteedd cchhaarraacctteerrss nnoorr tthhee nnoonn--ssppaacciinngg aacccceennttss ((ttoonnooss,, ddiiaallyyttiikkaa)) rreeqquuiirreedd ttoo
-ccoommppoossee tthheemm.. TThheerree aarree nnoo aarrcchhaaiicc lleetttteerrss,, CCooppttiicc--uunniiqquuee lleetttteerrss,, oorr
-pprreeccoommppoosseedd lleetttteerrss ffoorr PPoollyyttoonniicc GGrreeeekk.. TThhee eennttiittiieess ddeeffiinneedd hheerree aarree nnoott
-iinntteennddeedd ffoorr tthhee rreepprreesseennttaattiioonn ooff mmooddeerrnn GGrreeeekk tteexxtt aanndd wwoouulldd nnoott bbee aann
-eeffffiicciieenntt rreepprreesseennttaattiioonn;; rraatthheerr,, tthheeyy aarree iinntteennddeedd ffoorr ooccccaassiioonnaall GGrreeeekk
-lleetttteerrss uusseedd iinn tteecchhnniiccaall aanndd mmaatthheemmaattiiccaall wwoorrkkss..
+When to use Greek entities. This entity set contains all the letters used in
+modern Greek. However, it does not include Greek punctuation, precomposed
+accented characters nor the non-spacing accents (tonos, dialytika) required to
+compose them. There are no archaic letters, Coptic-unique letters, or
+precomposed letters for Polytonic Greek. The entities defined here are not
+intended for the representation of modern Greek text and would not be an
+efficient representation; rather, they are intended for occasional Greek
+letters used in technical and mathematical works.
 
 
-###### 2244..33..11 TThhee lliisstt ooff cchhaarraacctteerrss ######
+### 24.3.1 The list of characters ###
 <!-- Mathematical, Greek and Symbolic characters for HTML -- >
 
 <!-- Character entity set. Typical invocation:
@@ -214,9 +214,9 @@ lleetttteerrss uusseedd iinn tteecchhnniiccaall aanndd 
      character set. Names are ISO 10646 names.
 
 -- >
-LLaattiinn EExxtteennddeedd--BB
+Latin Extended-B
 fnof     ƒ latin small f with hook = function = florin           U+0192 ISOtech
-GGrreeeekk
+Greek
 Alpha    Α greek capital letter alpha                            U+0391
 Beta     Β greek capital letter beta                             U+0392
 Gamma    Γ greek capital letter gamma                            U+0393 ISOgrk3
@@ -270,7 +270,7 @@ omega    ω greek small letter omega                              U+03C9 ISOgrk3
 thetasym ϑ greek small letter theta symbol                       U+03D1 NEW
 upsih    ϒ greek upsilon with hook symbol                        U+03D2 NEW
 piv      ϖ greek pi symbol                                       U+03D6 ISOgrk3
-GGeenneerraall PPuunnccttuuaattiioonn
+General Punctuation
 bull     • bullet = black small circle                           U+2022 ISOpub
            bullet is NOT the same as bullet operator, U+2219
 hellip   … horizontal ellipsis = three dot leader                U+2026 ISOpub
@@ -278,7 +278,7 @@ prime    ′ prime = minutes = feet                                U+2032 ISOtec
 Prime    ″ double prime = seconds = inches                       U+2033 ISOtech
 oline    ‾ overline = spacing overscore                          U+203E NEW
 frasl    ⁄ fraction slash                                        U+2044 NEW
-LLeetttteerrlliikkee SSyymmbboollss
+Letterlike Symbols
 weierp   ℘ script capital P = power set = Weierstrass p          U+2118 ISOamso
 image    ℑ black letter capital I = imaginary part               U+2111 ISOamso
 real     ℜ black letter capital R = real part symbol             U+211C ISOamso
@@ -287,7 +287,7 @@ trade    ™ trade mark sign                                       U+2122 ISOnum
 alefsym  ℵ alef symbol is NOT the same as hebrew letter alef,    U+2135 NEW
            U+05D0 although the same glyph could be used to
            depict both characters
-AArrrroowwss
+Arrows
 larr     ← leftwards arrow                                       U+2190 ISOnum
 uarr     ↑ upwards arrow                                         U+2191 ISOnum
 rarr     → rightwards arrow                                      U+2192 ISOnum
@@ -308,7 +308,7 @@ rArr     ⇒ character but does not have another character with    U+21D2 ISOtec
            ISOtech suggests
 dArr     ↡ downwards double arrow                                U+21D3 ISOamsa
 hArr     ⇔ left right double arrow                               U+21D4 ISOamsa
-MMaatthheemmaattiiccaall OOppeerraattoorrss
+Mathematical Operators
 forall   ∀ for all                                               U+2200 ISOtech
 part     ∂ partial differential                                  U+2202 ISOtech
 exist    ∃ there exists                                          U+2203 ISOtech
@@ -363,7 +363,7 @@ perp     ⟂ up tack = orthogonal to = perpendicular               U+22A5 ISOtec
            dot operator
 sdot     ⋅ dot operator is NOT the same character as U+00B7      U+22C5 ISOamsb
            middle dot
-MMiisscceellllaanneeoouuss TTeecchhnniiccaall
+Miscellaneous Technical
 lceil    ⌈ left ceiling = apl upstile                            U+2308 ISOamsc
 rceil    ⌉ right ceiling                                         U+2309 ISOamsc
 lfloor   ⌊ left floor = apl downstile                            U+230A ISOamsc
@@ -375,9 +375,9 @@ lang     〈 lang is NOT the same character as U+003C 'less than'  U+2329 ISOtec
 rang     〉 rang is NOT the same character as U+003E 'greater     U+232A ISOtech
            than' or U+203A 'single right-pointing angle
            quotation mark'
-GGeeoommeettrriicc SShhaappeess
+Geometric Shapes
 loz      ◊ lozenge                                               U+25CA ISOpub
-MMiisscceellllaanneeoouuss SSyymmbboollss
+Miscellaneous Symbols
 spades   ♠ black spade suit                                      U+2660 ISOpub
            black here seems to mean filled as opposed to hollow
 clubs    ♣ black club suit = shamrock                            U+2663 ISOpub
@@ -385,8 +385,8 @@ hearts   ♡ black heart suit = valentine                          U+2665 ISOpub
 diams    ♢ black diamond suit                                    U+2666 ISOpub
 
 
-#### 2244..44 CChhaarraacctteerr eennttiittyy rreeffeerreenncceess ffoorr mmaarrkkuupp--ssiiggnniiffiiccaanntt aanndd
-iinntteerrnnaattiioonnaalliizzaattiioonn cchhaarraacctteerrss ####
+## 24.4 Character entity references for markup-significant and
+internationalization characters ##
 The character entity references in this section are for escaping markup-
 significant characters (these are the same as those in HTML 2.0 and 3.2), for
 denoting spaces and dashes. Other characters in this section apply to
@@ -404,7 +404,7 @@ characters to the appropriate position in some font that contains the requisite
 glyphs.
 
 
-###### 2244..44..11 TThhee lliisstt ooff cchhaarraacctteerrss ######
+### 24.4.1 The list of characters ###
 <!-- Special characters for HTML -->
 
 <!-- Character entity set. Typical invocation:
@@ -425,12 +425,12 @@ glyphs.
      conversions of the ISO 10646 values and refer to the document
      character set. Names are ISO 10646 names.
 -->
-CC00 CCoonnttrroollss aanndd BBaassiicc LLaattiinn
+C0 Controls and Basic Latin
 quot   " quotation mark = APL quote                      U+0022 ISOnum
 amp    & ampersand                                       U+0026 ISOnum
 lt     < less-than sign                                  U+003C ISOnum
 gt     > greater-than sign                               U+003E ISOnum
-LLaattiinn EExxtteennddeedd--AA
+Latin Extended-A
 OElig  Œ latin capital ligature OE                       U+0152 ISOlat2
          latin small ligature oe
 oelig  Œ ligature is a misnomer, this is a separate      U+0153 ISOlat2
@@ -438,10 +438,10 @@ oelig  Œ ligature is a misnomer, this is a separate      U+0153 ISOlat2
 Scaron š latin capital letter S with caron               U+0160 ISOlat2
 scaron š latin small letter s with caron                 U+0161 ISOlat2
 Yuml   Ÿ latin capital letter Y with diaeresis           U+0178 ISOlat2
-SSppaacciinngg MMooddiiffiieerr LLeetttteerrss
+Spacing Modifier Letters
 circ   ^ modifier letter circumflex accent               U+02C6 ISOpub
 tilde  ˜ small tilde                                     U+02DC ISOdia
-GGeenneerraall PPuunnccttuuaattiioonn
+General Punctuation
 ensp     en space                                        U+2002 ISOpub
 emsp     em space                                        U+2003 ISOpub
 thinsp   thin space                                      U+2009 ISOpub
