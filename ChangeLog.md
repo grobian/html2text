@@ -2,6 +2,9 @@
 
 ### New Features
 
+* [Issue #62](https://gitlab.com/grobian/html2text/-/issues/62)
+  use ANSI-escapes instead of backspace sequences, this includes some
+  colour handling
 
 ### Bugfixes
 
