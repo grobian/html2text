@@ -24,19 +24,51 @@
 #include "iconvstream.h"
 #include "istr.h"
 
-#ifdef BOOL_DEFINITION
-BOOL_DEFINITION
-#undef BOOL_DEFINITION
-#endif
-
 using std::string;
 
 struct Cell {
-	int character;
+	int  character;
 	char attribute;
 
+	/* these are the decoration properties */
 	enum {
-		NONE = 0, UNDERLINE = 1, BOLD = 2, STRIKETHROUGH = 4
+		NONE            = 0<<0,
+		UNDERLINE       = 1<<0,
+		BOLD            = 1<<1,
+		STRIKETHROUGH   = 1<<2,
+		FGCOLOUR        = 1<<3,
+		BGCOLOUR        = 1<<4,
+		COLOUR          = FGCOLOUR | BGCOLOUR
+	};
+
+	/* 8-bit colours */
+	unsigned char fgcolour;
+	unsigned char bgcolour;
+
+	enum {
+		/* standard */
+		BLACK     =  0,
+		RED       =  1,
+		GREEN     =  2,
+		YELLOW    =  3,
+		BLUE      =  4,
+		MAGENTA   =  5,
+		CYAN      =  6,
+		WHITE     =  7,
+		/* intense (bright) */
+		BRBLACK   =  8,
+		BRRED     =  9,
+		BRGREEN   = 10,
+		BRYELLOW  = 11,
+		BRBLUE    = 12,
+		BRMAGENTA = 13,
+		BRCYAN    = 14,
+		BRWHITE   = 15,
+		/* 216 colours: 16 + 36 * r + 6 * g + b */
+		/* shades of grey: 233-255 */
+		DKGREY    = 238,
+		GREY      = 244,
+		BRGREY    = 250
 	};
 
 	void clear()
@@ -109,6 +141,8 @@ class Line {
 			return *this;
 		}
 
+		void set_bgcolour(unsigned char clr);
+		void set_fgcolour(unsigned char clr);
 		void add_attribute(char addition);
 
 	private:
@@ -194,6 +228,8 @@ class Area {
 		void fill(const Cell &, size_type x, size_type y, size_type w, size_type h);
 		void fill(char, size_type x, size_type y, size_type w, size_type h);
 
+		void set_bgcolour(unsigned char clr);
+		void set_fgcolour(unsigned char clr);
 		void add_attribute(char addition);   // ...but not to left and right free areas
 		void add_attribute(
 				char addition,
@@ -202,7 +238,12 @@ class Area {
 				size_type w,
 				size_type h
 				);
-		static bool use_backspaces;   // "true" by default.
+
+		/* see Area.cpp for the defaults for the below variables */
+		static bool            use_backspaces;
+		static bool            use_ansi;
+		static Area::size_type widthsize;
+		static Area::size_type heightsize;
 
 	private:
 		Area(const Area &);

@@ -20,8 +20,8 @@ On Sat, 2019-11-09 at 11:29 +0100, grobian wrote:
 > > 1012                  } else { /* metadata or ebuild */
 > > 1013                          if (pkg_ctx->atom->SLOT == NULL) {
 > > 1014                                  if (pkg_ctx->slot == NULL) {
-> > 1015                                          tree_pkg_meta *meta =
-> tree_pkg_read(pkg_ctx);
+> > 1015                                          tree_pkg_meta *meta = tree_pkg_
+> read(pkg_ctx);
 > > 1016                                          if (meta != NULL) {
 > > 1017                                                  pkg_ctx->slot = xstrdup
 > (meta->SLOT); XXXX meta->SLOT NULL here XXXX

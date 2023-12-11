@@ -20,6 +20,7 @@
 
 #include <stdlib.h>
 #include <ctype.h>
+#include <math.h>
 #include <vector>
 #include <map>
 
@@ -35,20 +36,18 @@
 #define nelems(array) (sizeof(array) / sizeof((array)[0]))
 #endif
 
-static Line *line_format(const list<auto_ptr<Element> > *elements);
+static Line *line_format(const list<auto_ptr<Element>> *elements,
+						 const list<TagAttribute>      *attributes);
 static Area *make_up(const Line &line, Area::size_type w, int halign);
-static Area *format(
-	const list<auto_ptr<Element> > *elements,
-	Area::size_type w,
-	int halign
-	);
-static void format(
-	const list<auto_ptr<Element> > *elements,
-	Area::size_type indent_left,
-	Area::size_type w,
-	int halign,
-	iconvstream &os
-	);
+static Area *format(const list<auto_ptr<Element>> *elements,
+					Area::size_type                w,
+					int                            halign,
+					const list<TagAttribute>      *attributes);
+static void format(const list<auto_ptr<Element>> *elements,
+				   Area::size_type                indent_left,
+				   Area::size_type                w,
+				   int                            halign,
+				   iconvstream                   &os);
 
 /*
  * Helper class that retrieves several block-formatting properties in one
@@ -145,16 +144,20 @@ Body::format(Area::size_type w, int halign) const
 {
 	static BlockFormat bf("BODY");
 
-	auto_ptr<Area> res(
-		::format(content.get(), bf.effective_width(w), halign)
-		);
+	auto_ptr<Area> res(::format(content.get(),
+								bf.effective_width(w),
+				 	 			halign,
+				 	 			attributes.get()));
 	if (!res.get())
 		return 0;
 
-	*res >>= bf.indent_left;
-
 	res->prepend(bf.vspace_before);
 	res->append(bf.vspace_after);
+
+	Formatting::set_bgcolour(attributes.get(), res.get());
+	Formatting::set_fgcolour(attributes.get(), res.get());
+
+	*res >>= bf.indent_left;
 
 	return res.release();
 }
@@ -203,8 +206,10 @@ OrderedList::format(Area::size_type w, int /*halign*/) const
 	list<auto_ptr<ListItem> >::const_iterator i;
 	int number = 1;
 	for (i = il.begin(); i != il.end(); ++i) {
-		auto_ptr<Area> a((*i)->format(w, type,
-		                              lf.get_indent(nesting), &number));
+		auto_ptr<Area> a((*i)->format(w,
+									  type,
+		                              lf.get_indent(nesting),
+		                              &number));
 		if (a.get()) {
 			if (res.get()) {
 				res->append(lf.vspace_between);
@@ -425,8 +430,11 @@ ListNormalItem::format(
 
 	if (bullet.length() >= indent)
 		indent = bullet.length() + 1;
+	if (w <= indent)
+		w = indent + 1;
 
-	auto_ptr<Area> res(::format(flow.get(), w - indent, Area::LEFT));
+	auto_ptr<Area> res(::format(flow.get(), w - indent, Area::LEFT,
+								attributes.get()));
 	// KLUDGE: Some people write "<UL> <B><LI>Bla</B>Bla </UL>", which actually
 	// defines a bold and empty list item before "Bla Bla". This is very
 	// difficult to handle... so... let's just ignore empty list items.
@@ -481,7 +489,7 @@ DefinitionList::format(Area::size_type w, int halign) const
 	auto_ptr<Area> res;
 
 	if (preamble.get()) {
-		res.reset(::format(preamble.get(), w, halign));
+		res.reset(::format(preamble.get(), w, halign, attributes.get()));
 		if (res.get())
 			res->prepend(dlf.vspace_before);
 	}
@@ -513,7 +521,8 @@ TermName::format(Area::size_type w, int halign) const
 {
 	static BlockFormat bf("DT", 0, 0, 2);
 
-	auto_ptr<Area> res(::format(flow.get(), bf.effective_width(w), halign));
+	auto_ptr<Area> res(::format(flow.get(), bf.effective_width(w), halign,
+								attributes.get()));
 	if (!res.get())
 		return 0;
 
@@ -529,7 +538,8 @@ TermDefinition::format(Area::size_type w, int halign) const
 {
 	static BlockFormat bf("DD", 0, 0, 6);
 
-	auto_ptr<Area> res(::format(flow.get(), bf.effective_width(w), halign));
+	auto_ptr<Area> res(::format(flow.get(), bf.effective_width(w), halign,
+								attributes.get()));
 	if (!res.get())
 		return 0;
 
@@ -586,7 +596,7 @@ Heading::format(Area::size_type w, int halign) const
 	}
 
 	auto_ptr<Area> res;
-	auto_ptr<Line> line(::line_format(content.get()));
+	auto_ptr<Line> line(::line_format(content.get(), attributes.get()));
 	if (line.get()) {
 		static const char *prefixes[7];
 		if (!prefixes[1]) {
@@ -617,7 +627,7 @@ Heading::format(Area::size_type w, int halign) const
 		/*
 		 * Hm. Heading is not line-formattable...
 		 */
-		res.reset(::format(content.get(), w, halign));
+		res.reset(::format(content.get(), w, halign, attributes.get()));
 		if (!res.get())
 			return 0;
 		res->add_attribute(cell_attributes[level]);
@@ -663,7 +673,7 @@ Preformatted::format(Area::size_type w, int halign) const
 	 */
 	auto_ptr<Area> res;
 
-	auto_ptr<Line> line(::line_format(texts.get()));
+	auto_ptr<Line> line(::line_format(texts.get(), attributes.get()));
 	if (line.get()) {
 		res.reset(make_up(*line, bf.effective_width(w), halign));
 	}
@@ -672,7 +682,8 @@ Preformatted::format(Area::size_type w, int halign) const
 	 * Failed; block-format it.
 	 */
 	if (!res.get()) {
-		res.reset(::format(texts.get(), bf.effective_width(w), halign));
+		res.reset(::format(texts.get(), bf.effective_width(w), halign,
+						   attributes.get()));
 		if (!res.get())
 			return 0;
 	}
@@ -700,7 +711,8 @@ Paragraph::format(Area::size_type w, int halign) const
 			);
 
 	static BlockFormat bf("P");
-	Area *res = ::format(texts.get(), bf.effective_width(w), halign);
+	Area *res = ::format(texts.get(), bf.effective_width(w), halign,
+						 attributes.get());
 	if (!res)
 		return 0;
 
@@ -771,7 +783,7 @@ Applet::format(Area::size_type w, int /*halign*/) const
 				"RIGHT", Area::RIGHT,
 				NULL
 				);
-		Area *a = ::format(content.get(), w, halign);
+		Area *a = ::format(content.get(), w, halign, attributes.get());
 		if (a)
 			return a;
 	}
@@ -795,7 +807,7 @@ Line *
 Applet::line_format() const
 {
 	if (content.get()) {
-		Line *l = ::line_format(content.get());
+		Line *l = ::line_format(content.get(), attributes.get());
 		if (l)
 			return l;
 	}
@@ -820,19 +832,20 @@ Applet::line_format() const
 Area *
 Division::format(Area::size_type w, int halign) const
 {
-	return ::format(body_content.get(), w, get_attribute(
-			attributes.get(), "ALIGN", halign,
-			"LEFT", Area::LEFT,
-			"CENTER", Area::CENTER,
-			"RIGHT", Area::RIGHT,
-			NULL
-			));
+	return ::format(body_content.get(),
+					w,
+					get_attribute(attributes.get(), "ALIGN", halign,
+								  "LEFT", Area::LEFT,
+								  "CENTER", Area::CENTER,
+								  "RIGHT", Area::RIGHT,
+								  NULL),
+					attributes.get());
 }
 
 Area *
 Center::format(Area::size_type w, int /*halign*/) const
 {
-	return ::format(body_content.get(), w, Area::CENTER);
+	return ::format(body_content.get(), w, Area::CENTER, attributes.get());
 }
 
 Area *
@@ -840,10 +853,8 @@ BlockQuote::format(Area::size_type w, int halign) const
 {
 	static BlockFormat bf("BLOCKQUOTE", 0, 0, 5, 5);
 
-	auto_ptr<Area> res(::format(
-			content.get(),
-			bf.effective_width(w), halign
-			));
+	auto_ptr<Area> res(::format(content.get(), bf.effective_width(w),
+								halign, attributes.get()));
 	if (!res.get())
 		return 0;
 
@@ -861,10 +872,8 @@ Address::format(Area::size_type w, int halign) const
 {
 	static BlockFormat bf("ADDRESS", 0, 0, 5, 5);
 
-	auto_ptr<Area> res(::format(
-			content.get(),
-			bf.effective_width(w), halign
-			));
+	auto_ptr<Area> res(::format(content.get(), bf.effective_width(w),
+								halign, attributes.get()));
 	if (!res.get())
 		return 0;
 
@@ -879,7 +888,8 @@ Address::format(Area::size_type w, int halign) const
 Area *
 Form::format(Area::size_type w, int halign) const
 {
-	return content.get() ? ::format(content.get(), w, halign) : 0;
+	return content.get() ? ::format(content.get(), w, halign,
+									attributes.get()) : 0;
 }
 
 // Attributes: TYPE (processed) NAME (ignored) VALUE CHECKED SIZE (processed)
@@ -1019,7 +1029,7 @@ get_font_cell_attributes(int attribute)
 Line *
 Font::line_format() const
 {
-	auto_ptr<Line> res(::line_format(texts.get()));
+	auto_ptr<Line> res(::line_format(texts.get(), attributes.get()));
 	if (!res.get())
 		return 0;
 
@@ -1034,7 +1044,7 @@ Font::line_format() const
 Area *
 Font::format(Area::size_type w, int halign) const
 {
-	auto_ptr<Area> res(::format(texts.get(), w, halign));
+	auto_ptr<Area> res(::format(texts.get(), w, halign, attributes.get()));
 	if (!res.get())
 		return 0;
 
@@ -1090,7 +1100,7 @@ get_phrase_cell_attributes(int attribute)
 Line *
 Phrase::line_format() const
 {
-	auto_ptr<Line> res(::line_format(texts.get()));
+	auto_ptr<Line> res(::line_format(texts.get(), attributes.get()));
 	if (!res.get())
 		return 0;
 
@@ -1106,7 +1116,7 @@ Phrase::line_format() const
 Area *
 Phrase::format(Area::size_type w, int halign) const
 {
-	auto_ptr<Area> res(::format(texts.get(), w, halign));
+	auto_ptr<Area> res(::format(texts.get(), w, halign, attributes.get()));
 	if (!res.get())
 		return 0;
 
@@ -1121,14 +1131,14 @@ Phrase::format(Area::size_type w, int halign) const
 Area *
 Font2::format(Area::size_type w, int halign) const
 {
-	return ::format(elements.get(), w, halign);
+	return ::format(elements.get(), w, halign, attributes.get());
 }
 
 // Attributes: SIZE COLOR (ignored)
 Line *
 Font2::line_format() const
 {
-	return ::line_format(elements.get());
+	return ::line_format(elements.get(), attributes.get());
 }
 
 static char
@@ -1151,32 +1161,38 @@ get_link_cell_attributes(const istr &href)
 Line *
 Anchor::line_format() const
 {
-	auto_ptr<Line> res(::line_format(texts.get()));
+	auto_ptr<Line> res(::line_format(texts.get(), attributes.get()));
 	if (!res.get())
 		return 0;
 
 	istr href(get_attribute(attributes.get(), "HREF", ""));
 	if (!href.empty()) {
 		res->add_attribute(get_link_cell_attributes(href));
+		res->set_fgcolour(Formatting::colour_from_string("blue"));
 		if (refnum > 0) {
 			char refnumstr[16];
 			snprintf(refnumstr, sizeof(refnumstr), "[%d]", refnum);
 			res->append(refnumstr);
 		}
 	}
+
+	Formatting::set_bgcolour(attributes.get(), res.get());
+	Formatting::set_fgcolour(attributes.get(), res.get());
+
 	return res.release();
 }
 
 Area *
 Anchor::format(Area::size_type w, int halign) const
 {
-	auto_ptr<Area> res(::format(texts.get(), w, halign));
+	auto_ptr<Area> res(::format(texts.get(), w, halign, attributes.get()));
 	if (!res.get())
 		return 0;
 
 	istr href(get_attribute(attributes.get(), "HREF", ""));
 	if (!href.empty()) {
 		res->add_attribute(get_link_cell_attributes(href));
+		res->set_fgcolour(Formatting::colour_from_string("blue"));
 		if (refnum > 0) {
 			char refnumstr[16];
 			snprintf(refnumstr, sizeof(refnumstr), "[%d]", refnum);
@@ -1184,6 +1200,10 @@ Anchor::format(Area::size_type w, int halign) const
 			*res += *l;
 		}
 	}
+
+	Formatting::set_bgcolour(attributes.get(), res.get());
+	Formatting::set_fgcolour(attributes.get(), res.get());
+
 	return res.release();
 }
 
@@ -1207,7 +1227,7 @@ TableHeadingCell::format(Area::size_type w, int halign) const
 Area *
 Caption::format(Area::size_type w, int halign) const
 {
-	auto_ptr<Line> l(::line_format(texts.get()));
+	auto_ptr<Line> l(::line_format(texts.get(), attributes.get()));
 
 	return l.get() ? make_up(*l, w, halign) : 0;
 }
@@ -1216,7 +1236,7 @@ Caption::format(Area::size_type w, int halign) const
 Line *
 NoBreak::line_format() const
 {
-	Line *l(::line_format(content.get()));
+	Line *l(::line_format(content.get(), attributes.get()));
 	if (!l)
 		return 0;
 
@@ -1251,8 +1271,8 @@ make_up(const Line &line, Area::size_type w, int halign)
 			continue;
 		}
 
-		Line::size_type to = from + 1;
-		Line::size_type lbp = (Line::size_type) -1; // "Last break position".
+		Line::size_type to  = from + 1;
+		Line::size_type lbp = (Line::size_type)-1;  /* Last break position */
 
 		/* Determine the line break position. */
 		while (to < line.length()) {
@@ -1268,6 +1288,7 @@ make_up(const Line &line, Area::size_type w, int halign)
 					(
 						(
 							c2 == '-' ||
+							c2 == '_' ||
 							c2 == '/' ||
 							c2 == ':'
 						) &&
@@ -1285,7 +1306,7 @@ make_up(const Line &line, Area::size_type w, int halign)
 				to++;
 			}
 
-			if (to - from > w && lbp != (Area::size_type) -1)
+			if (to - from > w && lbp != (Area::size_type)-1)
 			{
 				to = lbp;
 				break;
@@ -1294,11 +1315,9 @@ make_up(const Line &line, Area::size_type w, int halign)
 
 		/* Copy the "from...to" range from the "line" to the bottom of
 		 * the "res" Area. */
-		Area::size_type x = 0;
+		Area::size_type x   = 0;
 		Area::size_type len = to - from;
-		if (halign == Area::LEFT || len >= w) {
-			;
-		} else if (halign == Area::CENTER) {
+		if (halign == Area::CENTER) {
 			x += (w - len) / 2;
 		} else if (halign == Area::RIGHT) {
 			x += w - len;
@@ -1328,12 +1347,17 @@ make_up(const Line &line, Area::size_type w, int halign)
  * probably work.
  */
 static Line *
-line_format(const list<auto_ptr<Element> > *elements)
+line_format
+(
+	const list<auto_ptr<Element>> *elements,
+	const list<TagAttribute>      *attributes
+)
 {
 	auto_ptr<Line> res;
 
 	if (elements) {
 		list<auto_ptr<Element> >::const_iterator i;
+
 		for (i = elements->begin(); i != elements->end(); ++i) {
 			auto_ptr<Line> l((*i)->line_format());
 			if (!l.get())
@@ -1343,6 +1367,11 @@ line_format(const list<auto_ptr<Element> > *elements)
 			} else {
 				res = l;
 			}
+		}
+
+		if (res.get()) {
+			Formatting::set_bgcolour(attributes, res.get());
+			Formatting::set_fgcolour(attributes, res.get());
 		}
 	}
 
@@ -1365,18 +1394,19 @@ line_format(const list<auto_ptr<Element> > *elements)
 
 static Area *
 format(
-	const list<auto_ptr<Element> > *elements,
-	Area::size_type w,
-	int halign
-	)
+	const list<auto_ptr<Element>> *elements,
+	Area::size_type                w,
+	int                            halign,
+	const list<TagAttribute>      *attributes
+)
 {
-	if (!elements)
-		return 0;
-
 	auto_ptr<Area> res;
 	auto_ptr<Line> line;
 
-	list<auto_ptr<Element> >::const_iterator i;
+	if (!elements)
+		return 0;
+
+	list<auto_ptr<Element>>::const_iterator i;
 	for (i = elements->begin(); i != elements->end(); ++i) {
 		if (!(*i).get())
 			continue;
@@ -1421,6 +1451,11 @@ format(
 				res = a2;
 			}
 		}
+	}
+
+	if (res.get()) {
+		Formatting::set_bgcolour(attributes, res.get());
+		Formatting::set_fgcolour(attributes, res.get());
 	}
 
 	return res.release();
@@ -1576,6 +1611,8 @@ Formatting::getAttributes(const char *key, char dflt)
 	if (!v.get() || v->empty())
 		return dflt;
 
+	/* maybe: add support for colours here too? */
+
 	char res = Cell::NONE;
 	for (vector<string>::const_iterator i = v->begin(); i != v->end(); ++i) {
 		if (!cmp_nocase(*i, "NONE"))
@@ -1588,6 +1625,203 @@ Formatting::getAttributes(const char *key, char dflt)
 			res |= Cell::STRIKETHROUGH;
 	}
 	return res;
+}
+
+/* static */ int
+Formatting::colour_from_string(const char *clrc)
+{
+	int    clrcde = -1;
+	size_t len;
+
+	if (clrc[0] == '#' && ((len = strlen(clrc)) == 7 || len == 4)) {
+		/* 0-255 -> 0-5 */
+		double in;
+		char   R;
+		char   G;
+		char   B; 
+		char   c;
+		char   hexclr[7];
+
+		if (len == 7)
+			memcpy(hexclr, &clrc[1], len - 1);
+		else
+			snprintf(hexclr, sizeof(hexclr), "%1$c%1$c%2$c%2$c%3$c%3$c",
+					 clrc[1], clrc[2], clrc[3]);
+
+		c  = hexclr[0];
+		if (c >= '0' && c <= '9')
+			in = (double)(c - '0');
+		else if (c >= 'a' && c <= 'f')
+			in = (double)(10 + (c - 'a'));
+		else if (c >= 'A' && c <= 'F')
+			in = (double)(10 + (c - 'A'));
+		in *= 16;
+		c  = hexclr[1];
+		if (c >= '0' && c <= '9')
+			in += (double)(c - '0');
+		else if (c >= 'a' && c <= 'f')
+			in += (double)(10 + (c - 'a'));
+		else if (c >= 'A' && c <= 'F')
+			in += (double)(10 + (c - 'A'));
+		R = (unsigned char)round(in * 5.0 / 255.0);
+		c  = hexclr[2];
+		if (c >= '0' && c <= '9')
+			in = (double)(c - '0');
+		else if (c >= 'a' && c <= 'f')
+			in = (double)(10 + (c - 'a'));
+		else if (c >= 'A' && c <= 'F')
+			in = (double)(10 + (c - 'A'));
+		in *= 16;
+		c  = hexclr[3];
+		if (c >= '0' && c <= '9')
+			in += (double)(c - '0');
+		else if (c >= 'a' && c <= 'f')
+			in += (double)(10 + (c - 'a'));
+		else if (c >= 'A' && c <= 'F')
+			in += (double)(10 + (c - 'A'));
+		G = (unsigned char)round(in * 5.0 / 255.0);
+
+		c  = hexclr[4];
+		if (c >= '0' && c <= '9')
+			in = (double)(c - '0');
+		else if (c >= 'a' && c <= 'f')
+			in = (double)(10 + (c - 'a'));
+		else if (c >= 'A' && c <= 'F')
+			in = (double)(10 + (c - 'A'));
+		in *= 16;
+		c  = hexclr[5];
+		if (c >= '0' && c <= '9')
+			in += (double)(c - '0');
+		else if (c >= 'a' && c <= 'f')
+			in += (double)(10 + (c - 'a'));
+		else if (c >= 'A' && c <= 'F')
+			in += (double)(10 + (c - 'A'));
+		B = (unsigned char)round(in * 5.0 / 255.0);
+
+		clrcde = 16 + (36 * R) + (6 * G) + B;
+	}
+	/* there is frikkin' 140 of these, should we support all? */
+	else if (cmp_nocase("red", clrc) == 0)
+		clrcde = Cell::RED;
+	else if (cmp_nocase("yellow", clrc) == 0)
+		clrcde = Cell::YELLOW;
+	else if (cmp_nocase("cyan", clrc) == 0)
+		clrcde = Cell::CYAN;
+	else if (cmp_nocase("blue", clrc) == 0)
+		clrcde = Cell::BLUE;
+	else if (cmp_nocase("magenta", clrc) == 0)
+		clrcde = Cell::MAGENTA;
+	else if (cmp_nocase("green", clrc) == 0)
+		clrcde = Cell::GREEN;
+	else if (cmp_nocase("black", clrc) == 0)
+		clrcde = Cell::BRBLACK;
+	else if (cmp_nocase("gray", clrc) == 0)
+		clrcde = Cell::GREY;
+	else if (cmp_nocase("grey", clrc) == 0)
+		clrcde = Cell::GREY;
+	else if (cmp_nocase("white", clrc) == 0)
+		clrcde = Cell::BRWHITE;
+
+	return clrcde;
+}
+
+Area::size_type
+Formatting::get_width
+(
+	const list<TagAttribute> *attrs,
+	Area::size_type           w
+)
+{
+	istr            wdth;
+	Area::size_type wanted_width = w;
+
+	wdth = get_style_attr(attrs, "width", "WIDTH", "");
+	if (!wdth.empty()) {
+		if (wdth[wdth.length() - 1] == '%') {
+			wdth.erase(wdth.length() - 1);
+			wanted_width = (Area::size_type)ceil(
+					(double)(w * atoi(wdth.c_str())) / 100.0);
+		} else if (isdigit(wdth[wdth.length() - 1])) {
+			wanted_width = (Area::size_type)ceil(
+					(double)atoi(wdth.c_str()) / (double)Area::widthsize);
+		} else if (wdth.slice(wdth.length() - 2, 2).iequals("px")) {
+			wdth.erase(wdth.length() - 2);
+			wanted_width = (Area::size_type)ceil(
+					(double)atoi(wdth.c_str()) / (double)Area::widthsize);
+		}
+
+		return std::max(wanted_width, (Area::size_type)1);
+	}
+
+	return (Area::size_type)0;
+}
+
+void
+Formatting::set_fgcolour
+(
+	const list<TagAttribute> *attrs,
+	Area                     *res
+)
+{
+	istr clr = get_style_attr(attrs, "color", "COLOR", "");
+	if (!clr.empty()) {
+	    int clrcde = Formatting::colour_from_string(clr.c_str());
+		if (clrcde >= 0) {
+			res->set_fgcolour(clrcde);
+			res->add_attribute(Cell::FGCOLOUR);
+		}
+	}
+}
+
+void
+Formatting::set_bgcolour
+(
+	const list<TagAttribute> *attrs,
+	Area                     *res
+)
+{
+	istr clr = get_style_attr(attrs, "background-color", "BGCOLOR", "");
+	if (!clr.empty()) {
+	    int clrcde = Formatting::colour_from_string(clr.c_str());
+		if (clrcde >= 0) {
+			res->set_bgcolour(clrcde);
+			res->add_attribute(Cell::BGCOLOUR);
+		}
+	}
+}
+
+void
+Formatting::set_fgcolour
+(
+	const list<TagAttribute> *attrs,
+	Line                     *res
+)
+{
+	istr clr = get_style_attr(attrs, "color", "COLOR", "");
+	if (!clr.empty()) {
+	    int clrcde = Formatting::colour_from_string(clr.c_str());
+		if (clrcde >= 0) {
+			res->set_fgcolour(clrcde);
+			res->add_attribute(Cell::FGCOLOUR);
+		}
+	}
+}
+
+void
+Formatting::set_bgcolour
+(
+	const list<TagAttribute> *attrs,
+	Line                     *res
+)
+{
+	istr clr = get_style_attr(attrs, "background-color", "BGCOLOR", "");
+	if (!clr.empty()) {
+	    int clrcde = Formatting::colour_from_string(clr.c_str());
+		if (clrcde >= 0) {
+			res->set_bgcolour(clrcde);
+			res->add_attribute(Cell::BGCOLOUR);
+		}
+	}
 }
 
 BlockFormat::BlockFormat(

@@ -55,12 +55,20 @@ int get_attribute(
 	const char *s1, int v1, ... /* ... NULL */
 	);
 
-istr get_style_attr(istr *style, const char *name, const char *dflt);
+istr get_style_attr
+(
+	const list<TagAttribute> *,
+	const char               *style_name,
+	const char               *attr_name,
+	const char               *dflt
+);
 
 typedef char ostream_manipulator;
 
 struct Element {
 	virtual ~Element();
+
+	auto_ptr<list<TagAttribute>> attributes;
 
 	/*
 	 * Attempt to line-format the element. If the element contains "Block"s,
@@ -124,7 +132,6 @@ struct Phrase : public Element {
 };
 
 struct Font2 : public Element {
-	auto_ptr<list<TagAttribute> >       attributes;// SIZE COLOR
 	auto_ptr<list<auto_ptr<Element> > > elements;
 
 	/*virtual*/ Line *line_format() const;
@@ -132,7 +139,6 @@ struct Font2 : public Element {
 };
 
 struct Anchor : public Element {
-	auto_ptr<list<TagAttribute> >       attributes;// NAME HREF REL REV TITLE
 	auto_ptr<list<auto_ptr<Element> > > texts;
 	mutable int                         refnum;
 
@@ -141,41 +147,27 @@ struct Anchor : public Element {
 };
 
 struct BaseFont : public Element {
-	auto_ptr<list<TagAttribute> > attributes; // SIZE
-
 };
 
 struct LineBreak : public Element {
-	auto_ptr<list<TagAttribute> > attributes; // CLEAR
-
 	/*virtual*/ Line *line_format() const;
 };
 
 struct Map : public Element {
-	auto_ptr<list<TagAttribute> >                   attributes;// NAME
 	auto_ptr<list<auto_ptr<list<TagAttribute> > > > areas;
-
 };
 
 struct Paragraph : public Element {
-	auto_ptr<list<TagAttribute> >       attributes;// ALIGN
 	auto_ptr<list<auto_ptr<Element> > > texts;
 
 	/*virtual*/ Area *format(Area::size_type w, int halign) const;
 };
 
 struct Image : public Element {
-	auto_ptr<list<TagAttribute> > attributes; // SRC ALT ALIGN WIDTH HEIGHT
-	// BORDER HSPACE VSPACE USEMAP
-	// ISMAP
-
 	/*virtual*/ Line *line_format() const;
 };
 
 struct Applet : public Element {
-	auto_ptr<list<TagAttribute> >       attributes;// CODEBASE CODE ALT NAME
-	// WIDTH HEIGHT ALIGN HSPACE
-	// VSPACE
 	auto_ptr<list<auto_ptr<Element> > > content;
 
 	/*virtual*/ Line *line_format() const;
@@ -183,49 +175,39 @@ struct Applet : public Element {
 };
 
 struct Param : public Element {
-	auto_ptr<list<TagAttribute> > attributes; // NAME VALUE
-
 };
 
 struct Division : public Element {
-	auto_ptr<list<TagAttribute> >       attributes;// ALIGN
 	auto_ptr<list<auto_ptr<Element> > > body_content;
 
 	/*virtual*/ Area *format(Area::size_type w, int halign) const;
 };
 
 struct Center : public Element {
-	// No attributes specified for <CENTER>!
 	auto_ptr<list<auto_ptr<Element> > > body_content;
 
 	/*virtual*/ Area *format(Area::size_type w, int halign) const;
 };
 
 struct BlockQuote : public Element {
-	// No attributes specified for <BLOCKQUOTE>!
 	auto_ptr<list<auto_ptr<Element> > > content;
 
 	/*virtual*/ Area *format(Area::size_type w, int halign) const;
 };
 
 struct Address : public Element {
-	// No attributes specified for <ADDRESS>!
 	auto_ptr<list<auto_ptr<Element> > > content;
 
 	/*virtual*/ Area *format(Area::size_type w, int halign) const;
 };
 
 struct Form : public Element {
-	auto_ptr<list<TagAttribute> >       attributes;// ACTION METHOD ENCTYPE
 	auto_ptr<list<auto_ptr<Element> > > content;
 
 	/*virtual*/ Area *format(Area::size_type w, int halign) const;
 };
 
 struct Input : public Element {
-	auto_ptr<list<TagAttribute> > attributes; // TYPE NAME VALUE CHECKED SIZE
-	// MAXLENGTH SRC ALIGN
-
 	/*virtual*/ Line *line_format() const;
 };
 
@@ -235,21 +217,18 @@ struct Option {
 };
 
 struct Select : public Element {
-	auto_ptr<list<TagAttribute> >      attributes;// NAME SIZE MULTIPLE
 	auto_ptr<list<auto_ptr<Option> > > content;
 
 	/*virtual*/ Line *line_format() const;
 };
 
 struct TextArea : public Element {
-	auto_ptr<list<TagAttribute> > attributes; // NAME ROWS COLS
 	auto_ptr<PCData>              pcdata;
 
 	/*virtual*/ Area *format(Area::size_type w, int halign) const;
 };
 
 struct Preformatted : public Element {
-	auto_ptr<list<TagAttribute> >       attributes;// WIDTH
 	auto_ptr<list<auto_ptr<Element> > > texts;
 
 	/*virtual*/ Area *format(Area::size_type w, int halign) const;
@@ -311,7 +290,6 @@ struct Document {
 
 struct Heading : public Element {
 	int level;
-	auto_ptr<list<TagAttribute> >       attributes;// ALIGN
 	auto_ptr<list<auto_ptr<Element> > > content;
 
 	/*virtual*/ Area *format(Area::size_type w, int halign) const;
@@ -337,8 +315,6 @@ struct Caption {
 };
 
 struct Table : public Element {
-	auto_ptr<list<TagAttribute> >        attributes;// ALIGN WIDTH BORDER
-	// CELLSPACING CELLPADDING
 	auto_ptr<Caption>                    caption;
 	auto_ptr<list<auto_ptr<TableRow> > > rows;
 
@@ -392,7 +368,6 @@ struct ListBlockItem : public ListItem {
 };
 
 struct OrderedList : public Element {
-	auto_ptr<list<TagAttribute> >        attributes;// TYPE START COMPACT
 	auto_ptr<list<auto_ptr<ListItem> > > items;
 	int nesting;
 	// Item indentation depends on on the list nesting level.
@@ -401,7 +376,6 @@ struct OrderedList : public Element {
 };
 
 struct UnorderedList : public Element {
-	auto_ptr<list<TagAttribute> >        attributes;// TYPE COMPACT
 	auto_ptr<list<auto_ptr<ListItem> > > items;
 	int nesting;
 
@@ -409,7 +383,6 @@ struct UnorderedList : public Element {
 };
 
 struct Dir : public Element {
-	auto_ptr<list<TagAttribute> >        attributes;// COMPACT
 	auto_ptr<list<auto_ptr<ListItem> > > items;
 	int nesting;
 
@@ -417,7 +390,6 @@ struct Dir : public Element {
 };
 
 struct Menu : public Element {
-	auto_ptr<list<TagAttribute> >        attributes;// COMPACT
 	auto_ptr<list<auto_ptr<ListItem> > > items;
 	int nesting;
 
@@ -427,6 +399,7 @@ struct Menu : public Element {
 struct DefinitionListItem {
 	virtual ~DefinitionListItem()
 	{}
+	auto_ptr<list<TagAttribute>> attributes;
 	virtual Area *format(Area::size_type w, int halign) const = 0;
 };
 
@@ -443,7 +416,6 @@ struct TermDefinition : public DefinitionListItem {
 };
 
 struct DefinitionList : public Element {
-	auto_ptr<list<TagAttribute> >                  attributes;// COMPACT
 	auto_ptr<list<auto_ptr<Element> > >            preamble;
 	auto_ptr<list<auto_ptr<DefinitionListItem> > > items;
 

@@ -172,6 +172,28 @@ Line::append(const char *p)
 }
 
 void
+Line::set_fgcolour(unsigned char clr)
+{
+	Cell *p = cells_, *end = cells_ + length_;
+	for (; p != end; p++)
+	{
+		p->fgcolour = clr;
+		p->attribute |= Cell::FGCOLOUR;
+	}
+}
+
+void
+Line::set_bgcolour(unsigned char clr)
+{
+	Cell *p = cells_, *end = cells_ + length_;
+	for (; p != end; p++)
+	{
+		p->bgcolour = clr;
+		p->attribute |= Cell::BGCOLOUR;
+	}
+}
+
+void
 Line::add_attribute(char addition)
 {
 	Cell *p = cells_, *end = cells_ + length_;
@@ -180,7 +202,11 @@ Line::add_attribute(char addition)
 		p++->attribute |= addition;
 }
 
-bool Area::use_backspaces = true;
+bool Area::use_backspaces = false;
+bool Area::use_ansi       = true;
+
+Area::size_type Area::widthsize  =  6;  /* px */
+Area::size_type Area::heightsize = 16;  /* px, default fontsize */
 
 Area::Area() :
 	width_(0),
@@ -467,6 +493,32 @@ Area::fill(char c, size_type x, size_type y, size_type w, size_type h)
 }
 
 void
+Area::set_bgcolour(unsigned char clr)
+{
+	for (size_type y = 0; y < height(); y++) {
+		Cell *p = cells_[y], *end = p + width();
+		while (p != end) {
+			p->bgcolour   = clr;
+			p->attribute |= Cell::BGCOLOUR;
+			p++;
+		}
+	}
+}
+
+void
+Area::set_fgcolour(unsigned char clr)
+{
+	for (size_type y = 0; y < height(); y++) {
+		Cell *p = cells_[y], *end = p + width();
+		while (p != end) {
+			p->fgcolour   = clr;
+			p->attribute |= Cell::FGCOLOUR;
+			p++;
+		}
+	}
+}
+
+void
 Area::add_attribute(char addition)
 {
 	for (size_type y = 0; y < height(); y++) {
@@ -506,62 +558,113 @@ iconvstream &
 operator<<(iconvstream& os, const Area &a)
 {
 	for (Area::size_type y = 0; y < a.height(); y++) {
-		const Cell *cell = a.cells_[y];
-		const Cell *end = cell + a.width();
-		while (
-				end != cell && end[-1].character == ' ' &&
-				(end[-1].attribute &
-				 (Cell::UNDERLINE | Cell::STRIKETHROUGH)) == 0
-			  )
+		/* compute visible part */
+		const Cell   *cell     = a.cells_[y];
+		const Cell   *end      = cell + a.width();
+		char          attrs    = Cell::NONE;
+		unsigned char fgcolour = Cell::BLACK;
+		unsigned char bgcolour = Cell::WHITE;
+
+		/* trim off trailing spaces when they are not "visible" due to
+		 * attributes (underline/strikethrough) */
+		while (end != cell &&
+			   end[-1].character == ' ' &&
+			   (end[-1].attribute & (Cell::UNDERLINE |
+			   						 Cell::STRIKETHROUGH)) == 0)
 			end--;
 
 		for (const Cell *p = cell; p != end; p++) {
-			int c = p->character;
-			char a = p->attribute;
+			int  c    = p->character;
+			char a    = p->attribute;
 			char u[5] = {0, 0, 0, 0, 0};
 
+			/* compute codepoint, this is a bit unfortunate and should
+			 * go away once we use wchar_t */
 			u[0] = c & 0xFF;
 			if ((c >> 7) & 1) {
-				unsigned int d = c;
+				unsigned int  d     = c;
 				unsigned char point = 1;
 				while ((c >> (7 - point++)) & 1) {
 					d >>= 8;
 					u[point - 1] = d & 0xFF;
-				};
-			}
-
-			if (a == Cell::NONE) {
-				os << u;
-			} else {
-				if (Area::use_backspaces) {
-					/*
-					 * No LESS / terminal combination that I know of
-					 * supports dash-backspace-character as
-					 * "strikethrough". Pity.
-					 */
-					if (a & Cell::STRIKETHROUGH)
-						os << '-' << backspace;
-
-					/*
-					 * No LESS that I know of can combine underlining
-					 * and boldface. In practice, boldface always takes
-					 * precedence.
-					 *
-					 * It's not a good idea to optimize an underlined
-					 * space as a single underscore (as opposed to
-					 * underscore-backspace-space) -- this would not
-					 * look nice next to an underlined character.
-					 */
-					if ((a & Cell::UNDERLINE))
-						os << '_' << backspace;
-					if ((a & Cell::BOLD     ) && c != ' ')
-						os << c << backspace;
-					os << u;
-				} else {
-					os << (c == ' ' && (a & Cell::UNDERLINE) ? "_" : u);
 				}
 			}
+
+			if (Area::use_ansi) {
+				/* use ANSI escape sequences to produce colours, bold
+				 * and underline */
+
+				/* see if there's something that needs disabling */
+				if (attrs != a ||
+					(a & Cell::COLOUR &&
+					 (p->fgcolour != fgcolour ||
+					  p->bgcolour != bgcolour)))
+				{
+					/* reset all properties, rebuild afterwards
+					 * we do this also because it's the only way to
+					 * unset something :) */
+					os << "\e[0";
+
+					attrs    = a;
+					fgcolour = p->fgcolour;
+					bgcolour = p->bgcolour;
+
+					/* enable needed properties */
+					if (attrs & Cell::UNDERLINE) {
+						os << ";4";
+					}
+					if (attrs & Cell::BOLD) {
+						os << ";1";
+					}
+					/* ignore strikethrough, can't represent it */
+
+					if (attrs & Cell::FGCOLOUR) {
+						os << ";38;5;" << std::to_string(fgcolour);
+					}
+					if (attrs & Cell::BGCOLOUR) {
+						os << ";48;5;" << std::to_string(bgcolour);
+					}
+
+					/* finish sequence */
+					os << "m";
+				}
+				os << u;
+			} else if (Area::use_backspaces &&
+					   a != Cell::NONE)
+			{
+				/* old method of producing bold and underline */
+
+				/* No LESS / terminal combination that I know of
+				 * supports dash-backspace-character as
+				 * "strikethrough". Pity.
+				 * (For historical reasons we're still doing it though.) */
+				if (a & Cell::STRIKETHROUGH)
+					os << '-' << backspace;
+
+				/* No LESS that I know of can combine underlining
+				 * and boldface. In practice, boldface always takes
+				 * precedence.
+				 *
+				 * It's not a good idea to optimize an underlined
+				 * space as a single underscore (as opposed to
+				 * underscore-backspace-space) -- this would not
+				 * look nice next to an underlined character. */
+				if ((a & Cell::UNDERLINE))
+					os << '_' << backspace;
+				if ((a & Cell::BOLD     ) && c != ' ')
+					os << u << backspace;
+				os << u;
+			} else {
+				/* no rendering, historical behaviour to turn spaces
+				 * into underscores when the input is underlined */
+				os << (c == ' ' && (a & Cell::UNDERLINE) ? "_" : u);
+			}
 		}
+
+		/* if we haven't yet, unset all features */
+		if (Area::use_ansi && attrs != Cell::NONE)
+			os << "\e[0;m";
+
 		os << endl;
 	}
 

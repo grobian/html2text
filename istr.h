@@ -111,6 +111,31 @@ class istr {
 
 			return ret;
 		}
+		int icompare(size_t pos, size_t len, const char *s) const
+		{
+			int ret;
+			int elm;
+
+			/* this is not handling utf-8 conversions properly but for
+			 * the usage this is not a problem */
+			for (size_t i = 0; i < len; i++) {
+				elm = (pos + i) < elems.size() ? elems[pos + i] : 0;
+				if ((ret = toupper(s[i]) - toupper(elm)) != 0)
+					break;
+			}
+
+			return ret;
+		}
+		bool iequals(const char *s) const
+		{
+			size_t len;
+
+			if (s == NULL)
+				return false;
+
+			len = strlen(s);
+			return (len == elems.size() && this->icompare(0, len, s) == 0);
+		}
 		istr &operator+=(const int inp)
 		{
 			elems.push_back(inp);
@@ -158,7 +183,13 @@ class istr {
 		}
 		bool operator==(const char *inp)
 		{
-			return this->compare(0, strlen(inp), inp) == 0;
+			size_t len;
+
+			if (inp == NULL)
+				return false;
+
+			len = strlen(inp);
+			return (len == elems.size() && this->compare(0, len, inp) == 0);
 		}
 		bool operator!=(const char *inp)
 		{

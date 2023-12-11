@@ -166,20 +166,32 @@ get_attribute(
 	return s ? v : dflt2;
 }
 
+/**
+ * Return a styling property from the embedded style attribute, falling
+ * back to the given attribute, if possible.
+ * This is meant for retrieval of properties such as colour, width, etc.
+ */
 istr
-get_style_attr(istr *style, const char *name, const char *dflt)
+get_style_attr
+(
+	const list<TagAttribute> *attrs,
+	const char               *style_name,
+	const char               *attr_name,
+	const char               *dflt
+)
 {
-	bool iskey = true;
+	bool   iskey    = true;
 	size_t keystart = 0;
 	size_t valstart = 0;
 	size_t t;
+	istr   style    = get_attribute(attrs, "STYLE", "");
 
-	if (style != NULL) {
-		for (size_t i = 0; i < style->length(); i++) {
-			switch ((*style)[i]) {
+	if (style != NULL && style_name != NULL) {
+		for (size_t i = 0; i < style.length(); i++) {
+			switch (style[i]) {
 				case ':':
 					/* keystart:i = key */
-					for (t = i - 1; (*style)[t] == ' '; t--)
+					for (t = i - 1; style[t] == ' '; t--)
 						;
 					t++;
 					iskey = false;
@@ -188,11 +200,13 @@ get_style_attr(istr *style, const char *name, const char *dflt)
 				case ';':
 					/* end of value */
 					if (!iskey) {
-						if (style->compare(keystart, t - keystart, name) == 0) {
-							for (t = i - 1; (*style)[t] == ' '; t--)
+						if (style.compare(keystart, t - keystart,
+										  style_name) == 0)
+						{
+							for (t = i - 1; style[t] == ' '; t--)
 								;
 							t++;
-							return style->slice(valstart, t - valstart);
+							return style.slice(valstart, t - valstart);
 						}
 					}
 					keystart = i + 1;
@@ -207,6 +221,9 @@ get_style_attr(istr *style, const char *name, const char *dflt)
 			}
 		}
 	}
+
+	if (attr_name != NULL)
+		return get_attribute(attrs, attr_name, dflt);
 
 	return istr(dflt);
 }

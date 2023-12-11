@@ -36,7 +36,7 @@ Usage:\n\
   html2text -help\n\
   html2text -version\n\
   html2text [ -check ] [ -debug-scanner ] [ -debug-parser ] \\\n\
-     [ -rcfile <file> ] [ -width <w> ] [ -nobs ] [ -links ]\\\n\
+     [ -rcfile <file> ] [ -width <w> ] [ -nobs ] [ -bs ] [ -links ]\\\n\
      [ -from_encoding ] [ -to_encoding ] [ -ascii ]\\\n\
      [ -o <file> ] [ <input-file> ] ...\n\
 Formats HTML document(s) read from <input-file> or STDIN and generates ASCII\n\
@@ -48,7 +48,8 @@ text.\n\
   -debug-parser  Report parser activity on STDERR (debugging)\n\
   -rcfile <file> Read <file> instead of \"$HOME/.html2textrc\"\n\
   -width <w>     Optimize for screen widths other than 79\n\
-  -nobs          Do not render boldface and underlining (using backspaces)\n\
+  -nobs          Do not render boldface, underlining, etc.\n\
+  -bs            Render boldface and underlining using backspaces\n\
   -links         Generate reference list with link targets\n\
   -from_encoding Treat input encoded as given encoding\n\
   -to_encoding   Output using given encoding\n\
@@ -94,7 +95,8 @@ main(int argc, char **argv)
 	const char *rcfile = NULL;
 	int width = 79;
 	const char *output_file_name = "-";
-	bool use_backspaces = true;
+	bool use_backspaces = false;
+	bool use_ansi_escapes = true;
 	bool enable_links = false;
 	const char *from_encoding = NULL;
 	const char *to_encoding = NULL;
@@ -121,6 +123,10 @@ main(int argc, char **argv)
 			extarg = &output_file_name;
 		} else if (!strcmp(arg, "-nobs")) {
 			use_backspaces = false;
+			use_ansi_escapes = false;
+		} else if (!strcmp(arg, "-bs")) {
+			use_backspaces = true;
+			use_ansi_escapes = false;
 		} else if (!strcmp(arg, "-from_encoding")) {
 			extarg = &from_encoding;
 		} else if (!strcmp(arg, "-to_encoding")) {
@@ -214,6 +220,7 @@ main(int argc, char **argv)
 	 * Set up printing.
 	 */
 	Area::use_backspaces = use_backspaces;
+	Area::use_ansi       = use_ansi_escapes;
 
 	iconvstream is;
 

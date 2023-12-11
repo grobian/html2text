@@ -19,11 +19,6 @@
 #ifndef __Properties_h_INCLUDED__ /* { */
 #define __Properties_h_INCLUDED__
 
-#ifdef BOOL_DEFINITION
-BOOL_DEFINITION
-#undef BOOL_DEFINITION
-#endif
-
 #include <string>
 #include <map>
 #include <istream>

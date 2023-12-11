@@ -29,16 +29,21 @@ using std::istream;
 
 class Formatting {
 public:
-static void           setProperty(const char *key, const char *value);
-static void           loadProperties(istream &is);
+static void            setProperty(const char *key, const char *value);
+static void            loadProperties(istream &is);
 
 static const char     *getString(const char *key, const char *dflt);
-// neue Methode fuer leere Attribute - Johannes Geiger
 static const char     *getString(const char *key);
 static vector<string> *getStringVector(const char *key, const char *dflt);
-static int            getInt(const char *key, int dflt);
-static vector<int> *  getIntVector(const char *key, const char *dflt);
-static char           getAttributes(const char *key, char dflt);
+static int             getInt(const char *key, int dflt);
+static vector<int>    *getIntVector(const char *key, const char *dflt);
+static char            getAttributes(const char *key, char dflt);
+static int             colour_from_string(const char *clrc);
+static Area::size_type get_width(const list<TagAttribute> *, Area::size_type w);
+static void            set_fgcolour(const list<TagAttribute> *, Area *);
+static void            set_bgcolour(const list<TagAttribute> *, Area *);
+static void            set_fgcolour(const list<TagAttribute> *, Line *);
+static void            set_bgcolour(const list<TagAttribute> *, Line *);
 
 private:
 Formatting();      // Do not instantiate me!
