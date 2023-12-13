@@ -11,6 +11,8 @@
 * [Issue #59](https://github.com/grobian/html2text/issues/59)
   Fix build for C++ compilers that do not default to C++11 or more
   recent.
+* [Issue #61](https://https://gitlab.com/grobian/html2text/-/issues/61)
+  Fix handling of malformed attributes in tags
 
 
 # 2.2.3 (31-07-2023)

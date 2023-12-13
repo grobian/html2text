@@ -502,10 +502,24 @@ HTMLControl::yylex2(html2text::HTMLParser::semantic_type *value_return,
 				 * the "tag_attributes" only on demand; this saves a lot
 				 * of overhead.
 				 */
-				auto_ptr<list<TagAttribute> > tag_attributes;
+				auto_ptr<list<TagAttribute>> tag_attributes;
 				if (!is_end_tag) {
-					while (isalpha(c) || c == '_') {
+					while (c != EOF && c != '>') {
+						bool         attrseparate = false;
 						TagAttribute attribute;
+
+						/* attribute := name [ '=' quote string quote ]
+						 * name := first [ rest ... ]
+						 * first := alpha | '_'
+						 * rest := alpha | num | '_' | '-' | ':' | '.'
+						 * quote := '\'' | '"'
+						 * string := * !quote
+						 *
+						 * issue #61, be loose here, allow all kinds of
+						 * garbage to happen, optimistically try to find
+						 * attributes, until the closing '>' */
+						if (!isalpha(c) && c != '_')
+							goto eat_garbage;
 
 						/* Scan attribute name, see the ID and NAME rule
 						 * mentioned above */
@@ -519,8 +533,11 @@ HTMLControl::yylex2(html2text::HTMLParser::semantic_type *value_return,
 							attribute.first += c;
 						}
 
-						while (isspace(c))
-							c = get_char();    // Skip WS after attribute name
+						/* skip whitespace */
+						while (isspace(c)) {
+							c = get_char();
+							attrseparate = true;
+						}
 
 						/*
 						 * Scan (optional) attribute value.
@@ -549,27 +566,23 @@ HTMLControl::yylex2(html2text::HTMLParser::semantic_type *value_return,
 								}
 								c = get_char(); // Get next after closing quote
 							} else {
-								while (c != '>' && c > ' ') {
-									// This is for non-ACSII chars - Arno
-									if (c == EOF)
-										return HTMLParser_token::SCAN_ERROR;
-									// Same as in line 390
+								/* unquoted value */
+								while (isalnum(c)) {
 									attribute.second += c;
 									c = get_char();
 								}
+								if (c == EOF)
+									return HTMLParser_token::SCAN_ERROR;
+								if (!isspace(c))
+									goto eat_garbage;
 							}
 
+							/* skip whitespace */
 							while (isspace(c))
-								c = get_char();    // Skip WS after attr value
+								c = get_char();
 						} else {
-							/* if we get something malformed like
-							 * att:"bla" (colon iso =), ensure we eat
-							 * away the garbage until space or closing
-							 * tag */
-							while (!isspace(c) && c != '>')
-								c = get_char();
-							while (isspace(c))
-								c = get_char();
+							if (!attrseparate)
+								goto eat_garbage;
 						}
 
 						/*
@@ -579,7 +592,20 @@ HTMLControl::yylex2(html2text::HTMLParser::semantic_type *value_return,
 							tag_attributes.reset(new list<TagAttribute>);
 						}
 						tag_attributes->push_back(attribute);
+
+						continue;
+eat_garbage:
+						while (c != ' ' &&
+							   c != '>' &&
+							   c != EOF)
+							c = get_char();
+
+						/* skip whitespace */
+						while (isspace(c))
+							c = get_char();
 					}
+					if (c == EOF)
+						return HTMLParser_token::SCAN_ERROR;
 				}
 
 				// accept XHTML tags like <hr /> - Alexander Solovey

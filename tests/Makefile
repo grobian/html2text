@@ -14,6 +14,7 @@ TESTS= \
 	   ascii=ordered-list \
 	   ascii=unterminated-table \
 	   ascii=whitespace-tags \
+	   ascii=corrupt-attributes.html \
 	   iso-8859-1=dot-in-tag-name \
 	   iso-8859-1=hex-entities \
 	   iso-8859-1=large-table-gt-no-html-end-tag \
