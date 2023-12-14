@@ -198,6 +198,7 @@ create_lcs(
 			 * some padding at this point */
 			auto_ptr<Area> tmp(cell.format(wanted_width, Area::LEFT));
 			p->width     = tmp.get() ? tmp->width() : 0;
+			p->minwidth  = 0;
 			p->minimized = p->width == 0;
 
 			lcs_return->push_back(p);
@@ -351,6 +352,7 @@ narrow_table(
 			Area::size_type colsiz = 0;
 			Area::size_type minsiz = 0;
 			Area::size_type gap;
+			double          scale;
 			int             j;
 
 			lc = **c;
@@ -373,26 +375,28 @@ narrow_table(
 
 			/* if it doesn't fit increment the columns affected */
 			if (colsiz < lc.width) {
+				scale  = (double)lc.width / (double)colsiz;
 				colsiz = lc.width - colsiz;
-				for (j = 0; j < lc.w; j++) {
-					gap     = colsiz / (lc.w - j);
-					colsiz -= gap;
-					if (colcursizes[lc.x + j] < 0)
-						colcursizes[lc.x + j]  = gap;
-					else
-						colcursizes[lc.x + j] += gap;
+				for (j = 0; j < lc.w - 1; j++) {
+					gap =
+						(Area::size_type)ceil((double)(colcursizes[lc.x + j]) *
+											  scale);
+					colsiz -= gap - colcursizes[lc.x + j];
+					colcursizes[lc.x + j] = gap;
 				}
+				colcursizes[lc.x + j] = colsiz;
 			}
 			if (minsiz < lc.minwidth) {
+				scale  = (double)lc.minwidth / (double)minsiz;
 				minsiz = lc.minwidth - minsiz;
-				for (j = 0; j < lc.w; j++) {
-					gap     = minsiz / (lc.w - j);
-					minsiz -= gap;
-					if (colneedsizes[lc.x + j] < 0)
-						colneedsizes[lc.x + j]  = gap;
-					else
-						colneedsizes[lc.x + j] += gap;
+				for (j = 0; j < lc.w - 1; j++) {
+					gap =
+						(Area::size_type)ceil((double)(colneedsizes[lc.x + j]) *
+											  scale);
+					minsiz -= gap - colneedsizes[lc.x + j];
+					colneedsizes[lc.x + j] = gap;
 				}
+				colneedsizes[lc.x + j] = minsiz;
 			}
 		}
 	}
@@ -444,10 +448,15 @@ narrow_table(
 				double scale = ((double)redux / (double)whitespace);
 				/* remove space by ratio */
 				for (i = 0; i < number_of_columns - 1; i++) {
-					Area::size_type space     =
-						column_widths_in_out[i] - colcursizes[i];
-					Area::size_type newcolsiz = colcursizes[i] +
-						(Area::size_type)ceil((double)(space) * scale);
+					Area::size_type newcolsiz;
+					if (column_widths_in_out[i] > colcursizes[i]) {
+						Area::size_type space     =
+							column_widths_in_out[i] - colcursizes[i];
+						newcolsiz = colcursizes[i] +
+							(Area::size_type)ceil((double)(space) * scale);
+					} else {
+						newcolsiz = column_widths_in_out[i];
+					}
 					wantedspace              -= newcolsiz;
 					column_widths_in_out[i]   = newcolsiz;
 				}
