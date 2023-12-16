@@ -1317,10 +1317,12 @@ make_up(const Line &line, Area::size_type w, int halign)
 		 * the "res" Area. */
 		Area::size_type x   = 0;
 		Area::size_type len = to - from;
-		if (halign == Area::CENTER) {
-			x += (w - len) / 2;
-		} else if (halign == Area::RIGHT) {
-			x += w - len;
+		if (len < w) {
+			if (halign == Area::CENTER) {
+				x += (w - len) / 2;
+			} else if (halign == Area::RIGHT) {
+				x += w - len;
+			}
 		}
 		res->insert(line.cells() + from, len, x, res->height());
 
