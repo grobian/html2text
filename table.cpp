@@ -105,7 +105,7 @@ create_lcs(
 		int             row_valign;
 
 		istr align = get_style_attr(row.attributes.get(),
-									"text-align", "ALIGN", "");
+									"text-align", "ALIGN", "").get()->front();
 		if (align.iequals("center"))
 			row_halign = Area::CENTER;
 		else if (align.iequals("right"))
@@ -114,7 +114,7 @@ create_lcs(
 			row_halign = Area::LEFT;
 
 		align = get_style_attr(row.attributes.get(),
-							   "vertical-align", "VALIGN", "");
+							   "vertical-align", "VALIGN", "").get()->front();
 		if (align.iequals("top"))
 			row_valign = Area::TOP;
 		else if (align.iequals("bottom"))
@@ -147,7 +147,7 @@ create_lcs(
 				*number_of_rows_return = y + p->h;
 
 			align = get_style_attr(cell.attributes.get(),
-								   "text-align", "ALIGN", "");
+								   "text-align", "ALIGN", "").get()->front();
 			if (align.iequals("center"))
 				p->halign = Area::CENTER;
 			else if (align.iequals("right"))
@@ -158,7 +158,8 @@ create_lcs(
 				p->halign = row_halign;
 
 			align = get_style_attr(cell.attributes.get(),
-							   	   "vertical-align", "VALIGN", "");
+							   	   "vertical-align",
+							   	   "VALIGN", "").get()->front();
 			if (align.iequals("top"))
 				p->valign = Area::TOP;
 			else if (align.iequals("bottom"))
@@ -309,7 +310,7 @@ narrow_table(
 				/* compute size with current width */
 				auto_ptr<Area> tmp(lc.cell->format(cw, Area::LEFT));
 
-				if (tmp.get()) 
+				if (tmp.get())
 					lc.width = tmp->width();
 			}
 		}
@@ -317,7 +318,7 @@ narrow_table(
 		if (!lc.minimized && lc.minwidth == 0) {
 			/* compute absolute minimum width */
 			auto_ptr<Area> tmp(lc.cell->format(1, Area::LEFT));
-			if (!tmp.get()) 
+			if (!tmp.get())
 				continue;
 			lc.minwidth = tmp->width();
 
@@ -587,7 +588,7 @@ compute_row_heights
 			h += row_heights_return[y];
 
 		istr height = get_style_attr(lc.cell->attributes.get(),
-							   		 "height", "HEIGHT", "");
+							   		 "height", "HEIGHT", "").get()->front();
 		Area::size_type wanted_height = 0;
 		if (!height.empty()) {
 			/* I don't believe we can do anything with percentages here,
@@ -628,7 +629,8 @@ Table::format(Area::size_type w, int halign) const
 	istr wdth;
 	istr align;
 
-	align = get_style_attr(attributes.get(), "text-align", "ALIGN", "");
+	align = get_style_attr(attributes.get(), "text-align",
+						   "ALIGN", "").get()->front();
 	if (align.iequals("center"))
 		halign = Area::CENTER;
 	else if (align.iequals("right"))
@@ -637,34 +639,26 @@ Table::format(Area::size_type w, int halign) const
 		halign = Area::LEFT;
 	/* else keep halign */
 
-	/* <TABLE>          => default => no border
-	 * <TABLE BORDER>   => ""      => draw border
-	 * <TABLE BORDER=0> => "0"     => no border
-	 * <TABLE BORDER=1> => "9px"   => draw border */
+	/* <TABLE>                      => default  => no border
+	 * <TABLE BORDER>               => "border" => draw border
+	 * <TABLE BORDER=0>             => "0"      => no border
+	 * <TABLE STYLE="border: none"> => "none"   => no border
+	 * <TABLE BORDER="9px">         => "9px"    => draw border */
 	bool draw_border = false;
-	istr border = get_style_attr(attributes.get(), "border", "BORDER", "0");
-	if (border.empty()) {
-		draw_border = true;
-	} else {
-		string::size_type j = 0;
-		istr sstr;
-		for (string::size_type i = 0; i <= border.length(); i++)
-		{
-			if (i == border.length() || border[i] == ' ') {
-				if (j == i) {
-					j++;
-				} else {
-					sstr = border.slice((size_t)j, (size_t)(i - j));
-					if (sstr.iequals("none")) {
-						draw_border = false;
-					} else if (sstr[0] >= '1' && sstr[0] <= '9') {
-						draw_border = true;
-					} /* ignore the rest */
-
-					j = i + 1;
-				}
-			}
+	auto_ptr<list<istr>> brdr =
+		get_style_attr(attributes.get(), "border", "BORDER", "0");
+	/* border may be something like border: 1px solid red */
+	list<istr>::const_iterator it;
+	for (it = brdr.get()->begin(); it != brdr.get()->end(); it++) {
+		const istr &sstr(*it);
+		if (sstr.iequals("none") || sstr.iequals("0")) {
+			draw_border = false;
+		} else if (sstr[0] >= '1' && sstr[0] <= '9') {
+			draw_border = true;
+		} else if (sstr.iequals("border")) {
+			draw_border = true;
 		}
+		/* ignore the rest */
 	}
 
 	/* allow override for debugging purposes */

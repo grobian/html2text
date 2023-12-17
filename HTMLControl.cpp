@@ -583,6 +583,8 @@ HTMLControl::yylex2(html2text::HTMLParser::semantic_type *value_return,
 						} else {
 							if (!attrseparate)
 								goto eat_garbage;
+							/* short form, expand */
+							attribute.second = attribute.first;
 						}
 
 						/*

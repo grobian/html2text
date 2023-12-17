@@ -55,7 +55,7 @@ int get_attribute(
 	const char *s1, int v1, ... /* ... NULL */
 	);
 
-istr get_style_attr
+auto_ptr<list<istr>> get_style_attr
 (
 	const list<TagAttribute> *,
 	const char               *style_name,

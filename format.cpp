@@ -1737,7 +1737,8 @@ Formatting::get_width
 	istr            wdth;
 	Area::size_type wanted_width = w;
 
-	wdth = get_style_attr(attrs, "width", "WIDTH", "");
+	/* width can only be a single thing, take the first element */
+	wdth = get_style_attr(attrs, "width", "WIDTH", "").get()->front();
 	if (!wdth.empty()) {
 		if (wdth[wdth.length() - 1] == '%') {
 			wdth.erase(wdth.length() - 1);
@@ -1765,9 +1766,10 @@ Formatting::set_fgcolour
 	Area                     *res
 )
 {
-	istr clr = get_style_attr(attrs, "color", "COLOR", "");
+	/* width can only be a single thing, take the first element */
+	istr clr = get_style_attr(attrs, "color", "COLOR", "").get()->front();
 	if (!clr.empty()) {
-	    int clrcde = Formatting::colour_from_string(clr.c_str());
+		int clrcde = Formatting::colour_from_string(clr.c_str());
 		if (clrcde >= 0) {
 			res->set_fgcolour(clrcde);
 			res->add_attribute(Cell::FGCOLOUR);
@@ -1782,9 +1784,11 @@ Formatting::set_bgcolour
 	Area                     *res
 )
 {
-	istr clr = get_style_attr(attrs, "background-color", "BGCOLOR", "");
+	/* width can only be a single thing, take the first element */
+	istr clr = get_style_attr(attrs, "background-color",
+							  "BGCOLOR", "").get()->front();
 	if (!clr.empty()) {
-	    int clrcde = Formatting::colour_from_string(clr.c_str());
+		int clrcde = Formatting::colour_from_string(clr.c_str());
 		if (clrcde >= 0) {
 			res->set_bgcolour(clrcde);
 			res->add_attribute(Cell::BGCOLOUR);
@@ -1799,9 +1803,10 @@ Formatting::set_fgcolour
 	Line                     *res
 )
 {
-	istr clr = get_style_attr(attrs, "color", "COLOR", "");
+	/* width can only be a single thing, take the first element */
+	istr clr = get_style_attr(attrs, "color", "COLOR", "").get()->front();
 	if (!clr.empty()) {
-	    int clrcde = Formatting::colour_from_string(clr.c_str());
+		int clrcde = Formatting::colour_from_string(clr.c_str());
 		if (clrcde >= 0) {
 			res->set_fgcolour(clrcde);
 			res->add_attribute(Cell::FGCOLOUR);
@@ -1816,9 +1821,11 @@ Formatting::set_bgcolour
 	Line                     *res
 )
 {
-	istr clr = get_style_attr(attrs, "background-color", "BGCOLOR", "");
+	/* width can only be a single thing, take the first element */
+	istr clr = get_style_attr(attrs, "background-color",
+							  "BGCOLOR", "").get()->front();
 	if (!clr.empty()) {
-	    int clrcde = Formatting::colour_from_string(clr.c_str());
+		int clrcde = Formatting::colour_from_string(clr.c_str());
 		if (clrcde >= 0) {
 			res->set_bgcolour(clrcde);
 			res->add_attribute(Cell::BGCOLOUR);

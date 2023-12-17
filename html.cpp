@@ -171,7 +171,7 @@ get_attribute(
  * back to the given attribute, if possible.
  * This is meant for retrieval of properties such as colour, width, etc.
  */
-istr
+auto_ptr<list<istr>>
 get_style_attr
 (
 	const list<TagAttribute> *attrs,
@@ -185,6 +185,9 @@ get_style_attr
 	size_t valstart = 0;
 	size_t t;
 	istr   style    = get_attribute(attrs, "STYLE", "");
+
+	auto_ptr<list<istr>> ret;
+	ret.reset(new list<istr>);
 
 	if (style != NULL && style_name != NULL) {
 		for (size_t i = 0; i < style.length(); i++) {
@@ -203,10 +206,40 @@ get_style_attr
 						if (style.compare(keystart, t - keystart,
 										  style_name) == 0)
 						{
+							list<istr>::const_iterator it;
+							size_t lastsp = valstart - 1;
 							for (t = i - 1; style[t] == ' '; t--)
 								;
 							t++;
-							return style.slice(valstart, t - valstart);
+							for (size_t p = valstart; p < t; p++) {
+								if (style[p] == ' ') {
+									if (p - 1 == lastsp) {
+										lastsp = p;
+										continue;
+									}
+									ret.get()->push_back(
+											style.slice(lastsp + 1,
+														p - valstart));
+								}
+							}
+							if (t > lastsp + 1)
+								ret.get()->push_back(
+										style.slice(lastsp + 1,
+													t - valstart));
+
+							/* weed out cruft we don't support anyway */
+							for (it = ret.get()->begin();
+								 it != ret.get()->end();
+								 it++)
+							{
+								const istr &s(*it);
+								if (s.iequals("!important"))
+									ret.get()->erase(it);
+							}
+
+							/* we're done */
+							i = style.length();
+							break;
 						}
 					}
 					keystart = i + 1;
@@ -222,8 +255,11 @@ get_style_attr
 		}
 	}
 
-	if (attr_name != NULL)
-		return get_attribute(attrs, attr_name, dflt);
+	if (ret.get()->empty() && attr_name != NULL)
+		ret.get()->push_back(get_attribute(attrs, attr_name, dflt));
 
-	return istr(dflt);
+	if (ret.get()->empty())
+		ret.get()->push_back(istr(dflt));
+
+	return ret;
 }
