@@ -270,14 +270,14 @@ narrow_table(
 	const Area::size_type        wanted_size
 )
 {
-	int    maxcolspan      =  1;
+	int    maxcolspan      = 1;
 	int    span;
 	int    i;
 	bool   ret;
+	bool   debug           = false;
 
-	const list<auto_ptr<LogicalCell>>           &lcl = *lcs_in_out;
-	LogicalCell                                  lc;
-	list<auto_ptr<LogicalCell>>::const_iterator  c;
+	LogicalCell                                 *lc;
+	list<auto_ptr<LogicalCell>>::iterator        c;
 
 	Area::size_type  newtablesize;
 	Area::size_type  waste;
@@ -287,117 +287,129 @@ narrow_table(
 	Area::size_type  totcolcursize;
 	Area::size_type  colneedsizes[number_of_columns];
 	Area::size_type  colcursizes[number_of_columns];
+	bool             colminimised[number_of_columns];
+
+	if (debug)
+		std::cerr << "narrow_table: wanted_size=" << wanted_size <<
+			" table_width=" << *table_width_in_out <<
+			" columns=" << number_of_columns << std::endl;
 
 	if (wanted_size >= *table_width_in_out)
 		return false;
 
-	/* look at columns which are already minimised, therefore locked to
-	 * their narrowest state */
 	for (i = 0; i < number_of_columns; i++) {
 		colneedsizes[i] = 0;
 		colcursizes[i]  = 0;
+		colminimised[i] = false;
 	}
-	for (c = lcl.begin(); c != lcl.end(); c++) {
-		lc = **c;
 
-		{
-			Area::size_type cw = 0;
+	for (c = lcs_in_out->begin(); c != lcs_in_out->end(); c++) {
+		Area::size_type cw = 0;
 
-			for (int j = lc.x; j < lc.x + lc.w; j++)
-				cw += column_widths_in_out[j];
+		lc = (*c).get();
 
-			if (cw < lc.width) {
-				/* compute size with current width */
-				auto_ptr<Area> tmp(lc.cell->format(cw, Area::LEFT));
+		if (debug)
+			std::cerr << "  cell: x=" << lc->x <<
+				" y=" << lc->y << " w=" << lc->w << " h=" << lc->h <<
+				" width=" << lc->width << " minwidth=" << lc->minwidth <<
+				" minimised=" << lc->minimized << std::endl;
 
-				if (tmp.get())
-					lc.width = tmp->width();
-			}
+		for (int j = lc->x; j < lc->x + lc->w; j++)
+			cw += column_widths_in_out[j];
+
+		if (cw < lc->width) {
+			/* compute size with current width */
+			auto_ptr<Area> tmp(lc->cell->format(cw, Area::LEFT));
+
+			if (tmp.get())
+				lc->width = tmp->width();
 		}
 
-		if (!lc.minimized && lc.minwidth == 0) {
+		if (!lc->minimized) {
 			/* compute absolute minimum width */
-			auto_ptr<Area> tmp(lc.cell->format(1, Area::LEFT));
+			auto_ptr<Area> tmp(lc->cell->format(1, Area::LEFT));
 			if (!tmp.get())
 				continue;
-			lc.minwidth = tmp->width();
-
-			if (lc.minwidth >= lc.width) {
-				lc.width     = lc.minwidth;
-				lc.minimized = true;
-			}
+			lc->minwidth  = tmp->width();
+			lc->minimized = true;
 		}
 
 		/* colspan really gives us the creeps here, because a column
 		 * no longer is just a column :(  w => colspan
 		 * phase one, only consider colspan = 1 columns */
-		if (lc.w > 1) {
-			if (lc.w > maxcolspan)
-				maxcolspan = lc.w;
+		if (lc->w > 1) {
+			if (lc->w > maxcolspan)
+				maxcolspan = lc->w;
 			continue;
 		}
 
-		/* at this point, (colsiz - lc.width) is the wiggle room for the
+		/* at this point, (colsiz - lc->width) is the wiggle room for the
 		 * column, but that's just for this cell, so first finish all of
 		 * them before drawing conclusions */
-		if (lc.width > colcursizes[lc.x])
-			colcursizes[lc.x] = lc.width;
-		if (lc.minwidth > colneedsizes[lc.x])
-			colneedsizes[lc.x] = lc.minwidth;
+		if (lc->width > colcursizes[lc->x])
+			colcursizes[lc->x]  = lc->width;
+		if (lc->minwidth > colneedsizes[lc->x])
+			colneedsizes[lc->x] = lc->minwidth;
+		if (lc->minimized)
+			colminimised[lc->x] = true;
 	}
 	/* colspan phase two, for every level up in colspan, process them,
 	 * to stretch up column levels evenly after considering disbalance
 	 * in them */
 	for (span = 2; span <= maxcolspan; span++) {
-		for (c = lcl.begin(); c != lcl.end(); c++) {
+		for (c = lcs_in_out->begin(); c != lcs_in_out->end(); c++) {
 			Area::size_type colsiz = 0;
 			Area::size_type minsiz = 0;
 			Area::size_type gap;
 			double          scale;
 			int             j;
 
-			lc = **c;
+			lc = (*c).get();
 
 			/* column not of colspan level we're looking for? move on */
-			if (lc.w != span)
+			if (lc->w != span)
 				continue;
 
 			/* compute the needed size of the columns this cell spans */
-			for (j = 0; j < lc.w; j++) {
+			for (j = 0; j < lc->w; j++) {
 				if (j > 0) {
 					colsiz += column_spacing;
 					minsiz += column_spacing;
 				}
-				if (colcursizes[lc.x + j] > 0)
-					colsiz += colcursizes[lc.x + j];
-				if (colneedsizes[lc.x + j] > 0)
-					minsiz += colneedsizes[lc.x + j];
+				if (colcursizes[lc->x + j] > 0)
+					colsiz += colcursizes[lc->x + j];
+				if (colneedsizes[lc->x + j] > 0)
+					minsiz += colneedsizes[lc->x + j];
 			}
 
 			/* if it doesn't fit increment the columns affected */
-			if (colsiz < lc.width) {
-				scale  = (double)lc.width / (double)colsiz;
-				colsiz = lc.width - colsiz;
-				for (j = 0; j < lc.w - 1; j++) {
+			if (colsiz < lc->width) {
+				scale  = (double)lc->width / (double)colsiz;
+				colsiz = lc->width - colsiz;
+				for (j = 0; j < lc->w - 1; j++) {
 					gap =
-						(Area::size_type)ceil((double)(colcursizes[lc.x + j]) *
+						(Area::size_type)ceil((double)(colcursizes[lc->x + j]) *
 											  scale);
-					colsiz -= gap - colcursizes[lc.x + j];
-					colcursizes[lc.x + j] = gap;
+					colsiz -= gap - colcursizes[lc->x + j];
+					colcursizes[lc->x + j] = gap;
 				}
-				colcursizes[lc.x + j] = colsiz;
+				colcursizes[lc->x + j] = colsiz;
 			}
-			if (minsiz < lc.minwidth) {
-				scale  = (double)lc.minwidth / (double)minsiz;
-				minsiz = lc.minwidth - minsiz;
-				for (j = 0; j < lc.w - 1; j++) {
+			if (minsiz < lc->minwidth) {
+				scale  = (double)lc->minwidth / (double)minsiz;
+				minsiz = lc->minwidth - minsiz;
+				for (j = 0; j < lc->w - 1; j++) {
 					gap =
-						(Area::size_type)ceil((double)(colneedsizes[lc.x + j]) *
+						(Area::size_type)ceil((double)(colneedsizes[lc->x + j]) *
 											  scale);
-					minsiz -= gap - colneedsizes[lc.x + j];
-					colneedsizes[lc.x + j] = gap;
+					minsiz -= gap - colneedsizes[lc->x + j];
+					colneedsizes[lc->x + j] = gap;
 				}
-				colneedsizes[lc.x + j] = minsiz;
+				colneedsizes[lc->x + j] = minsiz;
+			}
+			if (lc->minimized) {
+				for (j = 0; j < lc->w - 1; j++)
+					colminimised[lc->x + j] = true;
 			}
 		}
 	}
@@ -411,6 +423,11 @@ narrow_table(
 		totcolwidth    += column_widths_in_out[i];
 		totcolneedsize += colneedsizes[i];
 		totcolcursize  += colcursizes[i];
+		if (debug)
+			std::cerr << "  column " << i <<
+				": " << column_widths_in_out[i] <<
+				"-" << colneedsizes[i] <<
+				"-" << colcursizes[i] << std::endl;
 	}
 	waste = *table_width_in_out - totcolwidth;
 
@@ -426,13 +443,14 @@ narrow_table(
 	 * - colcursizes:           the current size of the content */
 
 	if (totcolneedsize >= wantedspace) {
+		ret = false;
+
 		/* take the minimum, it doesn't fit */
 		for (i = 0; i < number_of_columns; i++) {
 			newtablesize           -= column_widths_in_out[i] - colneedsizes[i];
 			column_widths_in_out[i] = colneedsizes[i];
+			ret                    |= !colminimised[i];
 		}
-
-		ret = false;
 	} else {
 		/* we can scale all columns by ratio, but if we do, we also make
 		 * columns no longer fit if others still have space
@@ -507,8 +525,10 @@ narrow_table(
 		ret = true;
 	}
 
-	*table_width_in_out = newtablesize;
+	if (*table_width_in_out <= newtablesize)
+		ret = false;
 
+	*table_width_in_out = newtablesize;
 	return ret;
 }
 
