@@ -6,10 +6,6 @@
 /HTMLParser.cc
 /HTMLParser.hh
 /Makefile
-/Makefile.in
 /compile
-/configure
 /depcomp
-/install-sh
-/missing
 /ylwrap
