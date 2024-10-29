@@ -76,7 +76,7 @@ main(int argc, char **argv)
 			<< "This is html2text, version " stringify(VERSION) << std::endl
 			<< std::endl
 			<< "The latest version can be found at "
-			<< "https://github.com/grobian/html2text" << std::endl
+			<< "https://gitlab.com/grobian/html2text" << std::endl
 			<< std::endl
 			<< "This program is distributed in the hope that it will "
 			<< "be useful, but WITHOUT" << std::endl
