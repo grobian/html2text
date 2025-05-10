@@ -918,7 +918,7 @@ Input::line_format() const
 			size = 20;
 		res = '[' + string(size, '*') + ']';
 	} else if (cmp_nocase(type, "CHECKBOX") == 0) {
-		res = '[' + (checked ? 'X' : ' ') + ']';
+		res = '[' + string{checked ? 'X' : ' '} + ']';
 	} else if (cmp_nocase(type, "RADIO") == 0) {
 		res = checked ? '#' : 'o';
 	} else if (cmp_nocase(type, "SUBMIT") == 0) {
