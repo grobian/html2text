@@ -22,6 +22,7 @@
  */
 
 #include <iostream>
+#include <string>
 #include <cmath>
 #include "html.h"
 #include "auto_aptr.h"
@@ -267,14 +268,16 @@ narrow_table(
 	const Area::size_type        column_spacing,
 	Area::size_type             *const column_widths_in_out,
 	Area::size_type             *const table_width_in_out,
-	const Area::size_type        wanted_size
+	const Area::size_type        wanted_size,
+	string                       tblid
 )
 {
 	int    maxcolspan      = 1;
 	int    span;
 	int    i;
 	bool   ret;
-	bool   debug           = false;
+	bool   debug           = getenv("HTML2TEXT_DEBUG_TABLE_RENDERING") != NULL;
+	string dbgstr;
 
 	LogicalCell                                 *lc;
 	list<auto_ptr<LogicalCell>>::iterator        c;
@@ -290,9 +293,11 @@ narrow_table(
 	bool             colminimised[number_of_columns];
 
 	if (debug)
-		std::cerr << "narrow_table: wanted_size=" << wanted_size <<
-			" table_width=" << *table_width_in_out <<
-			" columns=" << number_of_columns << std::endl;
+		dbgstr.append("narrow_table [").append(tblid)
+			.append("]: wanted_size=").append(std::to_string(wanted_size))
+			.append(" table_width=").append(std::to_string(*table_width_in_out))
+			.append(" columns=").append(std::to_string(number_of_columns))
+			.append("\n");
 
 	if (wanted_size >= *table_width_in_out)
 		return false;
@@ -309,10 +314,14 @@ narrow_table(
 		lc = (*c).get();
 
 		if (debug)
-			std::cerr << "  cell: x=" << lc->x <<
-				" y=" << lc->y << " w=" << lc->w << " h=" << lc->h <<
-				" width=" << lc->width << " minwidth=" << lc->minwidth <<
-				" minimised=" << lc->minimized << std::endl;
+			dbgstr.append("  cell: x=").append(std::to_string(lc->x))
+				.append(" y=").append(std::to_string(lc->y))
+				.append(" w=").append(std::to_string(lc->w))
+				.append(" h=").append(std::to_string(lc->h))
+				.append(" width=").append(std::to_string(lc->width))
+				.append(" minwidth=").append(std::to_string(lc->minwidth))
+				.append(" minimised=").append(std::to_string(lc->minimized))
+				.append("\n");
 
 		for (int j = lc->x; j < lc->x + lc->w; j++)
 			cw += column_widths_in_out[j];
@@ -399,9 +408,8 @@ narrow_table(
 				scale  = (double)lc->minwidth / (double)minsiz;
 				minsiz = lc->minwidth - minsiz;
 				for (j = 0; j < lc->w - 1; j++) {
-					gap =
-						(Area::size_type)ceil((double)(colneedsizes[lc->x + j]) *
-											  scale);
+					gap = (Area::size_type)ceil(
+							(double)(colneedsizes[lc->x + j]) * scale);
 					minsiz -= gap - colneedsizes[lc->x + j];
 					colneedsizes[lc->x + j] = gap;
 				}
@@ -424,10 +432,10 @@ narrow_table(
 		totcolneedsize += colneedsizes[i];
 		totcolcursize  += colcursizes[i];
 		if (debug)
-			std::cerr << "  column " << i <<
-				": " << column_widths_in_out[i] <<
-				"-" << colneedsizes[i] <<
-				"-" << colcursizes[i] << std::endl;
+			dbgstr.append("  column ").append(std::to_string(i)).append(": ")
+				.append(std::to_string(column_widths_in_out[i])).append("-")
+				.append(std::to_string(colneedsizes[i])).append("-")
+				.append(std::to_string(colcursizes[i])).append("\n");
 	}
 	waste = *table_width_in_out - totcolwidth;
 
@@ -436,6 +444,14 @@ narrow_table(
 		wantedspace = 0;
 	else
 		wantedspace = wanted_size - waste;
+
+	if (debug)
+		dbgstr.append("  totcolwidth=").append(std::to_string(totcolwidth))
+			.append(" totcolneedsize=").append(std::to_string(totcolneedsize))
+			.append(" totcolcursize=").append(std::to_string(totcolcursize))
+			.append(" wantedspace=").append(std::to_string(wantedspace))
+			.append(" waste=").append(std::to_string(waste))
+			.append("\n");
 
 	/* we have three sizes:
 	 * - columns_widths_in_out: the current size displayed/assigned
@@ -451,6 +467,9 @@ narrow_table(
 			column_widths_in_out[i] = colneedsizes[i];
 			ret                    |= !colminimised[i];
 		}
+
+		if (debug)
+			dbgstr.append("  => strategy minimum sizes").append("\n");
 	} else {
 		/* we can scale all columns by ratio, but if we do, we also make
 		 * columns no longer fit if others still have space
@@ -461,6 +480,9 @@ narrow_table(
 			if (column_widths_in_out[i] > colcursizes[i])
 				whitespace += column_widths_in_out[i] - colcursizes[i];
 		}
+		if (debug)
+			dbgstr.append("  => strategy scale, whitespace=")
+				.append(std::to_string(whitespace)).append("\n");
 		if (whitespace > 0) {
 			Area::size_type redux = newtablesize - waste - wantedspace;
 			if (redux < whitespace) {
@@ -523,6 +545,13 @@ narrow_table(
 		}
 
 		ret = true;
+	}
+
+	if (debug) {
+		std::cerr << dbgstr;
+		for (int i = 0; i < number_of_columns; i++)
+			std::cerr << "  => column " << i <<
+				": " << column_widths_in_out[i] << std::endl;
 	}
 
 	if (*table_width_in_out <= newtablesize)
@@ -748,13 +777,15 @@ Table::format(Area::size_type w, int halign) const
 	/* narrow the columns that allow to when necessary, note that
 	 * upscaling will deliberately produce a larger output so
 	 * downscaling can get the number to the exact required size */
+	string tbl_id = std::to_string(rand());
 	while (table_width > wanted_width) {
 		if (!narrow_table(&lcs,                /* in/out */
 						  number_of_columns,
 						  column_spacing,
 						  column_widths.get(), /* in/out */
 						  &table_width,        /* in/out */
-						  wanted_width))
+						  wanted_width,
+						  tbl_id))
 			break;
 	}
 
