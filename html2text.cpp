@@ -48,8 +48,9 @@ text.\n\
   -debug-parser  Report parser activity on STDERR (debugging)\n\
   -rcfile <file> Read <file> instead of \"$HOME/.html2textrc\"\n\
   -width <w>     Optimize for screen widths other than 79\n\
-  -nobs          Do not render boldface, underlining, etc.\n\
+  -nobs          Do not render boldface, underlining, colours, etc.\n\
   -bs            Render boldface and underlining using backspaces\n\
+  -ansi          Render bold, underline and colours in output (default)\n\
   -links         Generate reference list with link targets\n\
   -from_encoding Treat input encoded as given encoding\n\
   -to_encoding   Output using given encoding\n\
@@ -97,6 +98,7 @@ main(int argc, char **argv)
 	const char *output_file_name = "-";
 	bool use_backspaces = false;
 	bool use_ansi_escapes = true;
+	bool explicit_rendering_req = false;
 	bool enable_links = false;
 	const char *from_encoding = NULL;
 	const char *to_encoding = NULL;
@@ -124,9 +126,15 @@ main(int argc, char **argv)
 		} else if (!strcmp(arg, "-nobs")) {
 			use_backspaces = false;
 			use_ansi_escapes = false;
+			explicit_rendering_req = true;
 		} else if (!strcmp(arg, "-bs")) {
 			use_backspaces = true;
 			use_ansi_escapes = false;
+			explicit_rendering_req = true;
+		} else if (!strcmp(arg, "-ansi")) {
+			use_backspaces = false;
+			use_ansi_escapes = true;
+			explicit_rendering_req = true;
 		} else if (!strcmp(arg, "-from_encoding")) {
 			extarg = &from_encoding;
 		} else if (!strcmp(arg, "-to_encoding")) {
@@ -216,12 +224,6 @@ main(int argc, char **argv)
 			Formatting::loadProperties(ifs);
 	}
 
-	/*
-	 * Set up printing.
-	 */
-	Area::use_backspaces = use_backspaces;
-	Area::use_ansi       = use_ansi_escapes;
-
 	iconvstream is;
 
 	is.open_os(output_file_name, to_encoding);
@@ -234,6 +236,18 @@ main(int argc, char **argv)
 			<< std::endl;
 		exit(1);
 	}
+
+	if (!is.os_isatty() && !explicit_rendering_req) {
+		/* disable "weird" chars unless explicitly requested, #64 */
+		use_backspaces = false;
+		use_ansi_escapes = false;
+	}
+
+	/*
+	 * Set up printing.
+	 */
+	Area::use_backspaces = use_backspaces;
+	Area::use_ansi       = use_ansi_escapes;
 
 	for (i = 0; i < number_of_input_files; ++i) {
 		const char *input_file = input_files[i];

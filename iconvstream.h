@@ -58,6 +58,10 @@ class iconvstream {
 			close_is();
 			close_os();
 		}
+		bool os_isatty() const
+		{
+			return fd_os >= 0 ? (isatty(fd_os) ? true : false) : false;
+		}
 		const char *open_error_msg() const;
 		int get();
 		int write(const char *inp, size_t len);
