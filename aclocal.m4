@@ -1,6 +1,6 @@
-# generated automatically by aclocal 1.16.5 -*- Autoconf -*-
+# generated automatically by aclocal 1.17 -*- Autoconf -*-
 
-# Copyright (C) 1996-2021 Free Software Foundation, Inc.
+# Copyright (C) 1996-2024 Free Software Foundation, Inc.
 
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -14,8 +14,8 @@
 m4_ifndef([AC_CONFIG_MACRO_DIRS], [m4_defun([_AM_CONFIG_MACRO_DIRS], [])m4_defun([AC_CONFIG_MACRO_DIRS], [_AM_CONFIG_MACRO_DIRS($@)])])
 m4_ifndef([AC_AUTOCONF_VERSION],
   [m4_copy([m4_PACKAGE_VERSION], [AC_AUTOCONF_VERSION])])dnl
-m4_if(m4_defn([AC_AUTOCONF_VERSION]), [2.71],,
-[m4_warning([this file was generated for autoconf 2.71.
+m4_if(m4_defn([AC_AUTOCONF_VERSION]), [2.72],,
+[m4_warning([this file was generated for autoconf 2.72.
 You have another version of autoconf.  It may work, but is not guaranteed to.
 If you have problems, you may need to regenerate the build system entirely.
 To do so, use the procedure documented by the package, typically 'autoreconf'.])])
@@ -32,8 +32,8 @@ To do so, use the procedure documented by the package, typically 'autoreconf'.])
 #
 #   Check for baseline language coverage in the compiler for the specified
 #   version of the C++ standard.  If necessary, add switches to CXX and
-#   CXXCPP to enable support.  VERSION may be '11', '14', '17', or '20' for
-#   the respective C++ standard version.
+#   CXXCPP to enable support.  VERSION may be '11', '14', '17', '20', or
+#   '23' for the respective C++ standard version.
 #
 #   The second argument, if specified, indicates whether you insist on an
 #   extended mode (e.g. -std=gnu++11) or a strict conformance mode (e.g.
@@ -58,14 +58,15 @@ To do so, use the procedure documented by the package, typically 'autoreconf'.])
 #   Copyright (c) 2016, 2018 Krzesimir Nowak <qdlacz@gmail.com>
 #   Copyright (c) 2019 Enji Cooper <yaneurabeya@gmail.com>
 #   Copyright (c) 2020 Jason Merrill <jason@redhat.com>
-#   Copyright (c) 2021 Jörn Heusipp <osmanx@problemloesungsmaschine.de>
+#   Copyright (c) 2021, 2024 Jörn Heusipp <osmanx@problemloesungsmaschine.de>
+#   Copyright (c) 2015, 2022, 2023, 2024 Olly Betts
 #
 #   Copying and distribution of this file, with or without modification, are
 #   permitted in any medium without royalty provided the copyright notice
 #   and this notice are preserved.  This file is offered as-is, without any
 #   warranty.
 
-#serial 18
+#serial 25
 
 dnl  This macro is based on the code from the AX_CXX_COMPILE_STDCXX_11 macro
 dnl  (serial version number 13).
@@ -75,6 +76,7 @@ AC_DEFUN([AX_CXX_COMPILE_STDCXX], [dnl
         [$1], [14], [ax_cxx_compile_alternatives="14 1y"],
         [$1], [17], [ax_cxx_compile_alternatives="17 1z"],
         [$1], [20], [ax_cxx_compile_alternatives="20"],
+        [$1], [23], [ax_cxx_compile_alternatives="23"],
         [m4_fatal([invalid first argument `$1' to AX_CXX_COMPILE_STDCXX])])dnl
   m4_if([$2], [], [],
         [$2], [ext], [],
@@ -181,31 +183,41 @@ AC_DEFUN([AX_CXX_COMPILE_STDCXX], [dnl
 dnl  Test body for checking C++11 support
 
 m4_define([_AX_CXX_COMPILE_STDCXX_testbody_11],
-  _AX_CXX_COMPILE_STDCXX_testbody_new_in_11
+  [_AX_CXX_COMPILE_STDCXX_testbody_new_in_11]
 )
 
 dnl  Test body for checking C++14 support
 
 m4_define([_AX_CXX_COMPILE_STDCXX_testbody_14],
-  _AX_CXX_COMPILE_STDCXX_testbody_new_in_11
-  _AX_CXX_COMPILE_STDCXX_testbody_new_in_14
+  [_AX_CXX_COMPILE_STDCXX_testbody_new_in_11
+   _AX_CXX_COMPILE_STDCXX_testbody_new_in_14]
 )
 
 dnl  Test body for checking C++17 support
 
 m4_define([_AX_CXX_COMPILE_STDCXX_testbody_17],
-  _AX_CXX_COMPILE_STDCXX_testbody_new_in_11
-  _AX_CXX_COMPILE_STDCXX_testbody_new_in_14
-  _AX_CXX_COMPILE_STDCXX_testbody_new_in_17
+  [_AX_CXX_COMPILE_STDCXX_testbody_new_in_11
+   _AX_CXX_COMPILE_STDCXX_testbody_new_in_14
+   _AX_CXX_COMPILE_STDCXX_testbody_new_in_17]
 )
 
 dnl  Test body for checking C++20 support
 
 m4_define([_AX_CXX_COMPILE_STDCXX_testbody_20],
-  _AX_CXX_COMPILE_STDCXX_testbody_new_in_11
-  _AX_CXX_COMPILE_STDCXX_testbody_new_in_14
-  _AX_CXX_COMPILE_STDCXX_testbody_new_in_17
-  _AX_CXX_COMPILE_STDCXX_testbody_new_in_20
+  [_AX_CXX_COMPILE_STDCXX_testbody_new_in_11
+   _AX_CXX_COMPILE_STDCXX_testbody_new_in_14
+   _AX_CXX_COMPILE_STDCXX_testbody_new_in_17
+   _AX_CXX_COMPILE_STDCXX_testbody_new_in_20]
+)
+
+dnl  Test body for checking C++23 support
+
+m4_define([_AX_CXX_COMPILE_STDCXX_testbody_23],
+  [_AX_CXX_COMPILE_STDCXX_testbody_new_in_11
+   _AX_CXX_COMPILE_STDCXX_testbody_new_in_14
+   _AX_CXX_COMPILE_STDCXX_testbody_new_in_17
+   _AX_CXX_COMPILE_STDCXX_testbody_new_in_20
+   _AX_CXX_COMPILE_STDCXX_testbody_new_in_23]
 )
 
 
@@ -223,7 +235,17 @@ m4_define([_AX_CXX_COMPILE_STDCXX_testbody_new_in_11], [[
 // MSVC always sets __cplusplus to 199711L in older versions; newer versions
 // only set it correctly if /Zc:__cplusplus is specified as well as a
 // /std:c++NN switch:
+//
 // https://devblogs.microsoft.com/cppblog/msvc-now-correctly-reports-__cplusplus/
+//
+// The value __cplusplus ought to have is available in _MSVC_LANG since
+// Visual Studio 2015 Update 3:
+//
+// https://learn.microsoft.com/en-us/cpp/preprocessor/predefined-macros
+//
+// This was also the first MSVC version to support C++14 so we can't use the
+// value of either __cplusplus or _MSVC_LANG to quickly rule out MSVC having
+// C++11 or C++14 support, but we can check _MSVC_LANG for C++17 and later.
 #elif __cplusplus < 201103L && !defined _MSC_VER
 
 #error "This is not a C++11 compiler"
@@ -639,7 +661,7 @@ m4_define([_AX_CXX_COMPILE_STDCXX_testbody_new_in_17], [[
 
 #error "This is not a C++ compiler"
 
-#elif __cplusplus < 201703L && !defined _MSC_VER
+#elif (defined _MSVC_LANG ? _MSVC_LANG : __cplusplus) < 201703L
 
 #error "This is not a C++17 compiler"
 
@@ -1005,7 +1027,7 @@ namespace cxx17
 
 }  // namespace cxx17
 
-#endif  // __cplusplus < 201703L && !defined _MSC_VER
+#endif  // (defined _MSVC_LANG ? _MSVC_LANG : __cplusplus) < 201703L
 
 ]])
 
@@ -1018,7 +1040,7 @@ m4_define([_AX_CXX_COMPILE_STDCXX_testbody_new_in_20], [[
 
 #error "This is not a C++ compiler"
 
-#elif __cplusplus < 202002L && !defined _MSC_VER
+#elif (defined _MSVC_LANG ? _MSVC_LANG : __cplusplus) < 202002L
 
 #error "This is not a C++20 compiler"
 
@@ -1035,7 +1057,37 @@ namespace cxx20
 
 }  // namespace cxx20
 
-#endif  // __cplusplus < 202002L && !defined _MSC_VER
+#endif  // (defined _MSVC_LANG ? _MSVC_LANG : __cplusplus) < 202002L
+
+]])
+
+
+dnl  Tests for new features in C++23
+
+m4_define([_AX_CXX_COMPILE_STDCXX_testbody_new_in_23], [[
+
+#ifndef __cplusplus
+
+#error "This is not a C++ compiler"
+
+#elif (defined _MSVC_LANG ? _MSVC_LANG : __cplusplus) < 202302L
+
+#error "This is not a C++23 compiler"
+
+#else
+
+#include <version>
+
+namespace cxx23
+{
+
+// As C++23 supports feature test macros in the standard, there is no
+// immediate need to actually test for feature availability on the
+// Autoconf side.
+
+}  // namespace cxx23
+
+#endif  // (defined _MSVC_LANG ? _MSVC_LANG : __cplusplus) < 202302L
 
 ]])
 
@@ -1079,11 +1131,13 @@ namespace cxx20
 AX_REQUIRE_DEFINED([AX_CXX_COMPILE_STDCXX])
 AC_DEFUN([AX_CXX_COMPILE_STDCXX_11], [AX_CXX_COMPILE_STDCXX([11], [$1], [$2])])
 
-# host-cpu-c-abi.m4 serial 15
-dnl Copyright (C) 2002-2022 Free Software Foundation, Inc.
+# host-cpu-c-abi.m4
+# serial 18
+dnl Copyright (C) 2002-2024 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
+dnl This file is offered as-is, without any warranty.
 
 dnl From Bruno Haible and Sam Steingold.
 
@@ -1116,7 +1170,7 @@ dnl * The same canonical name is used for different endiannesses. You can
 dnl   determine the endianness through preprocessor symbols:
 dnl   - 'arm': test __ARMEL__.
 dnl   - 'mips', 'mipsn32', 'mips64': test _MIPSEB vs. _MIPSEL.
-dnl   - 'powerpc64': test _BIG_ENDIAN vs. _LITTLE_ENDIAN.
+dnl   - 'powerpc64': test __BIG_ENDIAN__ vs. __LITTLE_ENDIAN__.
 dnl * The same name 'i386' is used for CPUs of type i386, i486, i586
 dnl   (Pentium), AMD K7, Pentium II, Pentium IV, etc., because
 dnl   - Instructions that do not exist on all of these CPUs (cmpxchg,
@@ -1542,227 +1596,78 @@ EOF
 
 dnl Sets the HOST_CPU_C_ABI_32BIT variable to 'yes' if the C language ABI
 dnl (application binary interface) is a 32-bit one, to 'no' if it is a 64-bit
-dnl one, or to 'unknown' if unknown.
+dnl one.
 dnl This is a simplified variant of gl_HOST_CPU_C_ABI.
 AC_DEFUN([gl_HOST_CPU_C_ABI_32BIT],
 [
   AC_REQUIRE([AC_CANONICAL_HOST])
   AC_CACHE_CHECK([32-bit host C ABI], [gl_cv_host_cpu_c_abi_32bit],
-    [if test -n "$gl_cv_host_cpu_c_abi"; then
-       case "$gl_cv_host_cpu_c_abi" in
-         i386 | x86_64-x32 | arm | armhf | arm64-ilp32 | hppa | ia64-ilp32 | mips | mipsn32 | powerpc | riscv*-ilp32* | s390 | sparc)
-           gl_cv_host_cpu_c_abi_32bit=yes ;;
-         x86_64 | alpha | arm64 | hppa64 | ia64 | mips64 | powerpc64 | powerpc64-elfv2 | riscv*-lp64* | s390x | sparc64 )
-           gl_cv_host_cpu_c_abi_32bit=no ;;
-         *)
-           gl_cv_host_cpu_c_abi_32bit=unknown ;;
-       esac
-     else
-       case "$host_cpu" in
+    [case "$host_cpu" in
 
-         # CPUs that only support a 32-bit ABI.
-         arc \
-         | bfin \
-         | cris* \
-         | csky \
-         | epiphany \
-         | ft32 \
-         | h8300 \
-         | m68k \
-         | microblaze | microblazeel \
-         | nds32 | nds32le | nds32be \
-         | nios2 | nios2eb | nios2el \
-         | or1k* \
-         | or32 \
-         | sh | sh[1234] | sh[1234]e[lb] \
-         | tic6x \
-         | xtensa* )
-           gl_cv_host_cpu_c_abi_32bit=yes
-           ;;
+       # CPUs that only support a 32-bit ABI.
+       arc \
+       | bfin \
+       | cris* \
+       | csky \
+       | epiphany \
+       | ft32 \
+       | h8300 \
+       | m68k \
+       | microblaze | microblazeel \
+       | nds32 | nds32le | nds32be \
+       | nios2 | nios2eb | nios2el \
+       | or1k* \
+       | or32 \
+       | sh | sh[1234] | sh[1234]e[lb] \
+       | tic6x \
+       | xtensa* )
+         gl_cv_host_cpu_c_abi_32bit=yes
+         ;;
 
-         # CPUs that only support a 64-bit ABI.
+       # CPUs that only support a 64-bit ABI.
 changequote(,)dnl
-         alpha | alphaev[4-8] | alphaev56 | alphapca5[67] | alphaev6[78] \
-         | mmix )
+       alpha | alphaev[4-8] | alphaev56 | alphapca5[67] | alphaev6[78] \
+       | mmix )
 changequote([,])dnl
-           gl_cv_host_cpu_c_abi_32bit=no
-           ;;
+         gl_cv_host_cpu_c_abi_32bit=no
+         ;;
 
-changequote(,)dnl
-         i[34567]86 )
-changequote([,])dnl
-           gl_cv_host_cpu_c_abi_32bit=yes
-           ;;
-
-         x86_64 )
-           # On x86_64 systems, the C compiler may be generating code in one of
-           # these ABIs:
-           # - 64-bit instruction set, 64-bit pointers, 64-bit 'long': x86_64.
-           # - 64-bit instruction set, 64-bit pointers, 32-bit 'long': x86_64
-           #   with native Windows (mingw, MSVC).
-           # - 64-bit instruction set, 32-bit pointers, 32-bit 'long': x86_64-x32.
-           # - 32-bit instruction set, 32-bit pointers, 32-bit 'long': i386.
-           AC_COMPILE_IFELSE(
-             [AC_LANG_SOURCE(
-                [[#if (defined __x86_64__ || defined __amd64__ \
-                       || defined _M_X64 || defined _M_AMD64) \
-                      && !(defined __ILP32__ || defined _ILP32)
-                   int ok;
-                  #else
-                   error fail
-                  #endif
-                ]])],
-             [gl_cv_host_cpu_c_abi_32bit=no],
-             [gl_cv_host_cpu_c_abi_32bit=yes])
-           ;;
-
-         arm* | aarch64 )
-           # Assume arm with EABI.
-           # On arm64 systems, the C compiler may be generating code in one of
-           # these ABIs:
-           # - aarch64 instruction set, 64-bit pointers, 64-bit 'long': arm64.
-           # - aarch64 instruction set, 32-bit pointers, 32-bit 'long': arm64-ilp32.
-           # - 32-bit instruction set, 32-bit pointers, 32-bit 'long': arm or armhf.
-           AC_COMPILE_IFELSE(
-             [AC_LANG_SOURCE(
-                [[#if defined __aarch64__ && !(defined __ILP32__ || defined _ILP32)
-                   int ok;
-                  #else
-                   error fail
-                  #endif
-                ]])],
-             [gl_cv_host_cpu_c_abi_32bit=no],
-             [gl_cv_host_cpu_c_abi_32bit=yes])
-           ;;
-
-         hppa1.0 | hppa1.1 | hppa2.0* | hppa64 )
-           # On hppa, the C compiler may be generating 32-bit code or 64-bit
-           # code. In the latter case, it defines _LP64 and __LP64__.
-           AC_COMPILE_IFELSE(
-             [AC_LANG_SOURCE(
-                [[#ifdef __LP64__
-                   int ok;
-                  #else
-                   error fail
-                  #endif
-                ]])],
-             [gl_cv_host_cpu_c_abi_32bit=no],
-             [gl_cv_host_cpu_c_abi_32bit=yes])
-           ;;
-
-         ia64* )
-           # On ia64 on HP-UX, the C compiler may be generating 64-bit code or
-           # 32-bit code. In the latter case, it defines _ILP32.
-           AC_COMPILE_IFELSE(
-             [AC_LANG_SOURCE(
-                [[#ifdef _ILP32
-                   int ok;
-                  #else
-                   error fail
-                  #endif
-                ]])],
-             [gl_cv_host_cpu_c_abi_32bit=yes],
-             [gl_cv_host_cpu_c_abi_32bit=no])
-           ;;
-
-         mips* )
-           # We should also check for (_MIPS_SZPTR == 64), but gcc keeps this
-           # at 32.
-           AC_COMPILE_IFELSE(
-             [AC_LANG_SOURCE(
-                [[#if defined _MIPS_SZLONG && (_MIPS_SZLONG == 64)
-                   int ok;
-                  #else
-                   error fail
-                  #endif
-                ]])],
-             [gl_cv_host_cpu_c_abi_32bit=no],
-             [gl_cv_host_cpu_c_abi_32bit=yes])
-           ;;
-
-         powerpc* )
-           # Different ABIs are in use on AIX vs. Mac OS X vs. Linux,*BSD.
-           # No need to distinguish them here; the caller may distinguish
-           # them based on the OS.
-           # On powerpc64 systems, the C compiler may still be generating
-           # 32-bit code. And on powerpc-ibm-aix systems, the C compiler may
-           # be generating 64-bit code.
-           AC_COMPILE_IFELSE(
-             [AC_LANG_SOURCE(
-                [[#if defined __powerpc64__ || defined __LP64__
-                   int ok;
-                  #else
-                   error fail
-                  #endif
-                ]])],
-             [gl_cv_host_cpu_c_abi_32bit=no],
-             [gl_cv_host_cpu_c_abi_32bit=yes])
-           ;;
-
-         rs6000 )
-           gl_cv_host_cpu_c_abi_32bit=yes
-           ;;
-
-         riscv32 | riscv64 )
-           # There are 6 ABIs: ilp32, ilp32f, ilp32d, lp64, lp64f, lp64d.
-           # Size of 'long' and 'void *':
-           AC_COMPILE_IFELSE(
-             [AC_LANG_SOURCE(
-                [[#if defined __LP64__
-                    int ok;
-                  #else
-                    error fail
-                  #endif
-                ]])],
-             [gl_cv_host_cpu_c_abi_32bit=no],
-             [gl_cv_host_cpu_c_abi_32bit=yes])
-           ;;
-
-         s390* )
-           # On s390x, the C compiler may be generating 64-bit (= s390x) code
-           # or 31-bit (= s390) code.
-           AC_COMPILE_IFELSE(
-             [AC_LANG_SOURCE(
-                [[#if defined __LP64__ || defined __s390x__
-                    int ok;
-                  #else
-                    error fail
-                  #endif
-                ]])],
-             [gl_cv_host_cpu_c_abi_32bit=no],
-             [gl_cv_host_cpu_c_abi_32bit=yes])
-           ;;
-
-         sparc | sparc64 )
-           # UltraSPARCs running Linux have `uname -m` = "sparc64", but the
-           # C compiler still generates 32-bit code.
-           AC_COMPILE_IFELSE(
-             [AC_LANG_SOURCE(
-                [[#if defined __sparcv9 || defined __arch64__
-                   int ok;
-                  #else
-                   error fail
-                  #endif
-                ]])],
-             [gl_cv_host_cpu_c_abi_32bit=no],
-             [gl_cv_host_cpu_c_abi_32bit=yes])
-           ;;
-
-         *)
+       *)
+         if test -n "$gl_cv_host_cpu_c_abi"; then
+           dnl gl_HOST_CPU_C_ABI has already been run. Use its result.
+           case "$gl_cv_host_cpu_c_abi" in
+             i386 | x86_64-x32 | arm | armhf | arm64-ilp32 | hppa | ia64-ilp32 | mips | mipsn32 | powerpc | riscv*-ilp32* | s390 | sparc)
+               gl_cv_host_cpu_c_abi_32bit=yes ;;
+             x86_64 | alpha | arm64 | aarch64c | hppa64 | ia64 | mips64 | powerpc64 | powerpc64-elfv2 | riscv*-lp64* | s390x | sparc64 )
+               gl_cv_host_cpu_c_abi_32bit=no ;;
+             *)
+               gl_cv_host_cpu_c_abi_32bit=unknown ;;
+           esac
+         else
            gl_cv_host_cpu_c_abi_32bit=unknown
-           ;;
-       esac
-     fi
+         fi
+         if test $gl_cv_host_cpu_c_abi_32bit = unknown; then
+           AC_COMPILE_IFELSE(
+             [AC_LANG_SOURCE(
+                [[int test_pointer_size[sizeof (void *) - 5];
+                ]])],
+             [gl_cv_host_cpu_c_abi_32bit=no],
+             [gl_cv_host_cpu_c_abi_32bit=yes])
+         fi
+         ;;
+     esac
     ])
 
   HOST_CPU_C_ABI_32BIT="$gl_cv_host_cpu_c_abi_32bit"
 ])
 
-# lib-ld.m4 serial 10
-dnl Copyright (C) 1996-2003, 2009-2022 Free Software Foundation, Inc.
+# lib-ld.m4
+# serial 13
+dnl Copyright (C) 1996-2003, 2009-2024 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
+dnl This file is offered as-is, without any warranty.
 
 dnl Subroutines of libtool.m4,
 dnl with replacements s/_*LT_PATH/AC_LIB_PROG/ and s/lt_/acl_/ to avoid
@@ -1789,7 +1694,7 @@ AC_DEFUN([AC_LIB_PROG_LD],
 AC_REQUIRE([AC_CANONICAL_HOST])dnl
 
 AC_ARG_WITH([gnu-ld],
-    [AS_HELP_STRING([--with-gnu-ld],
+    [AS_HELP_STRING([[--with-gnu-ld]],
         [assume the C compiler uses GNU ld [default=no]])],
     [test "$withval" = no || with_gnu_ld=yes],
     [with_gnu_ld=no])dnl
@@ -1827,7 +1732,7 @@ else
     if test "$GCC" = yes; then
       # Check if gcc -print-prog-name=ld gives a path.
       case $host in
-        *-*-mingw*)
+        *-*-mingw* | windows*)
           # gcc leaves a trailing carriage return which upsets mingw
           acl_output=`($CC -print-prog-name=ld) 2>&5 | tr -d '\015'` ;;
         *)
@@ -1857,9 +1762,9 @@ else
     fi
     if test -n "$ac_prog"; then
       # Search for $ac_prog in $PATH.
-      acl_save_ifs="$IFS"; IFS=$PATH_SEPARATOR
+      acl_saved_IFS="$IFS"; IFS=$PATH_SEPARATOR
       for ac_dir in $PATH; do
-        IFS="$acl_save_ifs"
+        IFS="$acl_saved_IFS"
         test -z "$ac_dir" && ac_dir=.
         if test -f "$ac_dir/$ac_prog" || test -f "$ac_dir/$ac_prog$ac_exeext"; then
           acl_cv_path_LD="$ac_dir/$ac_prog"
@@ -1876,7 +1781,7 @@ else
           esac
         fi
       done
-      IFS="$acl_save_ifs"
+      IFS="$acl_saved_IFS"
     fi
     case $host in
       *-*-aix*)
@@ -1927,11 +1832,13 @@ fi
 AC_LIB_PROG_LD_GNU
 ])
 
-# lib-link.m4 serial 33
-dnl Copyright (C) 2001-2022 Free Software Foundation, Inc.
+# lib-link.m4
+# serial 34
+dnl Copyright (C) 2001-2024 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
+dnl This file is offered as-is, without any warranty.
 
 dnl From Bruno Haible.
 
@@ -1998,11 +1905,11 @@ AC_DEFUN([AC_LIB_HAVE_LINKFLAGS],
   dnl Add $INC[]NAME to CPPFLAGS before performing the following checks,
   dnl because if the user has installed lib[]Name and not disabled its use
   dnl via --without-lib[]Name-prefix, he wants to use it.
-  ac_save_CPPFLAGS="$CPPFLAGS"
+  acl_saved_CPPFLAGS="$CPPFLAGS"
   AC_LIB_APPENDTOVAR([CPPFLAGS], [$INC]NAME)
 
   AC_CACHE_CHECK([for lib[]$1], [ac_cv_lib[]Name], [
-    ac_save_LIBS="$LIBS"
+    acl_saved_LIBS="$LIBS"
     dnl If $LIB[]NAME contains some -l options, add it to the end of LIBS,
     dnl because these -l options might require -L options that are present in
     dnl LIBS. -l options benefit only from the -L options listed before it.
@@ -2018,7 +1925,7 @@ AC_DEFUN([AC_LIB_HAVE_LINKFLAGS],
       [AC_LANG_PROGRAM([[$3]], [[$4]])],
       [ac_cv_lib[]Name=yes],
       [ac_cv_lib[]Name='m4_if([$5], [], [no], [[$5]])'])
-    LIBS="$ac_save_LIBS"
+    LIBS="$acl_saved_LIBS"
   ])
   if test "$ac_cv_lib[]Name" = yes; then
     HAVE_LIB[]NAME=yes
@@ -2029,7 +1936,7 @@ AC_DEFUN([AC_LIB_HAVE_LINKFLAGS],
     HAVE_LIB[]NAME=no
     dnl If $LIB[]NAME didn't lead to a usable library, we don't need
     dnl $INC[]NAME either.
-    CPPFLAGS="$ac_save_CPPFLAGS"
+    CPPFLAGS="$acl_saved_CPPFLAGS"
     LIB[]NAME=
     LTLIB[]NAME=
     LIB[]NAME[]_PREFIX=
@@ -2153,7 +2060,7 @@ AC_DEFUN([AC_LIB_LINKFLAGS_BODY],
     additional_libdir3=
   fi
   dnl Search the library and its dependencies in $additional_libdir and
-  dnl $LDFLAGS. Using breadth-first-seach.
+  dnl $LDFLAGS. Use breadth-first search.
   LIB[]NAME=
   LTLIB[]NAME=
   INC[]NAME=
@@ -2466,12 +2373,12 @@ AC_DEFUN([AC_LIB_LINKFLAGS_BODY],
               dnl Read the .la file. It defines the variables
               dnl dlname, library_names, old_library, dependency_libs, current,
               dnl age, revision, installed, dlopen, dlpreopen, libdir.
-              save_libdir="$libdir"
+              saved_libdir="$libdir"
               case "$found_la" in
                 */* | *\\*) . "$found_la" ;;
                 *) . "./$found_la" ;;
               esac
-              libdir="$save_libdir"
+              libdir="$saved_libdir"
               dnl We use only dependency_libs.
               for dep in $dependency_libs; do
                 case "$dep" in
@@ -2611,18 +2518,18 @@ AC_DEFUN([AC_LIB_LINKFLAGS_BODY],
         alldirs="${alldirs}${alldirs:+$acl_hardcode_libdir_separator}$found_dir"
       done
       dnl Note: acl_hardcode_libdir_flag_spec uses $libdir and $wl.
-      acl_save_libdir="$libdir"
+      acl_saved_libdir="$libdir"
       libdir="$alldirs"
       eval flag=\"$acl_hardcode_libdir_flag_spec\"
-      libdir="$acl_save_libdir"
+      libdir="$acl_saved_libdir"
       LIB[]NAME="${LIB[]NAME}${LIB[]NAME:+ }$flag"
     else
       dnl The -rpath options are cumulative.
       for found_dir in $rpathdirs; do
-        acl_save_libdir="$libdir"
+        acl_saved_libdir="$libdir"
         libdir="$found_dir"
         eval flag=\"$acl_hardcode_libdir_flag_spec\"
-        libdir="$acl_save_libdir"
+        libdir="$acl_saved_libdir"
         LIB[]NAME="${LIB[]NAME}${LIB[]NAME:+ }$flag"
       done
     fi
@@ -2719,18 +2626,18 @@ AC_DEFUN([AC_LIB_LINKFLAGS_FROM_LIBS],
             for dir in $rpathdirs; do
               alldirs="${alldirs}${alldirs:+$acl_hardcode_libdir_separator}$dir"
             done
-            acl_save_libdir="$libdir"
+            acl_saved_libdir="$libdir"
             libdir="$alldirs"
             eval flag=\"$acl_hardcode_libdir_flag_spec\"
-            libdir="$acl_save_libdir"
+            libdir="$acl_saved_libdir"
             $1="$flag"
           else
             dnl The -rpath options are cumulative.
             for dir in $rpathdirs; do
-              acl_save_libdir="$libdir"
+              acl_saved_libdir="$libdir"
               libdir="$dir"
               eval flag=\"$acl_hardcode_libdir_flag_spec\"
-              libdir="$acl_save_libdir"
+              libdir="$acl_saved_libdir"
               $1="${$1}${$1:+ }$flag"
             done
           fi
@@ -2741,11 +2648,13 @@ AC_DEFUN([AC_LIB_LINKFLAGS_FROM_LIBS],
   AC_SUBST([$1])
 ])
 
-# lib-prefix.m4 serial 20
-dnl Copyright (C) 2001-2005, 2008-2022 Free Software Foundation, Inc.
+# lib-prefix.m4
+# serial 23
+dnl Copyright (C) 2001-2005, 2008-2024 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
+dnl This file is offered as-is, without any warranty.
 
 dnl From Bruno Haible.
 
@@ -2869,10 +2778,10 @@ AC_DEFUN([AC_LIB_PREPARE_PREFIX],
   else
     acl_final_exec_prefix="$exec_prefix"
   fi
-  acl_save_prefix="$prefix"
+  acl_saved_prefix="$prefix"
   prefix="$acl_final_prefix"
   eval acl_final_exec_prefix=\"$acl_final_exec_prefix\"
-  prefix="$acl_save_prefix"
+  prefix="$acl_saved_prefix"
 ])
 
 dnl AC_LIB_WITH_FINAL_PREFIX([statement]) evaluates statement, with the
@@ -2880,13 +2789,13 @@ dnl variables prefix and exec_prefix bound to the values they will have
 dnl at the end of the configure script.
 AC_DEFUN([AC_LIB_WITH_FINAL_PREFIX],
 [
-  acl_save_prefix="$prefix"
+  acl_saved_prefix="$prefix"
   prefix="$acl_final_prefix"
-  acl_save_exec_prefix="$exec_prefix"
+  acl_saved_exec_prefix="$exec_prefix"
   exec_prefix="$acl_final_exec_prefix"
   $1
-  exec_prefix="$acl_save_exec_prefix"
-  prefix="$acl_save_prefix"
+  exec_prefix="$acl_saved_exec_prefix"
+  prefix="$acl_saved_prefix"
 ])
 
 dnl AC_LIB_PREPARE_MULTILIB creates
@@ -2917,7 +2826,7 @@ AC_DEFUN([AC_LIB_PREPARE_MULTILIB],
 
   AC_CACHE_CHECK([for ELF binary format], [gl_cv_elf],
     [AC_EGREP_CPP([Extensible Linking Format],
-       [#if defined __ELF__ || (defined __linux__ && defined __EDG__)
+       [#if defined __ELF__ || (defined __linux__ && (defined __EDG__ || defined __SUNPRO_C))
         Extensible Linking Format
         #endif
        ],
@@ -2999,6 +2908,15 @@ changequote([,])dnl
            esac
          fi
          ;;
+       netbsd*)
+         dnl On NetBSD/sparc64, there is a 'sparc' subdirectory that contains
+         dnl 32-bit libraries.
+         if test $HOST_CPU_C_ABI_32BIT != no; then
+           case "$host_cpu" in
+             sparc*) acl_libdirstem2=lib/sparc ;;
+           esac
+         fi
+         ;;
        *)
          dnl If $CC generates code for a 32-bit ABI, the libraries are
          dnl surely under $prefix/lib or $prefix/lib32, not $prefix/lib64.
@@ -3023,7 +2941,7 @@ changequote([,])dnl
            fi
          fi
          if test -n "$searchpath"; then
-           acl_save_IFS="${IFS= 	}"; IFS=":"
+           acl_saved_IFS="${IFS= 	}"; IFS=":"
            for searchdir in $searchpath; do
              if test -d "$searchdir"; then
                case "$searchdir" in
@@ -3040,7 +2958,7 @@ changequote([,])dnl
                esac
              fi
            done
-           IFS="$acl_save_IFS"
+           IFS="$acl_saved_IFS"
            if test $HOST_CPU_C_ABI_32BIT = yes; then
              # 32-bit ABI.
              acl_libdirstem3=
@@ -3065,7 +2983,7 @@ changequote(,)dnl
 changequote([,])dnl
 ])
 
-# Copyright (C) 2002-2021 Free Software Foundation, Inc.
+# Copyright (C) 2002-2024 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -3077,10 +2995,10 @@ changequote([,])dnl
 # generated from the m4 files accompanying Automake X.Y.
 # (This private macro should not be called outside this file.)
 AC_DEFUN([AM_AUTOMAKE_VERSION],
-[am__api_version='1.16'
+[am__api_version='1.17'
 dnl Some users find AM_AUTOMAKE_VERSION and mistake it for a way to
 dnl require some minimum version.  Point them to the right macro.
-m4_if([$1], [1.16.5], [],
+m4_if([$1], [1.17], [],
       [AC_FATAL([Do not call $0, use AM_INIT_AUTOMAKE([$1]).])])dnl
 ])
 
@@ -3096,14 +3014,14 @@ m4_define([_AM_AUTOCONF_VERSION], [])
 # Call AM_AUTOMAKE_VERSION and AM_AUTOMAKE_VERSION so they can be traced.
 # This function is AC_REQUIREd by AM_INIT_AUTOMAKE.
 AC_DEFUN([AM_SET_CURRENT_AUTOMAKE_VERSION],
-[AM_AUTOMAKE_VERSION([1.16.5])dnl
+[AM_AUTOMAKE_VERSION([1.17])dnl
 m4_ifndef([AC_AUTOCONF_VERSION],
   [m4_copy([m4_PACKAGE_VERSION], [AC_AUTOCONF_VERSION])])dnl
 _AM_AUTOCONF_VERSION(m4_defn([AC_AUTOCONF_VERSION]))])
 
 # AM_AUX_DIR_EXPAND                                         -*- Autoconf -*-
 
-# Copyright (C) 2001-2021 Free Software Foundation, Inc.
+# Copyright (C) 2001-2024 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -3155,7 +3073,7 @@ am_aux_dir=`cd "$ac_aux_dir" && pwd`
 
 # AM_CONDITIONAL                                            -*- Autoconf -*-
 
-# Copyright (C) 1997-2021 Free Software Foundation, Inc.
+# Copyright (C) 1997-2024 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -3186,7 +3104,7 @@ AC_CONFIG_COMMANDS_PRE(
 Usually this means the macro was only invoked conditionally.]])
 fi])])
 
-# Copyright (C) 1999-2021 Free Software Foundation, Inc.
+# Copyright (C) 1999-2024 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -3318,7 +3236,7 @@ AC_CACHE_CHECK([dependency style of $depcc],
       # icc doesn't choke on unknown options, it will just issue warnings
       # or remarks (even with -Werror).  So we grep stderr for any message
       # that says an option was ignored or not supported.
-      # When given -MP, icc 7.0 and 7.1 complain thusly:
+      # When given -MP, icc 7.0 and 7.1 complain thus:
       #   icc: Command line warning: ignoring option '-M'; no argument required
       # The diagnosis changed in icc 8.0:
       #   icc: Command line remark: option '-MP' not supported
@@ -3377,7 +3295,7 @@ _AM_SUBST_NOTMAKE([am__nodep])dnl
 
 # Generate code to set up dependency tracking.              -*- Autoconf -*-
 
-# Copyright (C) 1999-2021 Free Software Foundation, Inc.
+# Copyright (C) 1999-2024 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -3445,7 +3363,7 @@ AC_DEFUN([AM_OUTPUT_DEPENDENCY_COMMANDS],
 
 # Do all the work for Automake.                             -*- Autoconf -*-
 
-# Copyright (C) 1996-2021 Free Software Foundation, Inc.
+# Copyright (C) 1996-2024 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -3579,7 +3497,7 @@ if test -z "$CSCOPE"; then
 fi
 AC_SUBST([CSCOPE])
 
-AC_REQUIRE([AM_SILENT_RULES])dnl
+AC_REQUIRE([_AM_SILENT_RULES])dnl
 dnl The testsuite driver may need to know about EXEEXT, so add the
 dnl 'am__EXEEXT' conditional if _AM_COMPILER_EXEEXT was seen.  This
 dnl macro is hooked onto _AC_COMPILER_EXEEXT early, see below.
@@ -3587,47 +3505,9 @@ AC_CONFIG_COMMANDS_PRE(dnl
 [m4_provide_if([_AM_COMPILER_EXEEXT],
   [AM_CONDITIONAL([am__EXEEXT], [test -n "$EXEEXT"])])])dnl
 
-# POSIX will say in a future version that running "rm -f" with no argument
-# is OK; and we want to be able to make that assumption in our Makefile
-# recipes.  So use an aggressive probe to check that the usage we want is
-# actually supported "in the wild" to an acceptable degree.
-# See automake bug#10828.
-# To make any issue more visible, cause the running configure to be aborted
-# by default if the 'rm' program in use doesn't match our expectations; the
-# user can still override this though.
-if rm -f && rm -fr && rm -rf; then : OK; else
-  cat >&2 <<'END'
-Oops!
+AC_REQUIRE([_AM_PROG_RM_F])
+AC_REQUIRE([_AM_PROG_XARGS_N])
 
-Your 'rm' program seems unable to run without file operands specified
-on the command line, even when the '-f' option is present.  This is contrary
-to the behaviour of most rm programs out there, and not conforming with
-the upcoming POSIX standard: <http://austingroupbugs.net/view.php?id=542>
-
-Please tell bug-automake@gnu.org about your system, including the value
-of your $PATH and any error possibly output before this message.  This
-can help us improve future automake versions.
-
-END
-  if test x"$ACCEPT_INFERIOR_RM_PROGRAM" = x"yes"; then
-    echo 'Configuration will proceed anyway, since you have set the' >&2
-    echo 'ACCEPT_INFERIOR_RM_PROGRAM variable to "yes"' >&2
-    echo >&2
-  else
-    cat >&2 <<'END'
-Aborting the configuration process, to ensure you take notice of the issue.
-
-You can download and install GNU coreutils to get an 'rm' implementation
-that behaves properly: <https://www.gnu.org/software/coreutils/>.
-
-If you want to complete the configuration process using your problematic
-'rm' anyway, export the environment variable ACCEPT_INFERIOR_RM_PROGRAM
-to "yes", and re-run configure.
-
-END
-    AC_MSG_ERROR([Your 'rm' program is bad, sorry.])
-  fi
-fi
 dnl The trailing newline in this macro's definition is deliberate, for
 dnl backward compatibility and to allow trailing 'dnl'-style comments
 dnl after the AM_INIT_AUTOMAKE invocation. See automake bug#16841.
@@ -3660,7 +3540,7 @@ for _am_header in $config_headers :; do
 done
 echo "timestamp for $_am_arg" >`AS_DIRNAME(["$_am_arg"])`/stamp-h[]$_am_stamp_count])
 
-# Copyright (C) 2001-2021 Free Software Foundation, Inc.
+# Copyright (C) 2001-2024 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -3681,7 +3561,7 @@ if test x"${install_sh+set}" != xset; then
 fi
 AC_SUBST([install_sh])])
 
-# Copyright (C) 2003-2021 Free Software Foundation, Inc.
+# Copyright (C) 2003-2024 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -3703,7 +3583,7 @@ AC_SUBST([am__leading_dot])])
 # Add --enable-maintainer-mode option to configure.         -*- Autoconf -*-
 # From Jim Meyering
 
-# Copyright (C) 1996-2021 Free Software Foundation, Inc.
+# Copyright (C) 1996-2024 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -3738,7 +3618,7 @@ AC_MSG_CHECKING([whether to enable maintainer-specific portions of Makefiles])
 
 # Check to see how 'make' treats includes.	            -*- Autoconf -*-
 
-# Copyright (C) 2001-2021 Free Software Foundation, Inc.
+# Copyright (C) 2001-2024 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -3781,7 +3661,7 @@ AC_SUBST([am__quote])])
 
 # Fake the existence of programs that GNU maintainers use.  -*- Autoconf -*-
 
-# Copyright (C) 1997-2021 Free Software Foundation, Inc.
+# Copyright (C) 1997-2024 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -3815,7 +3695,7 @@ fi
 
 # Helper functions for option handling.                     -*- Autoconf -*-
 
-# Copyright (C) 2001-2021 Free Software Foundation, Inc.
+# Copyright (C) 2001-2024 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -3844,7 +3724,7 @@ AC_DEFUN([_AM_SET_OPTIONS],
 AC_DEFUN([_AM_IF_OPTION],
 [m4_ifset(_AM_MANGLE_OPTION([$1]), [$2], [$3])])
 
-# Copyright (C) 1999-2021 Free Software Foundation, Inc.
+# Copyright (C) 1999-2024 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -3891,7 +3771,23 @@ AC_LANG_POP([C])])
 # For backward compatibility.
 AC_DEFUN_ONCE([AM_PROG_CC_C_O], [AC_REQUIRE([AC_PROG_CC])])
 
-# Copyright (C) 2001-2021 Free Software Foundation, Inc.
+# Copyright (C) 2022-2024 Free Software Foundation, Inc.
+#
+# This file is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# _AM_PROG_RM_F
+# ---------------
+# Check whether 'rm -f' without any arguments works.
+# https://bugs.gnu.org/10828
+AC_DEFUN([_AM_PROG_RM_F],
+[am__rm_f_notfound=
+AS_IF([(rm -f && rm -fr && rm -rf) 2>/dev/null], [], [am__rm_f_notfound='""'])
+AC_SUBST(am__rm_f_notfound)
+])
+
+# Copyright (C) 2001-2024 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -3910,16 +3806,169 @@ AC_DEFUN([AM_RUN_LOG],
 
 # Check to make sure that the build environment is sane.    -*- Autoconf -*-
 
-# Copyright (C) 1996-2021 Free Software Foundation, Inc.
+# Copyright (C) 1996-2024 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
 
+# _AM_SLEEP_FRACTIONAL_SECONDS
+# ----------------------------
+AC_DEFUN([_AM_SLEEP_FRACTIONAL_SECONDS], [dnl
+AC_CACHE_CHECK([whether sleep supports fractional seconds],
+               am_cv_sleep_fractional_seconds, [dnl
+AS_IF([sleep 0.001 2>/dev/null], [am_cv_sleep_fractional_seconds=yes],
+                                 [am_cv_sleep_fractional_seconds=no])
+])])
+
+# _AM_FILESYSTEM_TIMESTAMP_RESOLUTION
+# -----------------------------------
+# Determine the filesystem's resolution for file modification
+# timestamps.  The coarsest we know of is FAT, with a resolution
+# of only two seconds, even with the most recent "exFAT" extensions.
+# The finest (e.g. ext4 with large inodes, XFS, ZFS) is one
+# nanosecond, matching clock_gettime.  However, it is probably not
+# possible to delay execution of a shell script for less than one
+# millisecond, due to process creation overhead and scheduling
+# granularity, so we don't check for anything finer than that. (See below.)
+AC_DEFUN([_AM_FILESYSTEM_TIMESTAMP_RESOLUTION], [dnl
+AC_REQUIRE([_AM_SLEEP_FRACTIONAL_SECONDS])
+AC_CACHE_CHECK([filesystem timestamp resolution],
+               am_cv_filesystem_timestamp_resolution, [dnl
+# Default to the worst case.
+am_cv_filesystem_timestamp_resolution=2
+
+# Only try to go finer than 1 sec if sleep can do it.
+# Don't try 1 sec, because if 0.01 sec and 0.1 sec don't work,
+# - 1 sec is not much of a win compared to 2 sec, and
+# - it takes 2 seconds to perform the test whether 1 sec works.
+# 
+# Instead, just use the default 2s on platforms that have 1s resolution,
+# accept the extra 1s delay when using $sleep in the Automake tests, in
+# exchange for not incurring the 2s delay for running the test for all
+# packages.
+#
+am_try_resolutions=
+if test "$am_cv_sleep_fractional_seconds" = yes; then
+  # Even a millisecond often causes a bunch of false positives,
+  # so just try a hundredth of a second. The time saved between .001 and
+  # .01 is not terribly consequential.
+  am_try_resolutions="0.01 0.1 $am_try_resolutions"
+fi
+
+# In order to catch current-generation FAT out, we must *modify* files
+# that already exist; the *creation* timestamp is finer.  Use names
+# that make ls -t sort them differently when they have equal
+# timestamps than when they have distinct timestamps, keeping
+# in mind that ls -t prints the *newest* file first.
+rm -f conftest.ts?
+: > conftest.ts1
+: > conftest.ts2
+: > conftest.ts3
+
+# Make sure ls -t actually works.  Do 'set' in a subshell so we don't
+# clobber the current shell's arguments. (Outer-level square brackets
+# are removed by m4; they're present so that m4 does not expand
+# <dollar><star>; be careful, easy to get confused.)
+if (
+     set X `[ls -t conftest.ts[12]]` &&
+     {
+       test "$[]*" != "X conftest.ts1 conftest.ts2" ||
+       test "$[]*" != "X conftest.ts2 conftest.ts1";
+     }
+); then :; else
+  # If neither matched, then we have a broken ls.  This can happen
+  # if, for instance, CONFIG_SHELL is bash and it inherits a
+  # broken ls alias from the environment.  This has actually
+  # happened.  Such a system could not be considered "sane".
+  _AS_ECHO_UNQUOTED(
+    ["Bad output from ls -t: \"`[ls -t conftest.ts[12]]`\""],
+    [AS_MESSAGE_LOG_FD])
+  AC_MSG_FAILURE([ls -t produces unexpected output.
+Make sure there is not a broken ls alias in your environment.])
+fi
+
+for am_try_res in $am_try_resolutions; do
+  # Any one fine-grained sleep might happen to cross the boundary
+  # between two values of a coarser actual resolution, but if we do
+  # two fine-grained sleeps in a row, at least one of them will fall
+  # entirely within a coarse interval.
+  echo alpha > conftest.ts1
+  sleep $am_try_res
+  echo beta > conftest.ts2
+  sleep $am_try_res
+  echo gamma > conftest.ts3
+
+  # We assume that 'ls -t' will make use of high-resolution
+  # timestamps if the operating system supports them at all.
+  if (set X `ls -t conftest.ts?` &&
+      test "$[]2" = conftest.ts3 &&
+      test "$[]3" = conftest.ts2 &&
+      test "$[]4" = conftest.ts1); then
+    #
+    # Ok, ls -t worked. If we're at a resolution of 1 second, we're done,
+    # because we don't need to test make.
+    make_ok=true
+    if test $am_try_res != 1; then
+      # But if we've succeeded so far with a subsecond resolution, we
+      # have one more thing to check: make. It can happen that
+      # everything else supports the subsecond mtimes, but make doesn't;
+      # notably on macOS, which ships make 3.81 from 2006 (the last one
+      # released under GPLv2). https://bugs.gnu.org/68808
+      # 
+      # We test $MAKE if it is defined in the environment, else "make".
+      # It might get overridden later, but our hope is that in practice
+      # it does not matter: it is the system "make" which is (by far)
+      # the most likely to be broken, whereas if the user overrides it,
+      # probably they did so with a better, or at least not worse, make.
+      # https://lists.gnu.org/archive/html/automake/2024-06/msg00051.html
+      #
+      # Create a Makefile (real tab character here):
+      rm -f conftest.mk
+      echo 'conftest.ts1: conftest.ts2' >conftest.mk
+      echo '	touch conftest.ts2' >>conftest.mk
+      #
+      # Now, running
+      #   touch conftest.ts1; touch conftest.ts2; make
+      # should touch ts1 because ts2 is newer. This could happen by luck,
+      # but most often, it will fail if make's support is insufficient. So
+      # test for several consecutive successes.
+      #
+      # (We reuse conftest.ts[12] because we still want to modify existing
+      # files, not create new ones, per above.)
+      n=0
+      make=${MAKE-make}
+      until test $n -eq 3; do
+        echo one > conftest.ts1
+        sleep $am_try_res
+        echo two > conftest.ts2 # ts2 should now be newer than ts1
+        if $make -f conftest.mk | grep 'up to date' >/dev/null; then
+          make_ok=false
+          break # out of $n loop
+        fi
+        n=`expr $n + 1`
+      done
+    fi
+    #
+    if $make_ok; then
+      # Everything we know to check worked out, so call this resolution good.
+      am_cv_filesystem_timestamp_resolution=$am_try_res
+      break # out of $am_try_res loop
+    fi
+    # Otherwise, we'll go on to check the next resolution.
+  fi
+done
+rm -f conftest.ts?
+# (end _am_filesystem_timestamp_resolution)
+])])
+
 # AM_SANITY_CHECK
 # ---------------
 AC_DEFUN([AM_SANITY_CHECK],
-[AC_MSG_CHECKING([whether build environment is sane])
+[AC_REQUIRE([_AM_FILESYSTEM_TIMESTAMP_RESOLUTION])
+# This check should not be cached, as it may vary across builds of
+# different projects.
+AC_MSG_CHECKING([whether build environment is sane])
 # Reject unsafe characters in $srcdir or the absolute working directory
 # name.  Accept space and tab only in the latter.
 am_lf='
@@ -3938,49 +3987,40 @@ esac
 # symlink; some systems play weird games with the mod time of symlinks
 # (eg FreeBSD returns the mod time of the symlink's containing
 # directory).
-if (
-   am_has_slept=no
-   for am_try in 1 2; do
-     echo "timestamp, slept: $am_has_slept" > conftest.file
-     set X `ls -Lt "$srcdir/configure" conftest.file 2> /dev/null`
-     if test "$[*]" = "X"; then
-	# -L didn't work.
-	set X `ls -t "$srcdir/configure" conftest.file`
-     fi
-     if test "$[*]" != "X $srcdir/configure conftest.file" \
-	&& test "$[*]" != "X conftest.file $srcdir/configure"; then
+am_build_env_is_sane=no
+am_has_slept=no
+rm -f conftest.file
+for am_try in 1 2; do
+  echo "timestamp, slept: $am_has_slept" > conftest.file
+  if (
+    set X `ls -Lt "$srcdir/configure" conftest.file 2> /dev/null`
+    if test "$[]*" = "X"; then
+      # -L didn't work.
+      set X `ls -t "$srcdir/configure" conftest.file`
+    fi
+    test "$[]2" = conftest.file
+  ); then
+    am_build_env_is_sane=yes
+    break
+  fi
+  # Just in case.
+  sleep "$am_cv_filesystem_timestamp_resolution"
+  am_has_slept=yes
+done
 
-	# If neither matched, then we have a broken ls.  This can happen
-	# if, for instance, CONFIG_SHELL is bash and it inherits a
-	# broken ls alias from the environment.  This has actually
-	# happened.  Such a system could not be considered "sane".
-	AC_MSG_ERROR([ls -t appears to fail.  Make sure there is not a broken
-  alias in your environment])
-     fi
-     if test "$[2]" = conftest.file || test $am_try -eq 2; then
-       break
-     fi
-     # Just in case.
-     sleep 1
-     am_has_slept=yes
-   done
-   test "$[2]" = conftest.file
-   )
-then
-   # Ok.
-   :
-else
-   AC_MSG_ERROR([newly created file is older than distributed files!
+AC_MSG_RESULT([$am_build_env_is_sane])
+if test "$am_build_env_is_sane" = no; then
+  AC_MSG_ERROR([newly created file is older than distributed files!
 Check your system clock])
 fi
-AC_MSG_RESULT([yes])
+
 # If we didn't sleep, we still need to ensure time stamps of config.status and
 # generated files are strictly newer.
 am_sleep_pid=
-if grep 'slept: no' conftest.file >/dev/null 2>&1; then
-  ( sleep 1 ) &
+AS_IF([test -e conftest.file || grep 'slept: no' conftest.file >/dev/null 2>&1],, [dnl
+  ( sleep "$am_cv_filesystem_timestamp_resolution" ) &
   am_sleep_pid=$!
-fi
+])
 AC_CONFIG_COMMANDS_PRE(
   [AC_MSG_CHECKING([that generated files are newer than configure])
    if test -n "$am_sleep_pid"; then
@@ -3991,18 +4031,18 @@ AC_CONFIG_COMMANDS_PRE(
 rm -f conftest.file
 ])
 
-# Copyright (C) 2009-2021 Free Software Foundation, Inc.
+# Copyright (C) 2009-2024 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
 
-# AM_SILENT_RULES([DEFAULT])
-# --------------------------
-# Enable less verbose build rules; with the default set to DEFAULT
-# ("yes" being less verbose, "no" or empty being verbose).
-AC_DEFUN([AM_SILENT_RULES],
-[AC_ARG_ENABLE([silent-rules], [dnl
+# _AM_SILENT_RULES
+# ----------------
+# Enable less verbose build rules support.
+AC_DEFUN([_AM_SILENT_RULES],
+[AM_DEFAULT_VERBOSITY=1
+AC_ARG_ENABLE([silent-rules], [dnl
 AS_HELP_STRING(
   [--enable-silent-rules],
   [less verbose build output (undo: "make V=1")])
@@ -4010,11 +4050,6 @@ AS_HELP_STRING(
   [--disable-silent-rules],
   [verbose build output (undo: "make V=0")])dnl
 ])
-case $enable_silent_rules in @%:@ (((
-  yes) AM_DEFAULT_VERBOSITY=0;;
-   no) AM_DEFAULT_VERBOSITY=1;;
-    *) AM_DEFAULT_VERBOSITY=m4_if([$1], [yes], [0], [1]);;
-esac
 dnl
 dnl A few 'make' implementations (e.g., NonStop OS and NextStep)
 dnl do not support nested variable expansions.
@@ -4033,14 +4068,6 @@ am__doit:
 else
   am_cv_make_support_nested_variables=no
 fi])
-if test $am_cv_make_support_nested_variables = yes; then
-  dnl Using '$V' instead of '$(V)' breaks IRIX make.
-  AM_V='$(V)'
-  AM_DEFAULT_V='$(AM_DEFAULT_VERBOSITY)'
-else
-  AM_V=$AM_DEFAULT_VERBOSITY
-  AM_DEFAULT_V=$AM_DEFAULT_VERBOSITY
-fi
 AC_SUBST([AM_V])dnl
 AM_SUBST_NOTMAKE([AM_V])dnl
 AC_SUBST([AM_DEFAULT_V])dnl
@@ -4049,9 +4076,33 @@ AC_SUBST([AM_DEFAULT_VERBOSITY])dnl
 AM_BACKSLASH='\'
 AC_SUBST([AM_BACKSLASH])dnl
 _AM_SUBST_NOTMAKE([AM_BACKSLASH])dnl
+dnl Delay evaluation of AM_DEFAULT_VERBOSITY to the end to allow multiple calls
+dnl to AM_SILENT_RULES to change the default value.
+AC_CONFIG_COMMANDS_PRE([dnl
+case $enable_silent_rules in @%:@ (((
+  yes) AM_DEFAULT_VERBOSITY=0;;
+   no) AM_DEFAULT_VERBOSITY=1;;
+esac
+if test $am_cv_make_support_nested_variables = yes; then
+  dnl Using '$V' instead of '$(V)' breaks IRIX make.
+  AM_V='$(V)'
+  AM_DEFAULT_V='$(AM_DEFAULT_VERBOSITY)'
+else
+  AM_V=$AM_DEFAULT_VERBOSITY
+  AM_DEFAULT_V=$AM_DEFAULT_VERBOSITY
+fi
+])dnl
 ])
 
-# Copyright (C) 2001-2021 Free Software Foundation, Inc.
+# AM_SILENT_RULES([DEFAULT])
+# --------------------------
+# Set the default verbosity level to DEFAULT ("yes" being less verbose, "no" or
+# empty being verbose).
+AC_DEFUN([AM_SILENT_RULES],
+[AC_REQUIRE([_AM_SILENT_RULES])
+AM_DEFAULT_VERBOSITY=m4_if([$1], [yes], [0], [1])])
+
+# Copyright (C) 2001-2024 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -4079,7 +4130,7 @@ fi
 INSTALL_STRIP_PROGRAM="\$(install_sh) -c -s"
 AC_SUBST([INSTALL_STRIP_PROGRAM])])
 
-# Copyright (C) 2006-2021 Free Software Foundation, Inc.
+# Copyright (C) 2006-2024 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -4098,7 +4149,7 @@ AC_DEFUN([AM_SUBST_NOTMAKE], [_AM_SUBST_NOTMAKE($@)])
 
 # Check how to create a tarball.                            -*- Autoconf -*-
 
-# Copyright (C) 2004-2021 Free Software Foundation, Inc.
+# Copyright (C) 2004-2024 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -4144,15 +4195,19 @@ m4_if([$1], [v7],
       am_uid=`id -u || echo unknown`
       am_gid=`id -g || echo unknown`
       AC_MSG_CHECKING([whether UID '$am_uid' is supported by ustar format])
-      if test $am_uid -le $am_max_uid; then
-         AC_MSG_RESULT([yes])
+      if test x$am_uid = xunknown; then
+        AC_MSG_WARN([ancient id detected; assuming current UID is ok, but dist-ustar might not work])
+      elif test $am_uid -le $am_max_uid; then
+        AC_MSG_RESULT([yes])
       else
-         AC_MSG_RESULT([no])
-         _am_tools=none
+        AC_MSG_RESULT([no])
+        _am_tools=none
       fi
       AC_MSG_CHECKING([whether GID '$am_gid' is supported by ustar format])
-      if test $am_gid -le $am_max_gid; then
-         AC_MSG_RESULT([yes])
+      if test x$gm_gid = xunknown; then
+        AC_MSG_WARN([ancient id detected; assuming current GID is ok, but dist-ustar might not work])
+      elif test $am_gid -le $am_max_gid; then
+        AC_MSG_RESULT([yes])
       else
         AC_MSG_RESULT([no])
         _am_tools=none
@@ -4228,5 +4283,25 @@ m4_if([$1], [v7],
 AC_SUBST([am__tar])
 AC_SUBST([am__untar])
 ]) # _AM_PROG_TAR
+
+# Copyright (C) 2022-2024 Free Software Foundation, Inc.
+#
+# This file is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# _AM_PROG_XARGS_N
+# ----------------
+# Check whether 'xargs -n' works.  It should work everywhere, so the fallback
+# is not optimized at all as we never expect to use it.
+AC_DEFUN([_AM_PROG_XARGS_N],
+[AC_CACHE_CHECK([xargs -n works], am_cv_xargs_n_works, [dnl
+AS_IF([test "`echo 1 2 3 | xargs -n2 echo`" = "1 2
+3"], [am_cv_xargs_n_works=yes], [am_cv_xargs_n_works=no])])
+AS_IF([test "$am_cv_xargs_n_works" = yes], [am__xargs_n='xargs -n'], [dnl
+  am__xargs_n='am__xargs_n () { shift; sed "s/ /\\n/g" | while read am__xargs_n_arg; do "$@" "$am__xargs_n_arg"; done; }'
+])dnl
+AC_SUBST(am__xargs_n)
+])
 
 m4_include([m4/iconv.m4])
