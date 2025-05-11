@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2023 Fabian Groffen <grobian@gentoo.org>
+ * Copyright 2020-2025 Fabian Groffen <grobian@gentoo.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
