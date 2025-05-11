@@ -93,7 +93,7 @@ iconvstream::open_os(const char *file_name, const char *encoding)
 
 	fd_os = strcmp(file_name, "-") == 0 ?
 			::dup(1) :
-			::open(file_name, O_WRONLY | O_CREAT,
+			::open(file_name, O_WRONLY | O_CREAT | O_TRUNC,
 				   S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 	if (fd_os == -1)
 		open_err = strerror(errno);
