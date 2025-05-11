@@ -13,6 +13,10 @@
   recent.
 * [Issue #61](https://https://gitlab.com/grobian/html2text/-/issues/61)
   Fix handling of malformed attributes in tags
+* [PR #54](https://gitlab.com/grobian/html2text/-/merge_requests/54)
+  Fix unput type checkbox rendering
+* [Issue #64](https://https://gitlab.com/grobian/html2text/-/issues/64)
+  Don't write rendering sequences to output files by default
 
 
 # 2.2.3 (31-07-2023)
