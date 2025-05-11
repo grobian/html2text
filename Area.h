@@ -38,6 +38,7 @@ struct Cell {
 		STRIKETHROUGH   = 1<<2,
 		FGCOLOUR        = 1<<3,
 		BGCOLOUR        = 1<<4,
+		ITALICS         = 1<<5,
 		COLOUR          = FGCOLOUR | BGCOLOUR
 	};
 

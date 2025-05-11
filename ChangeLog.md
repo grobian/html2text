@@ -17,6 +17,8 @@
   Fix unput type checkbox rendering
 * [Issue #64](https://https://gitlab.com/grobian/html2text/-/issues/64)
   Don't write rendering sequences to output files by default
+* [Issue #66](https://gitlab.com/grobian/html2text/-/issues/66)
+  Emit italics escape code for &lt;i&gt;
 
 
 # 2.2.3 (31-07-2023)

@@ -616,6 +616,9 @@ operator<<(iconvstream& os, const Area &a)
 					if (attrs & Cell::BOLD) {
 						os << ";1";
 					}
+					if (attrs & Cell::ITALICS) {
+						os << ";3";
+					}
 					/* ignore strikethrough, can't represent it */
 
 					if (attrs & Cell::FGCOLOUR) {

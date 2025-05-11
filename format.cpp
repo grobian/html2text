@@ -992,7 +992,7 @@ get_font_cell_attributes(int attribute)
 		return a;
 	} else if (attribute == HTMLParser_token::I) {
 		static char a = Formatting::getAttributes("I.attributes",
-		                                          Cell::NONE);
+		                                          Cell::ITALICS);
 		return a;
 	} else if (attribute == HTMLParser_token::B) {
 		static char a = Formatting::getAttributes("B.attributes",
