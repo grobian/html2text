@@ -619,8 +619,9 @@ operator<<(iconvstream& os, const Area &a)
 					if (attrs & Cell::ITALICS) {
 						os << ";3";
 					}
-					/* ignore strikethrough, can't represent it */
-
+					if (attrs & Cell::STRIKETHROUGH) {
+						os << ";9";
+					}
 					if (attrs & Cell::FGCOLOUR) {
 						os << ";38;5;" << std::to_string(fgcolour);
 					}
