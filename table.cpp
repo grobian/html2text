@@ -293,8 +293,8 @@ narrow_table(
 	bool             colminimised[number_of_columns];
 
 	if (debug)
-		dbgstr.append("narrow_table [").append(tblid)
-			.append("]: wanted_size=").append(std::to_string(wanted_size))
+		dbgstr.append("narrow_table ").append(tblid)
+			.append(": wanted_size=").append(std::to_string(wanted_size))
 			.append(" table_width=").append(std::to_string(*table_width_in_out))
 			.append(" columns=").append(std::to_string(number_of_columns))
 			.append("\n");
@@ -312,16 +312,6 @@ narrow_table(
 		Area::size_type cw = 0;
 
 		lc = (*c).get();
-
-		if (debug)
-			dbgstr.append("  cell: x=").append(std::to_string(lc->x))
-				.append(" y=").append(std::to_string(lc->y))
-				.append(" w=").append(std::to_string(lc->w))
-				.append(" h=").append(std::to_string(lc->h))
-				.append(" width=").append(std::to_string(lc->width))
-				.append(" minwidth=").append(std::to_string(lc->minwidth))
-				.append(" minimised=").append(std::to_string(lc->minimized))
-				.append("\n");
 
 		for (int j = lc->x; j < lc->x + lc->w; j++)
 			cw += column_widths_in_out[j];
@@ -361,6 +351,16 @@ narrow_table(
 			colneedsizes[lc->x] = lc->minwidth;
 		if (lc->minimized)
 			colminimised[lc->x] = true;
+
+		if (debug)
+			dbgstr.append("  cell: x=").append(std::to_string(lc->x))
+				.append(" y=").append(std::to_string(lc->y))
+				.append(" w=").append(std::to_string(lc->w))
+				.append(" h=").append(std::to_string(lc->h))
+				.append(" width=").append(std::to_string(lc->width))
+				.append(" minwidth=").append(std::to_string(lc->minwidth))
+				.append(" minimised=").append(std::to_string(lc->minimized))
+				.append("\n");
 	}
 	/* colspan phase two, for every level up in colspan, process them,
 	 * to stretch up column levels evenly after considering disbalance
@@ -508,7 +508,11 @@ narrow_table(
 				/* remove all extra space */
 				for (i = 0; i < number_of_columns; i++) {
 					if (colcursizes[i] < column_widths_in_out[i])
+					{
+						newtablesize           -= (column_widths_in_out[i] -
+												   colcursizes[i]);
 						column_widths_in_out[i] = colcursizes[i];
+					}
 				}
 			}
 		}
@@ -674,9 +678,11 @@ compute_row_heights
 Area *
 Table::format(Area::size_type w, int halign) const
 {
-	istr clr;
-	istr wdth;
-	istr align;
+	istr   clr;
+	istr   wdth;
+	istr   align;
+	bool   debug  = getenv("HTML2TEXT_DEBUG_TABLE_RENDERING") != NULL;
+	string tbl_id = "[" + std::to_string(rand()) + "]";
 
 	align = get_style_attr(attributes.get(), "text-align",
 						   "ALIGN", "").get()->front();
@@ -763,6 +769,18 @@ Table::format(Area::size_type w, int halign) const
 	if (wanted_width > w)
 		wanted_width = w;
 
+	if (debug) {
+		string dbgstr;
+		dbgstr.append("table ").append(tbl_id).append(" columns: ")
+					  .append(std::to_string(number_of_columns))
+					  .append(", width: ")
+					  .append(std::to_string(table_width))
+					  .append(", wanted_width: ")
+					  .append(std::to_string(wanted_width))
+					  .append("\n");
+		std::cerr << dbgstr;
+	}
+
 	/* upscale the table if it is supposed to be bigger */
 	while (table_width < wanted_width) {
 		if (!widen_table(&lcs,                 /* in/out */
@@ -777,7 +795,6 @@ Table::format(Area::size_type w, int halign) const
 	/* narrow the columns that allow to when necessary, note that
 	 * upscaling will deliberately produce a larger output so
 	 * downscaling can get the number to the exact required size */
-	string tbl_id = std::to_string(rand());
 	while (table_width > wanted_width) {
 		if (!narrow_table(&lcs,                /* in/out */
 						  number_of_columns,
@@ -841,6 +858,8 @@ Table::format(Area::size_type w, int halign) const
 		if (y0 == 0)
 			y0 = 1;
 		res->fill('|', x0, y0, left_border_width, table_height);
+		if (debug)
+			res->insert(tbl_id, x0 + left_border_width, y0 - 1);
 		res->add_attribute(
 				Cell::UNDERLINE,
 				x0 + left_border_width,
