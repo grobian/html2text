@@ -623,10 +623,10 @@ operator<<(iconvstream& os, const Area &a)
 						os << ";9";
 					}
 					if (attrs & Cell::FGCOLOUR) {
-						os << ";38;5" << std::to_string(fgcolour);
+						os << ";38;5;" << std::to_string(fgcolour);
 					}
 					if (attrs & Cell::BGCOLOUR) {
-						os << ";48;5" << std::to_string(bgcolour);
+						os << ";48;5;" << std::to_string(bgcolour);
 					}
 
 					/* finish sequence */
