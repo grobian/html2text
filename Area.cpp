@@ -67,6 +67,7 @@ Line::Line(const char *p):
 {
 	Cell *q = cells_, *end = q + length_;
 	while (q != end) {
+		q->clear();
 		q->character = *p++;
 		q->attribute = Cell::NONE;
 		q++;
@@ -80,6 +81,7 @@ Line::Line(const string &s):
 	const char *p = s.c_str();
 	Cell *q = cells_, *end = q + length_;
 	while (q != end) {
+		q->clear();
 		q->character = *p++;
 		q->attribute = Cell::NONE;
 		q++;
@@ -92,6 +94,7 @@ Line::Line(const istr &s):
 {
 	Cell *q = cells_;
 	for (size_t i = 0; i < (size_t)length_; i++) {
+		q->clear();
 		q->character = s[i];
 		q->attribute = Cell::NONE;
 		q++;

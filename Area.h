@@ -76,6 +76,8 @@ struct Cell {
 	{
 		character = ' ';
 		attribute = NONE;
+		fgcolour  = 0;
+		bgcolour  = 0;
 	}
 };
 
