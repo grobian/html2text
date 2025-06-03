@@ -1635,6 +1635,40 @@ Formatting::colour_from_string(const char *clrc)
 	int    clrcde = -1;
 	size_t len;
 
+	if (strncmp(clrc, "rgb", sizeof("rgb") - 1) == 0) {
+		const char *p = clrc + sizeof("rgb") - 1;
+		const char *q;
+
+		while (isspace(*p))
+			p++;
+		if (*p == '(' &&
+			(q = strchr(p + 1, ')')) != NULL)
+		{
+			char *r;
+			int   i;
+			int   mp[3] = { 36, 6, 1 };
+
+			for (i = 0, clrcde = 16; i < 3 && p < q; i++) {
+				long val = strtol(p, &r, 10);
+				while (r > p &&
+					   r < q &&
+					   isspace(*r))
+					r++;
+				if (r > p &&
+					*r != ',' &&
+					r != q)
+					break;
+				r++;
+				clrcde += mp[i] * ((int)round((double)val * 5.0 / 255.0));
+			}
+
+			if (i != 3)
+				clrcde = -1;
+			else
+				return clrcde;
+		}
+	}
+
 	if (clrc[0] == '#' && ((len = strlen(clrc)) == 7 || len == 4)) {
 		/* 0-255 -> 0-5 */
 		double in;

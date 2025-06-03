@@ -194,7 +194,7 @@ get_style_attr
 			switch (style[i]) {
 				case ':':
 					/* keystart:i = key */
-					for (t = i - 1; style[t] == ' '; t--)
+					for (t = i - 1; isspace(style[t]); t--)
 						;
 					t++;
 					iskey = false;
@@ -203,16 +203,23 @@ get_style_attr
 				case ';':
 					/* end of value */
 					if (!iskey) {
+						bool inblock = false;
 						if (style.compare(keystart, t - keystart,
 										  style_name) == 0)
 						{
 							list<istr>::const_iterator it;
 							size_t lastsp = valstart - 1;
-							for (t = i - 1; style[t] == ' '; t--)
+							for (t = i - 1; isspace(style[t]); t--)
 								;
 							t++;
 							for (size_t p = valstart; p < t; p++) {
-								if (style[p] == ' ') {
+								if (style[p] == '(')
+									inblock = true;
+								if (style[p] == ')')
+									inblock = false;
+								if (!inblock &&
+									isspace(style[p]))
+								{
 									if (p - 1 == lastsp) {
 										lastsp = p;
 										continue;
