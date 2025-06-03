@@ -1818,7 +1818,7 @@ Formatting::set_bgcolour
 	Area                     *res
 )
 {
-	/* width can only be a single thing, take the first element */
+	/* colour can only be a single thing, take the first element */
 	istr clr = get_style_attr(attrs, "background-color",
 							  "BGCOLOR", "").get()->front();
 	if (!clr.empty()) {
@@ -1837,7 +1837,7 @@ Formatting::set_fgcolour
 	Line                     *res
 )
 {
-	/* width can only be a single thing, take the first element */
+	/* colour can only be a single thing, take the first element */
 	istr clr = get_style_attr(attrs, "color", "COLOR", "").get()->front();
 	if (!clr.empty()) {
 		int clrcde = Formatting::colour_from_string(clr.c_str());

@@ -180,6 +180,11 @@ Line::set_fgcolour(unsigned char clr)
 	Cell *p = cells_, *end = cells_ + length_;
 	for (; p != end; p++)
 	{
+		/* skip when already set, e.g. let elements deeper in the tree
+		 * override colours set by their parent(s) */
+		if (p->attribute &Cell::FGCOLOUR)
+			continue;
+
 		p->fgcolour = clr;
 		p->attribute |= Cell::FGCOLOUR;
 	}
@@ -191,6 +196,11 @@ Line::set_bgcolour(unsigned char clr)
 	Cell *p = cells_, *end = cells_ + length_;
 	for (; p != end; p++)
 	{
+		/* skip when already set, e.g. let elements deeper in the tree
+		 * override colours set by their parent(s) */
+		if (p->attribute &Cell::BGCOLOUR)
+			continue;
+
 		p->bgcolour = clr;
 		p->attribute |= Cell::BGCOLOUR;
 	}
@@ -501,8 +511,12 @@ Area::set_bgcolour(unsigned char clr)
 	for (size_type y = 0; y < height(); y++) {
 		Cell *p = cells_[y], *end = p + width();
 		while (p != end) {
-			p->bgcolour   = clr;
-			p->attribute |= Cell::BGCOLOUR;
+			/* skip when already set, e.g. let elements deeper in the
+			 * tree override colours set by their parent(s) */
+			if (!(p->attribute & Cell::BGCOLOUR)) {
+				p->bgcolour   = clr;
+				p->attribute |= Cell::BGCOLOUR;
+			}
 			p++;
 		}
 	}
@@ -514,8 +528,12 @@ Area::set_fgcolour(unsigned char clr)
 	for (size_type y = 0; y < height(); y++) {
 		Cell *p = cells_[y], *end = p + width();
 		while (p != end) {
-			p->fgcolour   = clr;
-			p->attribute |= Cell::FGCOLOUR;
+			/* skip when already set, e.g. let elements deeper in the
+			 * tree override colours set by their parent(s) */
+			if (!(p->attribute & Cell::FGCOLOUR)) {
+				p->fgcolour   = clr;
+				p->attribute |= Cell::FGCOLOUR;
+			}
 			p++;
 		}
 	}
@@ -573,7 +591,7 @@ operator<<(iconvstream& os, const Area &a)
 		while (end != cell &&
 			   end[-1].character == ' ' &&
 			   (end[-1].attribute & (Cell::UNDERLINE |
-			   						 Cell::STRIKETHROUGH)) == 0)
+									 Cell::STRIKETHROUGH)) == 0)
 			end--;
 
 		for (const Cell *p = cell; p != end; p++) {
