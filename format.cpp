@@ -1648,7 +1648,7 @@ Formatting::colour_from_string(const char *clrc)
 			int   i;
 			int   mp[3] = { 36, 6, 1 };
 
-			for (i = 0, clrcde = 16; i < 3 && p < q; i++) {
+			for (i = 0, clrcde = 16, p++; i < 3 && p < q; i++) {
 				long val = strtol(p, &r, 10);
 				while (r > p &&
 					   r < q &&
@@ -1658,7 +1658,7 @@ Formatting::colour_from_string(const char *clrc)
 					*r != ',' &&
 					r != q)
 					break;
-				r++;
+				p = ++r;
 				clrcde += mp[i] * ((int)round((double)val * 5.0 / 255.0));
 			}
 
