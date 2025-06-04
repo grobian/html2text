@@ -189,6 +189,9 @@ get_style_attr
 	auto_ptr<list<istr>> ret;
 	ret.reset(new list<istr>);
 
+	/* allow for unterminated style */
+	style += ";";
+
 	if (style != NULL && style_name != NULL) {
 		for (size_t i = 0; i < style.length(); i++) {
 			switch (style[i]) {
