@@ -170,6 +170,7 @@ class HTMLDriver;
 %token <tag_attributes> SCRIPT
 %token <tag_attributes> SELECT
 %token <tag_attributes> SMALL
+%token <tag_attributes> SPAN
 %token <tag_attributes> STRIKE
 %token <tag_attributes> STRONG
 %token <tag_attributes> STYLE
@@ -228,6 +229,7 @@ class HTMLDriver;
 %token                  END_SCRIPT
 %token                  END_SELECT
 %token                  END_SMALL
+%token                  END_SPAN
 %token                  END_STRIKE
 %token                  END_STRONG
 %token                  END_STYLE
@@ -765,6 +767,9 @@ phrase:
   | KBD    opt_texts opt_END_KBD    { delete $1; $$ = new Phrase(token::KBD,    $2); }
   | VAR    opt_texts opt_END_VAR    { delete $1; $$ = new Phrase(token::VAR,    $2); }
   | CITE   opt_texts opt_END_CITE   { delete $1; $$ = new Phrase(token::CITE,   $2); }
+  | SPAN   opt_texts opt_END_SPAN   { Phrase *p = new Phrase(token::SPAN, $2);
+                                      p->attributes.reset($1);
+                                      $$ = p; }
   ;
 
 special:
@@ -980,6 +985,7 @@ opt_END_P:      /* empty */ | END_P;
 opt_END_PRE:    /* empty */ | END_PRE;
 opt_END_SAMP:   /* empty */ | END_SAMP;
 opt_END_SMALL:  /* empty */ | END_SMALL;
+opt_END_SPAN:   /* empty */ | END_SPAN;
 opt_END_STRIKE: /* empty */ | END_STRIKE;
 opt_END_STRONG: /* empty */ | END_STRONG;
 opt_END_SUB:    /* empty */ | END_SUB;

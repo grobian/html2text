@@ -353,6 +353,7 @@ tag_names[] = {
 	pack3(SCRIPT),
 	pack2(SELECT),
 	pack2(SMALL),
+	pack2(SPAN),
 	pack2(STRIKE),
 	pack2(STRONG),
 	pack3(STYLE),
@@ -368,7 +369,9 @@ tag_names[] = {
 	pack2(U),
 	pack3(UL),
 	pack2(VAR),
-#undef pack
+#undef pack3
+#undef pack2
+#undef pack1
 };
 
 int
@@ -647,7 +650,8 @@ eat_garbage:
 						(int (*)(const void *, const void *))f);
 				if (tag == NULL) { /* EXTENSION: Swallow unknown tags. */
 					if (debug_scanner) {
-						std::cerr << "Tag unknown -- swallowed." << std::endl;
+						std::cerr << "Tag unknown (" << tag_name.c_str()
+							<< ") -- swallowed." << std::endl;
 					}
 					continue;
 				}

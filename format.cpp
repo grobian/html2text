@@ -144,6 +144,9 @@ Body::format(Area::size_type w, int halign) const
 {
 	static BlockFormat bf("BODY");
 
+	if (Formatting::is_hidden(attributes.get()))
+		return 0;
+
 	auto_ptr<Area> res(::format(content.get(),
 								bf.effective_width(w),
 				 	 			halign,
@@ -702,6 +705,9 @@ Paragraph::format(Area::size_type w, int halign) const
 	if (!texts.get())
 		return 0;
 
+	if (Formatting::is_hidden(attributes.get()))
+		return 0;
+
 	halign = get_attribute(
 			attributes.get(), "ALIGN", halign,
 			"LEFT", Area::LEFT,
@@ -1029,6 +1035,9 @@ get_font_cell_attributes(int attribute)
 Line *
 Font::line_format() const
 {
+	if (Formatting::is_hidden(attributes.get()))
+		return 0;
+
 	auto_ptr<Line> res(::line_format(texts.get(), attributes.get()));
 	if (!res.get())
 		return 0;
@@ -1044,6 +1053,9 @@ Font::line_format() const
 Area *
 Font::format(Area::size_type w, int halign) const
 {
+	if (Formatting::is_hidden(attributes.get()))
+		return 0;
+
 	auto_ptr<Area> res(::format(texts.get(), w, halign, attributes.get()));
 	if (!res.get())
 		return 0;
@@ -1100,6 +1112,9 @@ get_phrase_cell_attributes(int attribute)
 Line *
 Phrase::line_format() const
 {
+	if (Formatting::is_hidden(attributes.get()))
+		return 0;
+
 	auto_ptr<Line> res(::line_format(texts.get(), attributes.get()));
 	if (!res.get())
 		return 0;
@@ -1116,6 +1131,9 @@ Phrase::line_format() const
 Area *
 Phrase::format(Area::size_type w, int halign) const
 {
+	if (Formatting::is_hidden(attributes.get()))
+		return 0;
+
 	auto_ptr<Area> res(::format(texts.get(), w, halign, attributes.get()));
 	if (!res.get())
 		return 0;
@@ -1791,6 +1809,22 @@ Formatting::get_width
 	}
 
 	return (Area::size_type)0;
+}
+
+bool
+Formatting::is_hidden
+(
+	const list<TagAttribute> *attrs
+)
+{
+	istr clr = get_style_attr(attrs, "visibility", "", "").get()->front();
+	if (!clr.empty() &&
+		clr == "hidden")
+	{
+		return true;
+	}
+
+	return false;
 }
 
 void

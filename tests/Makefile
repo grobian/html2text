@@ -27,6 +27,7 @@ TESTS= \
 	   utf-8=unicode-hex-references \
 	   utf-8=cid-image-link \
 	   utf-8=ifendif \
+	   utf-8=style-visibility-hidden \
 	   auto=html4meta \
 	   auto=html5meta \
 	   auto=html4entities \
