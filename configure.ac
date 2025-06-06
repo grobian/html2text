@@ -14,9 +14,9 @@
 # GNU General Public License in the file COPYING for more details.
 
 AC_PREREQ([2.71])
-AC_INIT([html2text], [2.2.3.9999_pre], [BUG-REPORT-ADDRESS])
+AC_INIT([html2text], [2.3.0], [BUG-REPORT-ADDRESS])
 AM_INIT_AUTOMAKE
-AM_MAINTAINER_MODE([enable])
+AM_MAINTAINER_MODE([disable])
 AM_ICONV
 #AC_CONFIG_SRCDIR([html.h])
 #AC_CONFIG_HEADERS([config.h])
